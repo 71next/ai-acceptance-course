@@ -33,6 +33,10 @@
   .conn { display: grid; grid-template-columns: 22px minmax(0, 1fr) minmax(0, 1.2fr) 32px; gap: 8px; align-items: center; margin-bottom: 8px; }
   .conn .arrow { color: var(--muted); text-align: center; }
   @media (max-width: 560px) { .conn { grid-template-columns: 18px 1fr 32px; } .conn .cond { grid-column: 2 / 4; } }
+  .pick { display: grid; gap: 6px; }
+  .pick select, .pick input { width: 100%; }
+  .pick select { text-overflow: ellipsis; }
+  .conn .cond .pick select { font-size: 14px; }
   .conn-hint { font-size: 13px; color: var(--muted); }
 
   .risk { border: 1px solid var(--line); border-left: 6px solid var(--line-2); border-radius: 14px; padding: 16px; margin-bottom: 12px; background: #fff; }
@@ -129,7 +133,7 @@
 
 <script type="module">
 import { renderHeader, ensureIdentity, showIdentity, loadResponse, autosaver, watchReveal, esc, toast, uid8 } from './assets/app.js';
-import { RULES, LIGHTS, CASES, ROLES } from './assets/unit1-data.js';
+import { RULES, LIGHTS, CASES, ROLES, OPTIONS, REASONS } from './assets/unit1-data.js?v=2';
 import { renderFlow, stepNo, edgesOf, END, ROLE_LEGEND } from './assets/flow.js';
 
 renderHeader('u1');
@@ -226,6 +230,31 @@ function renderPanel() {
   p.querySelector('[data-goto]').onclick = (e) => { tab = e.target.dataset.goto; renderTabs(); renderPanel(); scrollTo({ top: 0, behavior: 'smooth' }); };
 }
 
+/* ---------- 下拉選項（含「其他（自行輸入）」） ---------- */
+const OTHER = '__other';
+/** 以字串雜湊固定打散選項順序，避免照參考答案的步驟順序排列 */
+const hash = (t) => [...t].reduce((h, ch) => (h * 31 + ch.codePointAt(0)) >>> 0, 7);
+const mixed = (arr) => [...arr].sort((a, b) => hash(a) - hash(b));
+function pick(attr, f, val, opts, ph = '請選擇') {
+  val = val || '';
+  const other = val !== '' && !opts.includes(val);
+  return `<div class="pick"><select ${attr}="${f}" data-pick>
+      <option value="">${ph}</option>
+      ${opts.map((o) => `<option value="${esc(o)}" ${o === val ? 'selected' : ''}>${esc(o)}</option>`).join('')}
+      <option value="${OTHER}" ${other ? 'selected' : ''}>✎ 其他（自行輸入）</option>
+    </select><input class="pick-other" ${attr}="${f}" data-other value="${other ? esc(val) : ''}" placeholder="自行輸入" ${other ? '' : 'hidden'}></div>`;
+}
+/** 回傳欄位實際要存的文字；選「其他」時顯示並聚焦輸入框 */
+function pickValue(el) {
+  if (el.matches('select[data-pick]')) {
+    const o = el.nextElementSibling;
+    if (el.value === OTHER) { o.hidden = false; o.focus(); return o.value; }
+    o.hidden = true; o.value = ''; return el.value;
+  }
+  return el.value;
+}
+const opt = (key, f) => mixed(OPTIONS[key][f]);
+
 function renderSteps() {
   const key = tab, c = state.cases[key];
   const box = document.getElementById('steps');
@@ -238,11 +267,11 @@ function renderSteps() {
         <button class="icon-btn" data-del title="刪除步驟" aria-label="刪除步驟">✕</button>
       </div>
       <div class="fgrid">
-        <label class="field full"><span>動作</span><input data-f="action" value="${esc(s.action)}" placeholder="這一步做什麼？"></label>
-        <label class="field"><span>負責角色</span><input data-f="role" list="roleList" value="${esc(s.role)}" placeholder="客服／AI 助手／工單系統"></label>
-        <label class="field"><span>輸入</span><input data-f="input" value="${esc(s.input)}"></label>
-        <label class="field"><span>輸出／交給誰</span><input data-f="output" value="${esc(s.output)}"></label>
-        <label class="field"><span>尚待確認</span><input data-f="pending" value="${esc(s.pending)}"></label>
+        <div class="field full"><span class="label">動作</span>${pick('data-f', 'action', s.action, opt(key, 'action'), '這一步做什麼？')}</div>
+        <div class="field"><span class="label">負責角色</span>${pick('data-f', 'role', s.role, ROLES, '選擇角色')}</div>
+        <div class="field"><span class="label">輸入</span>${pick('data-f', 'input', s.input, opt(key, 'input'))}</div>
+        <div class="field"><span class="label">輸出／交給誰</span>${pick('data-f', 'output', s.output, opt(key, 'output'))}</div>
+        <div class="field"><span class="label">尚待確認</span>${pick('data-f', 'pending', s.pending, OPTIONS[key].pending)}</div>
       </div>
       <div class="conns">
         <div class="label">下一步（交接與分支）</div>
@@ -250,19 +279,19 @@ function renderSteps() {
           <div class="conn" data-ci="${j}">
             <span class="arrow">→</span>
             <select data-cto>${stepOpts(key, n.to, { allowEnd: true, empty: '選擇下一步' }).replace(`<option value="${s.id}"`, `<option disabled value="${s.id}"`)}</select>
-            <input class="cond" data-ccond value="${esc(n.cond)}" placeholder="判斷條件（例：有既有工單）">
+            <div class="cond">${pick('data-ccond', '1', n.cond, opt(key, 'cond'), '判斷條件（可不選）')}</div>
             <button class="icon-btn" data-cdel aria-label="移除連線">✕</button>
           </div>`).join('')}
         ${(s.next || []).length ? '' : `<p class="conn-hint">未設定時自動接到${i < c.steps.length - 1 ? '下一個步驟' : '「結束」'}。</p>`}
         <button class="link tiny" data-cadd>＋ 新增下一步／分支</button>
       </div>
-    </div>`).join('') + `<datalist id="roleList">${ROLES.map((r) => `<option value="${r}">`).join('')}</datalist>`;
+    </div>`).join('');
 
   box.oninput = (e) => {
     const card = e.target.closest('[data-sid]'); if (!card) return;
     const s = c.steps.find((x) => x.id === card.dataset.sid);
-    if (e.target.dataset.f) { s[e.target.dataset.f] = e.target.value; if (e.target.dataset.f === 'action') refreshSelects(); changed(true); }
-    else if (e.target.hasAttribute('data-ccond')) { s.next[+e.target.closest('[data-ci]').dataset.ci].cond = e.target.value; changed(true); }
+    if (e.target.dataset.f) { s[e.target.dataset.f] = pickValue(e.target); if (e.target.dataset.f === 'action') refreshSelects(); changed(true); }
+    else if (e.target.hasAttribute('data-ccond')) { s.next[+e.target.closest('[data-ci]').dataset.ci].cond = pickValue(e.target); changed(true); }
   };
   box.onchange = (e) => {
     if (!e.target.hasAttribute('data-cto')) return;
@@ -317,17 +346,17 @@ function renderRisks() {
             ${Object.entries(LIGHTS).map(([k, [n]]) => `<label class="l-${k}"><input type="radio" name="l_${r.id}" value="${k}" ${r.light === k ? 'checked' : ''}><span><i class="dot ${k}"></i>${n}</span></label>`).join('')}
           </div>
         </div>
-        <label class="field full"><span>可能出錯的情況</span><textarea data-r="issue" rows="2">${esc(r.issue)}</textarea></label>
-        <label class="field"><span>影響對象與後果</span><textarea data-r="impact" rows="2">${esc(r.impact)}</textarea></label>
-        <label class="field"><span>分級理由</span><textarea data-r="reason" rows="2">${esc(r.reason)}</textarea></label>
-        <label class="field full"><span>現有把關或待確認事項</span><textarea data-r="control" rows="2">${esc(r.control)}</textarea></label>
+        <div class="field full"><span class="label">可能出錯的情況</span>${pick('data-r', 'issue', r.issue, opt(key, 'issue'))}</div>
+        <div class="field"><span class="label">影響對象與後果</span>${pick('data-r', 'impact', r.impact, opt(key, 'impact'))}</div>
+        <div class="field"><span class="label">分級理由</span>${pick('data-r', 'reason', r.reason, REASONS)}</div>
+        <div class="field full"><span class="label">現有把關或待確認事項</span>${pick('data-r', 'control', r.control, opt(key, 'control'))}</div>
       </div>
       <div class="row-end"><button class="btn small ghost danger" data-rdel>刪除這筆風險</button></div>
     </div>`).join('') || '<p class="muted">尚未新增風險。</p>';
   box.oninput = (e) => {
     const card = e.target.closest('[data-rid]'); if (!card) return;
     const r = c.risks.find((x) => x.id === card.dataset.rid);
-    if (e.target.dataset.r) r[e.target.dataset.r] = e.target.value;
+    if (e.target.dataset.r) r[e.target.dataset.r] = pickValue(e.target);
     else if (e.target.type === 'radio') { r.light = e.target.value; card.dataset.light = r.light; renderTabs(); }
     changed();
   };
