@@ -120,6 +120,7 @@ img, svg { max-width: 100%; max-height: 100%; }
 .answer .lights b { font-size: 27px; }
 .answer .lights p { grid-column: 2; font-size: 24px; line-height: 1.55; }
 .answer .verdict.pending { color: #C27C00; }
+.answer .verdict.ok { color: #1E8E3E; }
 .answer .todo { list-style: none; counter-reset: t; padding: 0; margin: 0; display: grid; gap: 16px; }
 .answer .todo li { counter-increment: t; position: relative; padding-left: 52px; font-size: 25px; line-height: 1.55; color: var(--ink-2); }
 .answer .todo li::before { content: counter(t); position: absolute; left: 0; top: 2px; width: 36px; height: 36px; border-radius: 50%; background: var(--c); color: #fff; font-weight: 800; font-size: 21px; display: grid; place-items: center; }
@@ -566,7 +567,7 @@ img, svg { max-width: 100%; max-height: 100%; }
 <section class="slide bg-dark" data-title="隨堂思考 05">
   <div class="quiz">
     <div>
-      <span class="kicker rv">隨堂思考 05｜30 秒快判</span>
+      <span class="kicker rv">隨堂思考 05</span>
       <h2 class="title rv d1">AI 逾時卻亂報「建單成功」，第一時間該改哪裡？</h2>
       <div class="rv d2" style="display:grid;gap:22px;margin-top:44px">
         <div class="scene" style="margin:0"><span class="hl">選項 A</span>　修改 Prompt，叫 AI「語氣誠實一點，不要亂講」</div>
@@ -574,8 +575,33 @@ img, svg { max-width: 100%; max-height: 100%; }
       </div>
       <p class="ask rv d3">你是顧問，你會把哪一個列為「第一時間馬上先改」？</p>
     </div>
-    <button class="timer rv d2" data-timer aria-label="30 秒計時器，點擊開始"></button>
+    <button class="answer-btn rv d2" data-next aria-label="看解答（下一頁）"><span class="inner"><span class="t">解答</span><span class="s">點擊看解答 →</span></span></button>
   </div>
+</section>
+
+<!-- 29-1 隨堂思考 05 解答 -->
+<section class="slide answer" data-title="隨堂思考 05 解答">
+  <div class="head rv"><span class="kicker">隨堂思考 05｜解答</span><h2 class="title"><span class="verdict ok">✅ 選 B</span>：先改系統防呆，Prompt 只是輔助</h2><p class="sub">逾時誤報成功是紅燈（違反 P10），屬於 P0 立即處理，要用系統規則擋住，不能靠 AI 自律。</p></div>
+  <div class="split">
+    <div class="card why rv d1" style="--c:#1E8E3E"><span class="tag">為什麼選 B</span>
+      <h4>系統規則是「保證」，Prompt 是「拜託」</h4>
+      <p>「沒有工單編號就不顯示成功」由程式判斷，<b>每一次都成立</b>；叫 AI 誠實一點，換個情境仍可能再犯。</p>
+      <h4>根因在「工具與系統防呆」，不在語氣</h4>
+      <p>問題是 AI 能在<b>沒拿到結果時宣稱成功</b>。這屬於六大改善層面的第 3 項，改 Prompt 治標不治本。</p>
+      <h4>A 不是沒用，只是不夠</h4>
+      <p>Prompt 可以同時調整，但只能當<b>第二道防線</b>。</p>
+    </div>
+    <div class="card rv d2" style="--c:var(--teal)"><span class="tag">第一時間要做的事</span>
+      <ol class="todo">
+        <li><b>系統防呆</b>：沒有工單編號，不得顯示或回報成功（P10）。</li>
+        <li><b>逾時處理</b>：先查詢系統狀態，不自動重送，避免重複建單（P09）。</li>
+        <li><b>暫時控制</b>：修好前，建單結果一律由客服到工單系統確認。</li>
+        <li><b>調整 Prompt</b>：逾時時回覆「狀態未確認，已轉人工查詢」。</li>
+      </ol>
+      <p class="then">改完後重跑案例 B，並加測失敗、逾時、重複送出等變形情境。</p>
+    </div>
+  </div>
+  <div class="quote rv d4"><span>能用系統擋的，就不要只靠 AI 自律。<em>Prompt 讓 AI 比較會說話，系統防呆才能保證它不出事。</em></span></div>
 </section>
 
 <!-- 30 3-2 優先序 -->
@@ -603,13 +629,37 @@ img, svg { max-width: 100%; max-height: 100%; }
 <section class="slide bg-dark" data-title="隨堂思考 06">
   <div class="quiz">
     <div>
-      <span class="kicker rv">隨堂思考 06｜30 秒快判</span>
+      <span class="kicker rv">隨堂思考 06</span>
       <h2 class="title rv d1">剛剛出錯的案例 B 終於重測通過了，可以直接上線嗎？</h2>
       <div class="scene rv d2">工程師回報：<span class="hl">「逾時誤報的問題修好了，我重跑一次案例 B 已經完全正常！」</span></div>
       <p class="ask rv d3">上線放行前，顧問還必須堅持多做哪一件事？</p>
     </div>
-    <button class="timer rv d2" data-timer aria-label="30 秒計時器，點擊開始"></button>
+    <button class="answer-btn rv d2" data-next aria-label="看解答（下一頁）"><span class="inner"><span class="t">解答</span><span class="s">點擊看解答 →</span></span></button>
   </div>
+</section>
+
+<!-- 32-1 隨堂思考 06 解答 -->
+<section class="slide answer" data-title="隨堂思考 06 解答">
+  <div class="head rv"><span class="kicker">隨堂思考 06｜解答</span><h2 class="title"><span class="verdict">❌ 還不能</span>：修好 B，還要證明沒改壞 A</h2><p class="sub">重跑一次 B 只證明「這一題」好了。放行前必須完成再驗證，最關鍵的是回歸測試。</p></div>
+  <div class="split">
+    <div class="card why rv d1" style="--c:var(--red)"><span class="tag">為什麼重跑一次不夠</span>
+      <h4>只測一次，可能只是剛好</h4>
+      <p>AI 的輸出不一定每次相同。同一題要<b>多跑幾次</b>，也要換成相似的異常情境。</p>
+      <h4>改了建單流程，可能改壞正常流程</h4>
+      <p>新的防呆規則可能<b>連正常建單也擋下</b>，例如成功了卻沒顯示工單編號。</p>
+      <h4>工程師自測不等於驗收</h4>
+      <p>要用事先訂好的預期結果和紀錄判定，不是「看起來正常」。</p>
+    </div>
+    <div class="card rv d2" style="--c:var(--teal)"><span class="tag">放行前要做的三件事</span>
+      <ol class="todo">
+        <li><b>重測與變形</b>：案例 B 多跑幾次，再加測失敗、逾時後其實已建立、重複送出等情境。</li>
+        <li><b>回歸測試</b>：重跑案例 A 的正常流程（客服確認 → 建單成功 → 回報同一個工單編號），確認仍然通過。</li>
+        <li><b>版本與限制</b>：記下修改版本、測試日期與結果，標明還沒測到的範圍。</li>
+      </ol>
+      <p class="then">三項都通過並<b>留下紀錄</b>，才能放行上線。</p>
+    </div>
+  </div>
+  <div class="quote rv d4"><span>修好 B 不能改壞 A。<em>顧問要的不是「我試過沒問題」，而是「有紀錄證明，新的、舊的都沒問題」。</em></span></div>
 </section>
 
 <!-- 34 第三單元總結 -->
