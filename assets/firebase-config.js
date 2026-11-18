@@ -7,10 +7,10 @@
 // 講師後台也只看得到同一台電腦上的作答（適合預覽與測試）。
 // ============================================================
 export const firebaseConfig = {
-  apiKey: "",
-  authDomain: "",
-  projectId: "",
-  storageBucket: "",
-  messagingSenderId: "",
-  appId: ""
+  apiKey: "AIzaSyBzhCAxhz9FXz3R8uFWSe3Bud9Sz1KEIvw",
+  authDomain: "ai-acceptance-course.firebaseapp.com",
+  projectId: "ai-acceptance-course",
+  storageBucket: "ai-acceptance-course.firebasestorage.app",
+  messagingSenderId: "348548621668",
+  appId: "1:348548621668:web:11563d214eaf8cdc5ec671"
 };
