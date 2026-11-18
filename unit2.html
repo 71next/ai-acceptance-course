@@ -54,6 +54,7 @@
 
     <div>
       <div class="note gray" style="margin-bottom:14px">判定請選「通過」、「不通過」或「待補證」。每題引用至少一個證據編號；若判定待補證，請寫出還需要什麼紀錄才能確認。</div>
+      <div id="fbSummary"></div>
       <div id="questions"></div>
       <div class="note amber">講評後，保留 <strong>B-1 的判定與證據、B-2 的待查資料或判定理由，以及案例 A 的正常紀錄</strong>。第三單元會用這些資料提出改善，並以案例 A 設計正常流程的回歸測試。</div>
     </div>
@@ -107,7 +108,7 @@ const EVIDENCE = {
 };
 const ALL_EV = [...EVIDENCE.A.rows, ...EVIDENCE.B.rows].map((r) => r[0]);
 
-let id, saver, state, ev = 'A', focusQ = null;
+let id, saver, state, ev = 'A', focusQ = null, KEY = null;
 
 function renderEvidence() {
   document.querySelectorAll('#evTabs [data-ev]').forEach((b) => b.classList.toggle('on', b.dataset.ev === ev));
@@ -126,6 +127,34 @@ function renderEvidence() {
 }
 document.getElementById('evTabs').onclick = (e) => { const b = e.target.closest('[data-ev]'); if (b) { ev = b.dataset.ev; renderEvidence(); } };
 
+/* ---------- 講師開放參考答案後：逐題對答案 ---------- */
+function fbHtml(k) {
+  const ref = KEY?.[k]; if (!ref) return '';
+  const a = state.q[k];
+  if (!a.verdict) return `<div class="fb warn">這題還沒作答。參考判定：<b>${VERDICTS[ref.verdict]}</b>，關鍵證據 ${ref.evidence.join('、')}。</div>`;
+  const ok = a.verdict === ref.verdict;
+  const miss = ref.evidence.filter((e) => !a.evidence.includes(e));
+  const extra = a.evidence.filter((e) => !ref.evidence.includes(e));
+  let h = ok ? `✅ 判定正確：<b>${VERDICTS[ref.verdict]}</b>。` : `❌ 你判「${VERDICTS[a.verdict]}」，參考判定是 <b>${VERDICTS[ref.verdict]}</b>。`;
+  if (miss.length) h += `<br>漏掉關鍵證據 <b>${miss.join('、')}</b>。`;
+  if (extra.length) h += `<br>另外勾了 ${extra.join('、')}，不是這題的關鍵證據，想想它們是否真的支持你的判定。`;
+  if (ok && !miss.length && !extra.length) h += '證據也完全對上。';
+  if (ref.note) h += `<br><span class="muted">${esc(ref.note)}</span>`;
+  return `<div class="fb ${ok ? (miss.length ? 'warn' : 'ok') : 'bad'}">${h}</div>`;
+}
+function renderSummary() {
+  const el = document.getElementById('fbSummary');
+  if (!KEY) { el.innerHTML = ''; return; }
+  const right = U2_QUESTIONS.filter((q) => KEY[q.k] && state.q[q.k].verdict === KEY[q.k].verdict).length;
+  el.innerHTML = `<div class="note fb-summary"><strong>講師已開放參考答案：</strong>判定答對 ${right}／${U2_QUESTIONS.length} 題。每題下方有對照說明，完整理由在頁面最下方。</div>`;
+}
+function refreshFb(k) {
+  const q = document.querySelector(`[data-q="${k}"]`); if (!q) return;
+  q.querySelector('.fb')?.remove();
+  q.insertAdjacentHTML('beforeend', fbHtml(k));
+  renderSummary();
+}
+
 function renderQuestions() {
   const box = document.getElementById('questions');
   box.innerHTML = U2_QUESTIONS.map((q) => {
@@ -141,8 +170,10 @@ function renderQuestions() {
       <label class="field"><span>${a.verdict === 'pending' ? '還需要補查哪些紀錄才能確認？' : '理由或待補資料'}</span>
         <textarea data-reason rows="3" placeholder="${a.verdict === 'pending' ? '例如：需要哪一份紀錄、要確認什麼' : '說明判定依據'}">${esc(a.reason)}</textarea></label>
       ${a.verdict === 'pending' ? '<div class="note amber tiny pending-hint">判定「待補證」時，請具體寫出要調閱的紀錄（例如哪個系統、哪段時間、要確認什麼）。</div>' : ''}
+      ${fbHtml(q.k)}
     </div>`;
   }).join('');
+  renderSummary();
 }
 
 function bindQuestions() {
@@ -164,6 +195,7 @@ function bindQuestions() {
       a.evidence = [...qEl.querySelectorAll('.checks input:checked')].map((x) => x.value);
       renderEvidence();
     }
+    if (KEY) refreshFb(qEl.dataset.q);
     saver.touch();
   });
   box.addEventListener('input', (e) => {
@@ -182,7 +214,7 @@ async function boot() {
   if (saved?.status === 'submitted') { saver.setStatus('submitted'); document.getElementById('submittedBadge').hidden = false; }
   document.getElementById('saveStatus').textContent = saved ? '已載入先前的作答' : '作答會自動儲存';
   renderEvidence(); renderQuestions(); bindQuestions();
-  watchReveal(id, UNIT, document.getElementById('refPanel'));
+  watchReveal(id, UNIT, document.getElementById('refPanel'), (k) => { KEY = k; renderQuestions(); if (focusQ) document.querySelector(`[data-q="${focusQ}"]`)?.classList.add('focus'); });
   u1Shared(id).then((s) => { document.getElementById('u1Step').innerHTML = u1SharedHtml(s); });
 }
 

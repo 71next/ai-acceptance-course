@@ -209,3 +209,12 @@ blockquote.quote { margin: 0 0 14px; padding: 14px 18px; border-left: 4px solid 
 
 .req { color: var(--red); margin-left: 2px; }
 .warn-list { margin: 0; padding-left: 1.2em; }
+
+/* 講師開放參考答案後的自動對答案 */
+.fb { margin-top: 8px; border-radius: 10px; padding: 8px 12px; font-size: 14px; line-height: 1.55; }
+.fb b { font-weight: 700; }
+.fb.ok { background: var(--green-soft); color: #14532D; }
+.fb.bad { background: var(--red-soft); color: #7F1D1D; }
+.fb.warn { background: var(--amber-soft); color: #5A3D00; }
+.pick.is-wrong select { border-color: var(--red); box-shadow: 0 0 0 3px var(--red-soft); }
+.fb-summary { margin-bottom: 16px; }

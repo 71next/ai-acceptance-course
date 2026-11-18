@@ -118,6 +118,7 @@
     </div>
   </details>
 
+  <div id="fbSummary"></div>
   <div class="tabs" id="tabs" role="tablist"></div>
   <div id="panel"></div>
 
@@ -142,7 +143,7 @@ document.getElementById('rulesBody').innerHTML = RULES.map(([k, v]) => `<tr><td 
 document.getElementById('lightsBody').innerHTML = Object.entries(LIGHTS).map(([k, [n, d]]) => `<tr><td class="code"><span class="dot ${k}"></span> ${n}</td><td>${d}</td></tr>`).join('');
 
 const UNIT = 'u1';
-let id, saver, state, tab = 'A';
+let id, saver, state, tab = 'A', KEY = null;
 
 function blankCase(key) {
   const steps = Array.from({ length: CASES[key].rows }, () => ({ id: uid8(), action: '', role: '', input: '', output: '', pending: '', next: [] }));
@@ -162,7 +163,7 @@ async function boot() {
   if (saved?.status === 'submitted') { saver.setStatus('submitted'); document.getElementById('submittedBadge').hidden = false; }
   else document.getElementById('submittedBadge').hidden = true;
   document.getElementById('saveStatus').textContent = saved ? '已載入先前的作答' : '作答會自動儲存';
-  watchReveal(id, UNIT, document.getElementById('refPanel'));
+  watchReveal(id, UNIT, document.getElementById('refPanel'), (k) => { KEY = k; renderSummary(); renderPanel(); });
   renderTabs(); renderPanel();
 }
 
@@ -238,11 +239,51 @@ const mixed = (arr) => [...arr].sort((a, b) => hash(a) - hash(b));
 function pick(attr, f, val, opts, ph = '請選擇') {
   val = val || '';
   const other = val !== '' && !opts.includes(val);
-  return `<div class="pick"><select ${attr}="${f}" data-pick>
+  const w = wrongOf(val);
+  return `<div class="pick${w ? ' is-wrong' : ''}"><select ${attr}="${f}" data-pick>
       <option value="">${ph}</option>
       ${opts.map((o) => `<option value="${esc(o)}" ${o === val ? 'selected' : ''}>${esc(o)}</option>`).join('')}
       <option value="${OTHER}" ${other ? 'selected' : ''}>✎ 其他（自行輸入）</option>
-    </select><input class="pick-other" ${attr}="${f}" data-other value="${other ? esc(val) : ''}" placeholder="自行輸入" ${other ? '' : 'hidden'}></div>`;
+    </select><input class="pick-other" ${attr}="${f}" data-other value="${other ? esc(val) : ''}" placeholder="自行輸入" ${other ? '' : 'hidden'}><div class="pick-fb">${w ? wrongHtml(w) : ''}</div></div>`;
+}
+
+/* ---------- 講師開放參考答案後：標出錯誤做法與分級差異 ---------- */
+const LIGHT_N = { red: '紅燈', yellow: '黃燈', green: '綠燈' };
+const wrongOf = (v) => (KEY && v && KEY.wrong?.[v]) || '';
+const wrongHtml = (w) => `<div class="fb bad">❌ 這是錯誤做法：${esc(w)}</div>`;
+function markPick(el, v) {
+  const box = el.closest('.pick'); if (!box) return;
+  const w = wrongOf(v);
+  box.classList.toggle('is-wrong', !!w);
+  box.querySelector('.pick-fb').innerHTML = w ? wrongHtml(w) : '';
+  renderSummary();
+}
+function riskFb(r) {
+  const ref = KEY?.lights?.[r.issue];
+  if (!ref || !r.light) return '';
+  return r.light === ref ? `<div class="fb ok">✅ 分級和參考答案一致：${LIGHT_N[ref]}。</div>`
+    : `<div class="fb warn">參考分級是 <b>${LIGHT_N[ref]}</b>，你選了${LIGHT_N[r.light]}。對照上方「風險分級」的評估依據想想差在哪。</div>`;
+}
+function sharedFb() {
+  if (!KEY?.shared) return '';
+  const i = state.cases.C.steps.findIndex((s) => s.id === state.handoff.shared.step);
+  if (i < 0) return `<div class="fb warn">還沒選步驟。參考答案是案例三的「${esc(KEY.shared)}」。</div>`;
+  return state.cases.C.steps[i].action === KEY.shared ? `<div class="fb ok">✅ 正確：${stepNo('C', i)}「${esc(KEY.shared)}」。</div>`
+    : `<div class="fb bad">❌ 參考答案是案例三的「${esc(KEY.shared)}」步驟。如果你的流程沒有這一步，回到案例三補上。</div>`;
+}
+function renderSummary() {
+  const el = document.getElementById('fbSummary');
+  if (!KEY) { el.innerHTML = ''; return; }
+  const lines = Object.entries(CASES).map(([k, C]) => {
+    const c = state.cases[k];
+    const fields = ['action', 'input', 'output', 'pending'];
+    const wrong = c.steps.reduce((n, s) => n + fields.filter((f) => wrongOf(s[f])).length + (s.next || []).filter((x) => wrongOf(x.cond)).length, 0)
+      + c.risks.reduce((n, r) => n + ['issue', 'impact', 'reason', 'control'].filter((f) => wrongOf(r[f])).length, 0);
+    const diff = c.risks.filter((r) => KEY.lights?.[r.issue] && r.light && r.light !== KEY.lights[r.issue]).length;
+    const parts = [wrong ? `選到 <b>${wrong}</b> 個錯誤做法` : '沒有選到錯誤做法', diff ? `<b>${diff}</b> 筆風險分級和參考不同` : ''].filter(Boolean);
+    return `<li>${C.no}：${parts.join('，')}</li>`;
+  }).join('');
+  el.innerHTML = `<div class="note fb-summary"><strong>講師已開放參考答案。</strong>錯誤做法會在欄位下方標紅，風險分級會對照參考答案。流程沒有唯一正解，完整參考流程在頁面最下方。<ul style="margin:8px 0 0;padding-left:1.2em">${lines}</ul></div>`;
 }
 /** 回傳欄位實際要存的文字；選「其他」時顯示並聚焦輸入框 */
 function pickValue(el) {
@@ -290,8 +331,8 @@ function renderSteps() {
   box.oninput = (e) => {
     const card = e.target.closest('[data-sid]'); if (!card) return;
     const s = c.steps.find((x) => x.id === card.dataset.sid);
-    if (e.target.dataset.f) { s[e.target.dataset.f] = pickValue(e.target); if (e.target.dataset.f === 'action') refreshSelects(); changed(true); }
-    else if (e.target.hasAttribute('data-ccond')) { s.next[+e.target.closest('[data-ci]').dataset.ci].cond = pickValue(e.target); changed(true); }
+    if (e.target.dataset.f) { const v = s[e.target.dataset.f] = pickValue(e.target); markPick(e.target, v); if (e.target.dataset.f === 'action') refreshSelects(); changed(true); }
+    else if (e.target.hasAttribute('data-ccond')) { const v = s.next[+e.target.closest('[data-ci]').dataset.ci].cond = pickValue(e.target); markPick(e.target, v); changed(true); }
   };
   box.onchange = (e) => {
     if (!e.target.hasAttribute('data-cto')) return;
@@ -351,13 +392,15 @@ function renderRisks() {
         <div class="field"><span class="label">分級理由</span>${pick('data-r', 'reason', r.reason, REASONS)}</div>
         <div class="field full"><span class="label">現有把關或待確認事項</span>${pick('data-r', 'control', r.control, opt(key, 'control'))}</div>
       </div>
+      <div class="risk-fb">${riskFb(r)}</div>
       <div class="row-end"><button class="btn small ghost danger" data-rdel>刪除這筆風險</button></div>
     </div>`).join('') || '<p class="muted">尚未新增風險。</p>';
   box.oninput = (e) => {
     const card = e.target.closest('[data-rid]'); if (!card) return;
     const r = c.risks.find((x) => x.id === card.dataset.rid);
-    if (e.target.dataset.r) r[e.target.dataset.r] = pickValue(e.target);
+    if (e.target.dataset.r) { const v = r[e.target.dataset.r] = pickValue(e.target); markPick(e.target, v); }
     else if (e.target.type === 'radio') { r.light = e.target.value; card.dataset.light = r.light; renderTabs(); }
+    card.querySelector('.risk-fb').innerHTML = riskFb(r); if (KEY) renderSummary();
     changed();
   };
   box.onchange = (e) => {
@@ -400,14 +443,14 @@ function renderHandoff(p) {
         <p class="tiny muted">這一步會帶到練習二與練習三的題目上方。</p>
         <div class="fgrid">
           <label class="field"><span>案例三的步驟編號</span><select data-sstep>${stepOpts('C', h.shared.step)}</select></label>
-          <div></div>
+          <div id="sharedFb">${sharedFb()}</div>
           <label class="field full"><span>逾時後可能發生的風險與理由</span><textarea data-sreason rows="3">${esc(h.shared.reason)}</textarea></label>
         </div>
       </div>
     </div>`;
   p.querySelector('[data-pcase]').onchange = (e) => { h.priority.case = e.target.value; h.priority.step = ''; renderHandoff(p); changed(); };
   p.querySelector('[data-pstep]').onchange = (e) => { h.priority.step = e.target.value; changed(); };
-  p.querySelector('[data-sstep]').onchange = (e) => { h.shared.step = e.target.value; changed(); };
+  p.querySelector('[data-sstep]').onchange = (e) => { h.shared.step = e.target.value; p.querySelector('#sharedFb').innerHTML = sharedFb(); changed(); };
   p.querySelector('[data-preason]').oninput = (e) => { h.priority.reason = e.target.value; changed(); };
   p.querySelector('[data-sreason]').oninput = (e) => { h.shared.reason = e.target.value; changed(); };
 }

@@ -68,6 +68,7 @@
             <label class="l-yellow"><input type="radio" name="prio" value="P1"><span>試行前處理（P1）</span></label>
             <label class="l-green"><input type="radio" name="prio" value="P2"><span>持續優化（P2）</span></label>
           </div>
+          <div id="prioFb"></div>
         </div>
         <label class="field"><span>優先序理由（一句話）</span><input data-f="q2.reason"></label>
         <label class="field"><span>負責角色</span><input data-f="q2.owner"></label>
@@ -145,9 +146,21 @@ async function boot() {
   document.querySelector('main').addEventListener('input', (e) => {
     if (e.target.dataset.f) { setPath(state, e.target.dataset.f, e.target.value); saver.touch(); }
   });
-  document.getElementById('prio').addEventListener('change', (e) => { state.q2.priority = e.target.value; saver.touch(); });
+  let KEY = null;
+  const PRIO = { P0: '立即處理（P0）', P1: '試行前處理（P1）', P2: '持續優化（P2）' };
+  const prioFb = () => {
+    const el = document.getElementById('prioFb');
+    const ref = KEY?.priority;
+    if (!ref) { el.innerHTML = ''; return; }
+    const mine = state.q2.priority;
+    const why = KEY.priorityWhy ? `<br><span class="muted">${esc(KEY.priorityWhy)}</span>` : '';
+    el.innerHTML = !mine ? `<div class="fb warn">還沒選優先序。參考答案：<b>${PRIO[ref]}</b>。${why}</div>`
+      : mine === ref ? `<div class="fb ok">✅ 優先序正確：<b>${PRIO[ref]}</b>。${why}</div>`
+      : `<div class="fb bad">❌ 你選「${PRIO[mine] || esc(mine)}」，參考答案是 <b>${PRIO[ref]}</b>。${why}</div>`;
+  };
+  document.getElementById('prio').addEventListener('change', (e) => { state.q2.priority = e.target.value; prioFb(); saver.touch(); });
 
-  watchReveal(id, UNIT, document.getElementById('refPanel'));
+  watchReveal(id, UNIT, document.getElementById('refPanel'), (k) => { KEY = k; prioFb(); });
   u1Shared(id).then((s) => { document.getElementById('u1Box').innerHTML = u1SharedHtml(s); });
   u2Answers(id).then((q) => {
     const box = document.getElementById('u2Box');

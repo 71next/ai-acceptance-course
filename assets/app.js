@@ -220,12 +220,23 @@ export function autosaver(id, unit, getData, statusEl) {
 }
 
 // ---------- 參考答案（講師開放後才看得到） ----------
-export function watchReveal(id, unit, el) {
+/** 從參考答案 Markdown 取出自動對答案用的答案鍵：<!-- key {...} --> */
+export function parseKey(md) {
+  const m = /<!--\s*key\s*([\s\S]*?)-->/.exec(md || '');
+  if (!m) return null;
+  try { return JSON.parse(m[1]); } catch (e) { console.warn('答案鍵格式錯誤', e); return null; }
+}
+
+/**
+ * 講師開放參考答案時顯示在 el；onKey(key) 在開放時收到答案鍵、關閉時收到 null，
+ * 讓頁面標出學員各題的對錯。
+ */
+export function watchReveal(id, unit, el, onKey = () => {}) {
   let shown = false; let ver = 0;
   return watchSession(id.session, async (s) => {
     const open = !!(s && s.reveal && s.reveal[unit]);
     const my = ++ver;
-    if (!open) { el.hidden = true; el.innerHTML = ''; shown = false; return; }
+    if (!open) { const was = shown; el.hidden = true; el.innerHTML = ''; shown = false; if (was) onKey(null); return; }
     if (shown) return;
     let md = '';
     try {
@@ -239,8 +250,9 @@ export function watchReveal(id, unit, el) {
     if (!md || my !== ver) return;
     const { marked } = await import('https://cdn.jsdelivr.net/npm/marked@12.0.2/lib/marked.esm.js');
     if (my !== ver) return; // 讀取期間講師已關閉
-    el.innerHTML = `<div class="ref-head"><span class="pill blue">講師已開放</span><h2>講評參考答案</h2><p class="muted">參考答案不是唯一正解，重點在判斷依據與證據是否充分。</p></div><div class="md">${marked.parse(md)}</div>`;
+    el.innerHTML = `<div class="ref-head"><span class="pill blue">講師已開放</span><h2>講評參考答案</h2><p class="muted">參考答案不是唯一正解，重點在判斷依據與證據是否充分。</p></div><div class="md">${marked.parse(md.replace(/<!--\s*key[\s\S]*?-->/, ''))}</div>`;
     el.hidden = false; shown = true;
+    onKey(parseKey(md));
   });
 }
 
