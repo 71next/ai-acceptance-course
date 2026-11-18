@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>練習二｜H100 保固詢問與維修工單建立</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  .u2-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 20px; align-items: start; }
+  @media (max-width: 980px) { .u2-layout { grid-template-columns: 1fr; } }
+  .evid { position: sticky; top: 76px; max-height: calc(100vh - 160px); overflow: auto; }
+  @media (max-width: 980px) { .evid { position: static; max-height: none; } }
+  .evid td:first-child { font-weight: 800; white-space: nowrap; }
+  .evid tr.hl td { background: #FFF8E1; }
+  .evid .src { font-size: 13px; color: var(--muted); white-space: nowrap; }
+  .q { border: 1px solid var(--line); border-radius: 16px; padding: 18px; margin-bottom: 14px; background: #fff; transition: box-shadow .2s, border-color .2s; }
+  .q.focus { border-color: #9CC5F5; box-shadow: 0 0 0 4px rgba(0,113,227,.08); }
+  .q-title { display: flex; gap: 10px; align-items: baseline; margin-bottom: 12px; }
+  .q-no { font-weight: 900; font-size: 18px; white-space: nowrap; }
+  .q-title .rules { margin-left: auto; display: flex; gap: 4px; }
+  .q .field { margin: 12px 0 0; }
+  .pending-hint { margin-top: 10px; }
+  .rule-list { margin: 0; padding: 0; list-style: none; }
+  .rule-list li { display: grid; grid-template-columns: 46px 1fr; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 15px; }
+  .rule-list li:last-child { border: 0; }
+  .rule-list b { color: var(--blue); }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="page-head">
+    <span class="eyebrow" style="color:var(--indigo)">練習二｜第二單元測驗</span>
+    <h1>H100 保固詢問與維修工單建立</h1>
+    <p class="lead"><strong>作答時間約 5 分鐘，講評約 5 分鐘。</strong>全班使用同一份模擬紀錄。請依公司規範與實際紀錄逐項判定，並引用證據編號。</p>
+  </div>
+
+  <div class="card">
+    <p style="margin-bottom:10px">作答前，對照第一單元案例三，找出「回報建單結果」的步驟。案例 A、B 分別展示同一步驟在系統成功回傳和逾時時的表現。</p>
+    <div id="u1Step"><p class="muted tiny">讀取練習一作答中…</p></div>
+  </div>
+
+  <div class="u2-layout">
+    <div class="card evid" id="evid">
+      <div class="tabs" id="evTabs">
+        <button data-ev="A" class="on">案例 A｜正常</button>
+        <button data-ev="B">案例 B｜風險</button>
+        <button data-ev="R">公司規範</button>
+      </div>
+      <div id="evBody"></div>
+    </div>
+
+    <div>
+      <div class="note gray" style="margin-bottom:14px">判定請選「通過」、「不通過」或「待補證」。每題引用至少一個證據編號；若判定待補證，請寫出還需要什麼紀錄才能確認。</div>
+      <div id="questions"></div>
+      <div class="note amber">講評後，保留 <strong>B-1 的判定與證據、B-2 的待查資料或判定理由，以及案例 A 的正常紀錄</strong>。第三單元會用這些資料提出改善，並以案例 A 設計正常流程的回歸測試。</div>
+    </div>
+  </div>
+
+  <section id="refPanel" class="ref-panel" hidden></section>
+</main>
+
+<div class="save-bar">
+  <span class="save-status" id="saveStatus">尚未開始</span>
+  <span class="submitted-badge" id="submittedBadge" hidden>✓ 已送出（仍可修改後再次送出）</span>
+  <span class="spacer"></span>
+  <button class="btn primary" id="submitBtn">送出作答</button>
+</div>
+
+<script type="module">
+import { renderHeader, ensureIdentity, showIdentity, loadResponse, autosaver, watchReveal, esc, toast } from './assets/app.js';
+import { U2_QUESTIONS, VERDICTS, u1Shared, u1SharedHtml } from './assets/carry.js';
+
+renderHeader('u2');
+const UNIT = 'u2';
+
+const RULES = [
+  ['P01', 'H100 主機自購買日起保固一年。保固期內能否免費維修，仍須判斷故障原因。'],
+  ['P04', '故障原因尚未確認時，不得承諾免費維修，可建議安排檢測。'],
+  ['P06', '建立工單前，須取得客服對本次工單內容的明確確認。'],
+  ['P09', '同一維修事件已有工單時，不得重複建立。應提供既有工單或轉人工確認。'],
+  ['P10', '確認系統成功建立工單後，才可回報建立成功。']
+];
+const EVIDENCE = {
+  A: {
+    intro: '以下為同一天的紀錄。客戶詢問 H100 開不了機是否能免費維修，並請客服協助建單。',
+    rows: [
+      ['A1', '10:00', '保固查詢', '已核對購買日期，H100 主機購買滿三個月。客服登錄的故障原因為「待檢測」。'],
+      ['A2', '10:01', 'AI 回覆', '「主機仍在保固期內。建議先安排檢測，再依故障原因確認是否免費維修。」'],
+      ['A3', '10:02', 'AI 提示／客服確認', 'AI 顯示「設備 H100／序號 HX-001／無法開機」。客服回覆「確認依這筆內容建立維修工單」。'],
+      ['A4', '10:03', '工單系統', '收到序號 HX-001、問題為「無法開機」的建單請求。回傳「建立成功，工單 MW-1001」。'],
+      ['A5', '10:04', 'AI 回覆', '「已建立維修工單，編號 MW-1001。」']
+    ]
+  },
+  B: {
+    intro: '另一位客戶的 H100 出現相同故障。客服已核對購買日期，主機購買滿三個月，故障原因待檢測。',
+    rows: [
+      ['B1', '11:00', 'AI 回覆', '「仍在保固期內，需檢測確認故障原因，才能判斷是否免費維修。」'],
+      ['B2', '11:01', 'AI 提示／客服確認', 'AI 顯示「設備 H100／序號 HX-002／無法開機」。客服確認依本次內容建單。'],
+      ['B3', '11:02', '建單請求紀錄', '送出建單請求，等待回應逾時，未取得工單編號。該次請求的完整回傳紀錄到此結束。'],
+      ['B4', '11:03', '對話紀錄', '客服說「剛剛沒看到工單，再幫我建一次。」AI 回覆「上一筆已成功建立，我再幫你送一次。」']
+    ],
+    outro: '本題提供截至 B4 的對話，以及第一次建單請求的回傳紀錄。題目未提供後續工具呼叫紀錄與工單系統的實際資料。'
+  }
+};
+const ALL_EV = [...EVIDENCE.A.rows, ...EVIDENCE.B.rows].map((r) => r[0]);
+
+let id, saver, state, ev = 'A', focusQ = null;
+
+function renderEvidence() {
+  document.querySelectorAll('#evTabs [data-ev]').forEach((b) => b.classList.toggle('on', b.dataset.ev === ev));
+  const body = document.getElementById('evBody');
+  if (ev === 'R') {
+    const hl = focusQ ? U2_QUESTIONS.find((q) => q.k === focusQ).rules : [];
+    body.innerHTML = `<ul class="rule-list">${RULES.map(([k, v]) => `<li style="${hl.includes(k) ? 'background:#FFF8E1' : ''}"><b>${k}</b><span>${v}</span></li>`).join('')}</ul>`;
+    return;
+  }
+  const E = EVIDENCE[ev];
+  const picked = focusQ ? (state.q[focusQ]?.evidence || []) : [];
+  body.innerHTML = `<p class="tiny muted">${E.intro}</p>
+    <div class="table-wrap"><table><thead><tr><th>證據</th><th>時間／來源</th><th>紀錄</th></tr></thead><tbody>
+    ${E.rows.map(([k, t, s, r]) => `<tr class="${picked.includes(k) ? 'hl' : ''}"><td>${k}</td><td>${t}<div class="src">${s}</div></td><td>${r}</td></tr>`).join('')}
+    </tbody></table></div>${E.outro ? `<p class="tiny muted" style="margin-top:10px">${E.outro}</p>` : ''}`;
+}
+document.getElementById('evTabs').onclick = (e) => { const b = e.target.closest('[data-ev]'); if (b) { ev = b.dataset.ev; renderEvidence(); } };
+
+function renderQuestions() {
+  const box = document.getElementById('questions');
+  box.innerHTML = U2_QUESTIONS.map((q) => {
+    const a = state.q[q.k];
+    return `<div class="q" data-q="${q.k}" tabindex="-1">
+      <div class="q-title"><span class="q-no">${q.no}</span><span>${q.q}</span><span class="rules">${q.rules.map((r) => `<span class="pill indigo">${r}</span>`).join('')}</span></div>
+      <div class="seg" role="radiogroup" aria-label="${q.no} 判定">
+        ${Object.entries(VERDICTS).map(([k, n]) => `<label class="v-${k}"><input type="radio" name="v_${q.k}" value="${k}" ${a.verdict === k ? 'checked' : ''}><span>${n}</span></label>`).join('')}
+      </div>
+      <div class="field"><span class="label">證據編號（可複選）</span>
+        <div class="checks">${ALL_EV.map((e) => `<label><input type="checkbox" value="${e}" ${a.evidence.includes(e) ? 'checked' : ''}><span>${e}</span></label>`).join('')}</div>
+      </div>
+      <label class="field"><span>${a.verdict === 'pending' ? '還需要補查哪些紀錄才能確認？' : '理由或待補資料'}</span>
+        <textarea data-reason rows="3" placeholder="${a.verdict === 'pending' ? '例如：需要哪一份紀錄、要確認什麼' : '說明判定依據'}">${esc(a.reason)}</textarea></label>
+      ${a.verdict === 'pending' ? '<div class="note amber tiny pending-hint">判定「待補證」時，請具體寫出要調閱的紀錄（例如哪個系統、哪段時間、要確認什麼）。</div>' : ''}
+    </div>`;
+  }).join('');
+}
+
+function bindQuestions() {
+  const box = document.getElementById('questions');
+  box.addEventListener('focusin', (e) => {
+    const q = e.target.closest('[data-q]'); if (!q || focusQ === q.dataset.q) return;
+    focusQ = q.dataset.q;
+    document.querySelectorAll('.q').forEach((x) => x.classList.toggle('focus', x.dataset.q === focusQ));
+    ev = U2_QUESTIONS.find((x) => x.k === focusQ).case; renderEvidence();
+  });
+  box.addEventListener('change', (e) => {
+    const qEl = e.target.closest('[data-q]'); if (!qEl) return;
+    const a = state.q[qEl.dataset.q];
+    if (e.target.type === 'radio') {
+      const wasPending = a.verdict === 'pending';
+      a.verdict = e.target.value;
+      if (wasPending !== (a.verdict === 'pending')) { renderQuestions(); document.querySelector(`[data-q="${qEl.dataset.q}"]`).classList.add('focus'); }
+    } else if (e.target.type === 'checkbox') {
+      a.evidence = [...qEl.querySelectorAll('.checks input:checked')].map((x) => x.value);
+      renderEvidence();
+    }
+    saver.touch();
+  });
+  box.addEventListener('input', (e) => {
+    if (!e.target.hasAttribute('data-reason')) return;
+    state.q[e.target.closest('[data-q]').dataset.q].reason = e.target.value; saver.touch();
+  });
+}
+
+async function boot() {
+  id = await ensureIdentity();
+  showIdentity(id, () => ensureIdentity({ force: true }).then(() => location.reload()));
+  const saved = await loadResponse(id, UNIT);
+  state = { q: {} };
+  U2_QUESTIONS.forEach((q) => { state.q[q.k] = { verdict: '', evidence: [], reason: '', ...(saved?.data?.q?.[q.k] || {}) }; });
+  saver = autosaver(id, UNIT, () => state, document.getElementById('saveStatus'));
+  if (saved?.status === 'submitted') { saver.setStatus('submitted'); document.getElementById('submittedBadge').hidden = false; }
+  document.getElementById('saveStatus').textContent = saved ? '已載入先前的作答' : '作答會自動儲存';
+  renderEvidence(); renderQuestions(); bindQuestions();
+  watchReveal(id, UNIT, document.getElementById('refPanel'));
+  u1Shared(id).then((s) => { document.getElementById('u1Step').innerHTML = u1SharedHtml(s); });
+}
+
+function missing() {
+  return U2_QUESTIONS.filter((q) => { const a = state.q[q.k]; return !a.verdict || !a.evidence.length || !a.reason.trim(); }).map((q) => `${q.no}：判定、證據編號或理由未完成`);
+}
+async function doSubmit() {
+  try { await saver.flush('submitted'); document.getElementById('submittedBadge').hidden = false; toast('已送出，講師已收到你的作答'); }
+  catch { toast('送出失敗，請檢查網路後再試一次', 'err'); }
+}
+document.getElementById('submitBtn').onclick = () => {
+  const m = missing();
+  if (!m.length) return doSubmit();
+  const w = document.createElement('div');
+  w.className = 'modal-backdrop';
+  w.innerHTML = `<div class="modal"><h2>還有題目沒完成</h2><ul class="warn-list">${m.map((x) => `<li>${esc(x)}</li>`).join('')}</ul><div class="row-end" style="margin-top:16px"><button class="btn ghost" data-x>回去修改</button><button class="btn primary" data-go>仍要送出</button></div></div>`;
+  document.body.appendChild(w);
+  w.querySelector('[data-x]').onclick = () => w.remove();
+  w.querySelector('[data-go]').onclick = () => { w.remove(); doSubmit(); };
+};
+
+boot();
+</script>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI 應用驗收評估與改善策略｜課程網站</title>
+<meta name="description" content="AI 顧問實戰工作坊：網頁簡報、三單元線上練習與講義下載。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  .hero {
+    position: relative; overflow: hidden; border-radius: 28px; padding: clamp(32px, 6vw, 72px);
+    background:
+      radial-gradient(60% 80% at 88% 10%, rgba(0,113,227,.16), transparent 60%),
+      radial-gradient(50% 70% at 8% 95%, rgba(13,148,136,.13), transparent 60%),
+      radial-gradient(40% 60% at 60% 60%, rgba(88,86,214,.07), transparent 70%),
+      #F8F9FB;
+    margin-bottom: 36px;
+  }
+  .hero h1 { font-size: clamp(32px, 6vw, 60px); font-weight: 900; letter-spacing: -0.02em; margin-bottom: 14px; }
+  .hero .lead { font-size: clamp(16px, 2vw, 20px); }
+  .hero .meta { color: var(--muted); font-size: 15px; margin-top: 18px; }
+  .hero .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 26px; }
+  .hero .btn { font-size: 16px; padding: 12px 22px; }
+
+  .unit-card { display: flex; flex-direction: column; gap: 10px; padding: 26px; border-radius: 22px; background: #fff; box-shadow: var(--shadow); color: var(--ink); transition: transform .2s, box-shadow .2s; border-top: 5px solid var(--c); }
+  .unit-card:hover { text-decoration: none; transform: translateY(-3px); box-shadow: 0 2px 4px rgba(0,0,0,.04), 0 18px 40px rgba(0,0,0,.08); }
+  .unit-card .num { font-size: 13px; font-weight: 800; letter-spacing: .08em; color: var(--c); }
+  .unit-card h3 { font-size: 22px; margin: 0; }
+  .unit-card p { color: var(--ink-2); margin: 0; font-size: 15px; }
+  .unit-card .foot { margin-top: auto; padding-top: 12px; display: flex; justify-content: space-between; align-items: center; font-size: 14px; color: var(--muted); }
+  .unit-card .go { color: var(--c); font-weight: 700; }
+  .unit-card .status { font-size: 13px; }
+
+  .dl { display: flex; gap: 16px; align-items: center; padding: 18px 20px; background: #fff; border-radius: 16px; box-shadow: var(--shadow); color: var(--ink); }
+  .dl:hover { text-decoration: none; background: #FCFCFE; }
+  .dl .ico { flex: none; width: 46px; height: 54px; border-radius: 8px; background: #2B579A; color: #fff; display: grid; place-items: center; font-weight: 800; font-size: 13px; position: relative; }
+  .dl .ico::after { content: ''; position: absolute; right: 0; top: 0; border-width: 0 12px 12px 0; border-style: solid; border-color: #F5F5F7 #F5F5F7 #1B3F75 #1B3F75; border-radius: 0 0 0 3px; }
+  .dl .t { font-weight: 700; }
+  .dl .d { font-size: 14px; color: var(--muted); }
+  .dl .arrow { margin-left: auto; color: var(--blue); font-weight: 700; white-space: nowrap; font-size: 14px; }
+  .flow { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 14px; color: var(--ink-2); margin-top: 6px; }
+  .flow b { color: var(--ink); }
+  footer { text-align: center; color: var(--muted); font-size: 13px; padding: 40px 16px; }
+  footer a { color: var(--muted); }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <section class="hero">
+    <span class="eyebrow">AI 顧問實戰工作坊｜2 小時精華課程</span>
+    <h1>AI 應用驗收評估<br>與改善策略</h1>
+    <p class="lead">從任務風險定義、情境證據判讀到結構化回歸改善，建立企業級 AI 上線把關標準。全場貫穿「宏岳設備 H100 客服助手」案例演練。</p>
+    <div class="actions">
+      <a class="btn dark" href="slides.html">▶ 觀看網頁簡報</a>
+      <a class="btn" href="unit1.html">開始練習一</a>
+      <a class="btn ghost" href="#downloads">下載講義與評估表</a>
+    </div>
+    <p class="meta">講師：黃庭豪（bryant）｜秦毅數位科技有限公司</p>
+  </section>
+
+  <div class="section-title"><h2>線上練習</h2><span class="muted">輸入梯次代碼即可作答，自動儲存</span></div>
+  <div class="grid c3">
+    <a class="unit-card" href="unit1.html" style="--c: var(--blue)">
+      <span class="num">練習一｜單元一</span>
+      <h3>拆解流程與紅線</h3>
+      <p>畫出保固查詢、回覆草稿、建立工單三條流程，標出每一步的負責角色與交接，並用紅黃綠燈評估風險。</p>
+      <div class="foot"><span>流程圖・任務拆解・風險評估</span><span class="go">前往 →</span></div>
+    </a>
+    <a class="unit-card" href="unit2.html" style="--c: var(--indigo)">
+      <span class="num">練習二｜單元二</span>
+      <h3>日誌證據判讀</h3>
+      <p>比對正常與逾時兩份紀錄，依公司規範為五個查核點判定「通過／不通過／待補證」，並引用證據編號。</p>
+      <div class="foot"><span>作答 5 分鐘・講評 5 分鐘</span><span class="go">前往 →</span></div>
+    </a>
+    <a class="unit-card" href="unit3.html" style="--c: var(--teal)">
+      <span class="num">練習三｜單元三</span>
+      <h3>改善與再驗證</h3>
+      <p>針對工單誤報提出根因假設、優先改善措施，並設計重測、邊界與回歸三種再驗證的通過條件。</p>
+      <div class="foot"><span>作答 6 分鐘・講評 4 分鐘</span><span class="go">前往 →</span></div>
+    </a>
+  </div>
+  <p class="flow"><b>作答會串接：</b>練習一標出的「回報建單結果」步驟 → 帶入練習二 → 練習二的 B-1／B-2 判定 → 帶入練習三</p>
+
+  <div class="section-title" id="downloads"><h2>下載講義與評估表</h2><span class="muted">Word 格式，可直接編輯</span></div>
+  <div class="grid c2">
+    <a class="dl" href="downloads/AI應用驗收評估與改善策略_學員精華講義.docx" download>
+      <span class="ico">DOC</span>
+      <span><span class="t">學員精華講義</span><br><span class="d">全課程重點整理</span></span>
+      <span class="arrow">下載</span>
+    </a>
+    <a class="dl" href="downloads/01_AI應用任務與風險辨識表.docx" download>
+      <span class="ico">DOC</span>
+      <span><span class="t">01｜AI 應用任務與風險辨識表</span><br><span class="d">對應單元一：任務拆解與紅黃綠燈分級</span></span>
+      <span class="arrow">下載</span>
+    </a>
+    <a class="dl" href="downloads/02_情境測試與證據判讀表.docx" download>
+      <span class="ico">DOC</span>
+      <span><span class="t">02｜情境測試與證據判讀表</span><br><span class="d">對應單元二：六類考題與證據判定</span></span>
+      <span class="arrow">下載</span>
+    </a>
+    <a class="dl" href="downloads/03_改善與再驗證計畫表.docx" download>
+      <span class="ico">DOC</span>
+      <span><span class="t">03｜改善與再驗證計畫表</span><br><span class="d">對應單元三：改善優先序與回歸測試</span></span>
+      <span class="arrow">下載</span>
+    </a>
+  </div>
+</main>
+<footer>
+  黃庭豪（bryant）｜秦毅數位科技有限公司　·　<a href="admin.html">講師後台</a>
+</footer>
+<script type="module">
+  import { renderHeader } from './assets/app.js';
+  renderHeader('home');
+</script>
+</body>
+</html>

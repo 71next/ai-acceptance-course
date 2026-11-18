@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>練習三｜H100 工單誤報的改善與再驗證</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  .u3-layout { display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 20px; align-items: start; }
+  @media (max-width: 980px) { .u3-layout { grid-template-columns: 1fr; } .side { order: -1; } }
+  .side { position: sticky; top: 76px; max-height: calc(100vh - 160px); overflow: auto; }
+  @media (max-width: 980px) { .side { position: static; max-height: none; } }
+  .side h3 { font-size: 15px; margin: 18px 0 8px; display: flex; gap: 8px; align-items: center; }
+  .side h3:first-child { margin-top: 0; }
+  .side .rec { font-size: 14px; padding: 8px 0; border-bottom: 1px solid var(--line); }
+  .side .rec:last-child { border: 0; }
+  .side .rec b { margin-right: 6px; }
+  .qcard h2 { font-size: 21px; }
+  .qcard .qdesc { color: var(--ink-2); }
+  .scen { border: 1px solid var(--line); border-radius: 16px; padding: 16px; margin-bottom: 12px; }
+  .scen h3 { font-size: 16px; margin-bottom: 4px; }
+  .scen .sdesc { font-size: 14px; color: var(--muted); margin-bottom: 10px; }
+  .receipt { text-align: center; padding: 10px 0; }
+  .receipt .big { font-size: 46px; }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="page-head">
+    <span class="eyebrow" style="color:var(--teal)">練習三｜第三單元</span>
+    <h1>H100 工單誤報的改善與再驗證</h1>
+    <p class="lead"><strong>建議時間：</strong>6 分鐘作答，4 分鐘講評。全班使用同一份模擬紀錄，交付一份「改善與再驗證計畫」。請寫出判斷依據、要改的步驟，以及改完後如何確認有效。</p>
+  </div>
+
+  <div class="u3-layout">
+    <div>
+      <div class="card">
+        <h2 style="font-size:20px">已知條件與紀錄</h2>
+        <p>宏岳設備的內部 AI 客服助手可在客服明確確認本次工單內容後協助建單。沿用第二單元的 H100 工單案例。客服已確認本次工單內容（B2）。</p>
+        <div class="table-wrap" style="margin-bottom:12px"><table><tbody>
+          <tr><td class="code" style="color:var(--blue)">P09</td><td>同一維修事件已有工單時，不得重複建立。應提供既有工單或轉人工確認。</td></tr>
+          <tr><td class="code" style="color:var(--blue)">P10</td><td>確認系統成功建立工單後，才可回報建立成功。</td></tr>
+        </tbody></table></div>
+        <p style="margin:0">第二單元判定：<strong>B-1 誤報建單成功，不通過。B-2 是否實際重複建單，待補證。</strong>手上的資料未包含後續工具呼叫、工單系統實際紀錄或應用程式的狀態處理紀錄。</p>
+      </div>
+
+      <div class="card qcard">
+        <span class="pill teal">第 1 題</span>
+        <h2 style="margin-top:8px">整理問題與根因假設</h2>
+        <label class="field"><span>已證實的問題與證據編號</span><textarea data-f="q1.problem" rows="3"></textarea></label>
+        <label class="field"><span>可能造成的影響</span><textarea data-f="q1.impact" rows="3"></textarea></label>
+        <label class="field"><span>一項根因假設</span><textarea data-f="q1.hypothesis" rows="3"></textarea></label>
+        <label class="field"><span>用什麼資料查證這項假設</span><textarea data-f="q1.verify" rows="2"></textarea></label>
+        <label class="field"><span>要確認有無重複建單，需要補哪項紀錄？</span><textarea data-f="q1.missing" rows="2"></textarea></label>
+      </div>
+
+      <div class="card qcard">
+        <span class="pill teal">第 2 題</span>
+        <h2 style="margin-top:8px">提出優先改善措施</h2>
+        <p class="qdesc">請寫一項具體改善措施，指出改在哪個流程步驟。選一個優先序並附一句理由。寫出負責角色，以及修正前客服可以採取的暫時做法。</p>
+        <label class="field"><span>要改的流程步驟與措施</span><textarea data-f="q2.measure" rows="3"></textarea></label>
+        <div class="field"><span class="label">優先序</span>
+          <div class="seg" id="prio">
+            <label class="l-red"><input type="radio" name="prio" value="P0"><span>立即處理（P0）</span></label>
+            <label class="l-yellow"><input type="radio" name="prio" value="P1"><span>試行前處理（P1）</span></label>
+            <label class="l-green"><input type="radio" name="prio" value="P2"><span>持續優化（P2）</span></label>
+          </div>
+        </div>
+        <label class="field"><span>優先序理由（一句話）</span><input data-f="q2.reason"></label>
+        <label class="field"><span>負責角色</span><input data-f="q2.owner"></label>
+        <label class="field"><span>修正前的使用建議</span><textarea data-f="q2.interim" rows="2"></textarea></label>
+      </div>
+
+      <div class="card qcard">
+        <span class="pill teal">第 3 題</span>
+        <h2 style="margin-top:8px">設計改善後的再驗證</h2>
+        <p class="qdesc">請逐列寫出可觀察的通過條件，以及要看哪一份紀錄。若條件涉及 AI 回覆及實際建單，請分別寫出如何查核。</p>
+        <div class="scen"><h3>① 重測原案例</h3><p class="sdesc">建單逾時，工單狀態仍無法確認，客服要求再送。</p>
+          <label class="field"><span>通過條件</span><textarea data-f="q3.retest.pass" rows="2"></textarea></label>
+          <label class="field" style="margin:0"><span>查核證據</span><textarea data-f="q3.retest.evidence" rows="2"></textarea></label></div>
+        <div class="scen"><h3>② 補測邊界</h3><p class="sdesc">建單逾時，但後續查到同一維修事件已有工單。</p>
+          <label class="field"><span>通過條件</span><textarea data-f="q3.edge.pass" rows="2"></textarea></label>
+          <label class="field" style="margin:0"><span>查核證據</span><textarea data-f="q3.edge.evidence" rows="2"></textarea></label></div>
+        <div class="scen"><h3>③ 回歸測試（第二單元案例 A，A3–A5）</h3><p class="sdesc">客服確認內容後，工單系統正常回傳成功及工單編號。</p>
+          <label class="field"><span>通過條件</span><textarea data-f="q3.regress.pass" rows="2"></textarea></label>
+          <label class="field" style="margin:0"><span>查核證據</span><textarea data-f="q3.regress.evidence" rows="2"></textarea></label></div>
+      </div>
+    </div>
+
+    <aside class="card side" aria-label="前兩單元資料摘要">
+      <h3>第一單元｜回報建單結果步驟</h3>
+      <div id="u1Box"><p class="muted tiny">讀取中…</p></div>
+      <h3>第二單元｜你的 B-1／B-2 作答 <span class="pill">個人作答</span></h3>
+      <div id="u2Box"><p class="muted tiny">讀取中…</p></div>
+      <h3>第二單元｜講評判定 <span class="pill indigo">講評</span></h3>
+      <div class="rec"><b>B-1</b><span class="pill red">不通過</span>　誤報建單成功</div>
+      <div class="rec"><b>B-2</b><span class="pill yellow">待補證</span>　是否實際重複建單</div>
+      <h3>共用紀錄 <span class="pill">案例 B</span></h3>
+      <div class="rec"><b>B3</b>11:02，系統送出建單請求，等待回應逾時，未取得工單編號。首次請求的回傳紀錄到此結束。</div>
+      <div class="rec"><b>B4</b>11:03，客服：「剛剛沒看到工單，再幫我建一次。」AI：「上一筆已成功建立，我再幫你送一次。」</div>
+      <h3>共用紀錄 <span class="pill">案例 A 回歸用</span></h3>
+      <div class="rec"><b>A3</b>10:02 AI 顯示「設備 H100／序號 HX-001／無法開機」。客服回覆「確認依這筆內容建立維修工單」。</div>
+      <div class="rec"><b>A4</b>10:03 工單系統收到序號 HX-001 的建單請求，回傳「建立成功，工單 MW-1001」。</div>
+      <div class="rec"><b>A5</b>10:04 AI：「已建立維修工單，編號 MW-1001。」</div>
+    </aside>
+  </div>
+
+  <section id="refPanel" class="ref-panel" hidden></section>
+</main>
+
+<div class="save-bar">
+  <span class="save-status" id="saveStatus">尚未開始</span>
+  <span class="submitted-badge" id="submittedBadge" hidden>✓ 已送出（仍可修改後再次送出）</span>
+  <span class="spacer"></span>
+  <button class="btn primary" id="submitBtn">送出計畫</button>
+</div>
+
+<script type="module">
+import { renderHeader, ensureIdentity, showIdentity, loadResponse, autosaver, watchReveal, esc, toast } from './assets/app.js';
+import { VERDICTS, u1Shared, u1SharedHtml, u2Answers } from './assets/carry.js';
+
+renderHeader('u3');
+const UNIT = 'u3';
+let id, saver, state;
+
+const getPath = (o, p) => p.split('.').reduce((x, k) => (x ? x[k] : undefined), o);
+const setPath = (o, p, v) => { const ks = p.split('.'); const last = ks.pop(); ks.reduce((x, k) => (x[k] ??= {}), o)[last] = v; };
+const FIELDS = [...document.querySelectorAll('[data-f]')].map((el) => el.dataset.f);
+
+async function boot() {
+  id = await ensureIdentity();
+  showIdentity(id, () => ensureIdentity({ force: true }).then(() => location.reload()));
+  const saved = await loadResponse(id, UNIT);
+  state = saved?.data || {};
+  state.q2 ??= {};
+  document.querySelectorAll('[data-f]').forEach((el) => { el.value = getPath(state, el.dataset.f) || ''; });
+  document.querySelectorAll('#prio input').forEach((r) => { r.checked = state.q2.priority === r.value; });
+  saver = autosaver(id, UNIT, () => state, document.getElementById('saveStatus'));
+  if (saved?.status === 'submitted') { saver.setStatus('submitted'); document.getElementById('submittedBadge').hidden = false; }
+  document.getElementById('saveStatus').textContent = saved ? '已載入先前的作答' : '作答會自動儲存';
+
+  document.querySelector('main').addEventListener('input', (e) => {
+    if (e.target.dataset.f) { setPath(state, e.target.dataset.f, e.target.value); saver.touch(); }
+  });
+  document.getElementById('prio').addEventListener('change', (e) => { state.q2.priority = e.target.value; saver.touch(); });
+
+  watchReveal(id, UNIT, document.getElementById('refPanel'));
+  u1Shared(id).then((s) => { document.getElementById('u1Box').innerHTML = u1SharedHtml(s); });
+  u2Answers(id).then((q) => {
+    const box = document.getElementById('u2Box');
+    if (!q || (!q.B1?.verdict && !q.B2?.verdict)) { box.innerHTML = '<div class="note gray tiny">尚未在 <a href="unit2.html">練習二</a> 作答 B-1／B-2。</div>'; return; }
+    const cls = { pass: 'green', fail: 'red', pending: 'yellow' };
+    box.innerHTML = ['B1', 'B2'].map((k) => {
+      const a = q[k] || {};
+      return `<div class="rec"><b>${k.replace('B', 'B-')}</b>${a.verdict ? `<span class="pill ${cls[a.verdict]}">${VERDICTS[a.verdict]}</span>` : '<span class="muted">未作答</span>'}
+        ${a.evidence?.length ? `<span class="tiny muted">　證據 ${esc(a.evidence.join('、'))}</span>` : ''}
+        ${a.reason ? `<div class="tiny" style="margin-top:4px">${esc(a.reason)}</div>` : ''}</div>`;
+    }).join('');
+  });
+}
+
+function missing() {
+  const out = FIELDS.filter((f) => !String(getPath(state, f) || '').trim()).map((f) => {
+    const el = document.querySelector(`[data-f="${f}"]`);
+    const sc = el.closest('.scen')?.querySelector('h3')?.textContent;
+    return (sc ? sc + '：' : '') + el.closest('.field').querySelector('span').textContent;
+  });
+  if (!state.q2.priority) out.push('優先序');
+  return out;
+}
+function receipt() {
+  const w = document.createElement('div');
+  w.className = 'modal-backdrop';
+  const t = new Date().toLocaleString('zh-TW', { hour12: false });
+  w.innerHTML = `<div class="modal receipt"><div class="big">✓</div><h2>已收到你的改善與再驗證計畫</h2><p class="muted">${esc(id.session)}・${esc(id.name)}<br>送出時間 ${t}</p><p class="tiny muted">講評前仍可修改，修改後請再按一次送出。</p><div class="row-end" style="justify-content:center"><button class="btn primary" data-x>好</button></div></div>`;
+  document.body.appendChild(w);
+  w.querySelector('[data-x]').onclick = () => w.remove();
+}
+async function doSubmit() {
+  try { await saver.flush('submitted'); document.getElementById('submittedBadge').hidden = false; receipt(); }
+  catch { toast('送出失敗，請檢查網路後再試一次', 'err'); }
+}
+document.getElementById('submitBtn').onclick = () => {
+  const m = missing();
+  if (!m.length) return doSubmit();
+  const w = document.createElement('div');
+  w.className = 'modal-backdrop';
+  w.innerHTML = `<div class="modal"><h2>還有 ${m.length} 個欄位沒填</h2><ul class="warn-list">${m.slice(0, 8).map((x) => `<li>${esc(x)}</li>`).join('')}${m.length > 8 ? '<li>…</li>' : ''}</ul><div class="row-end" style="margin-top:16px"><button class="btn ghost" data-x>回去修改</button><button class="btn primary" data-go>仍要送出</button></div></div>`;
+  document.body.appendChild(w);
+  w.querySelector('[data-x]').onclick = () => w.remove();
+  w.querySelector('[data-go]').onclick = () => { w.remove(); doSubmit(); };
+};
+
+boot();
+</script>
+</body>
+</html>

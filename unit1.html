@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>練習一｜AI 客服流程拆解與風險評估</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  .case-head { display: grid; gap: 14px; }
+  .case-layout { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+  @media (max-width: 980px) { .case-layout { grid-template-columns: 1fr; } }
+  .flow-card { position: sticky; top: 76px; }
+  @media (max-width: 980px) { .flow-card { position: static; } }
+  .flow-box { min-height: 260px; overflow: auto; display: grid; place-items: center; background: #FAFAFC; border: 1px solid var(--line); border-radius: 14px; padding: 12px; }
+  .flow-box svg { max-width: 100%; height: auto; }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 10px; font-size: 13px; color: var(--muted); }
+  .legend .lg { display: inline-flex; align-items: center; gap: 6px; }
+  .legend i { width: 14px; height: 14px; border-radius: 4px; border: 2px solid; display: inline-block; }
+
+  .step { border: 1px solid var(--line); border-radius: 16px; padding: 16px; margin-bottom: 12px; background: #fff; }
+  .step-top { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+  .step-no { font-weight: 800; font-variant-numeric: tabular-nums; background: var(--ink); color: #fff; border-radius: 8px; padding: 2px 10px; font-size: 14px; }
+  .step-top .grow { flex: 1; }
+  .fgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 12px; }
+  .fgrid .full { grid-column: 1 / -1; }
+  @media (max-width: 560px) { .fgrid { grid-template-columns: 1fr; } }
+  .fgrid .field { margin: 0; }
+  .fgrid textarea { min-height: 44px; }
+  .conns { margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--line-2); }
+  .conn { display: grid; grid-template-columns: 22px minmax(0, 1fr) minmax(0, 1.2fr) 32px; gap: 8px; align-items: center; margin-bottom: 8px; }
+  .conn .arrow { color: var(--muted); text-align: center; }
+  @media (max-width: 560px) { .conn { grid-template-columns: 18px 1fr 32px; } .conn .cond { grid-column: 2 / 4; } }
+  .conn-hint { font-size: 13px; color: var(--muted); }
+
+  .risk { border: 1px solid var(--line); border-left: 6px solid var(--line-2); border-radius: 14px; padding: 16px; margin-bottom: 12px; background: #fff; }
+  .risk[data-light=red] { border-left-color: var(--red); }
+  .risk[data-light=yellow] { border-left-color: var(--amber-dot); }
+  .risk[data-light=green] { border-left-color: var(--green-dot); }
+
+  details.ref { background: #fff; border-radius: var(--radius); box-shadow: var(--shadow); padding: 0; margin-bottom: 16px; }
+  details.ref summary { cursor: pointer; padding: 16px 22px; font-weight: 700; list-style: none; display: flex; justify-content: space-between; align-items: center; }
+  details.ref summary::-webkit-details-marker { display: none; }
+  details.ref summary::after { content: '展開 ＋'; font-size: 13px; color: var(--blue); font-weight: 600; }
+  details.ref[open] summary::after { content: '收合 －'; }
+  details.ref .inner { padding: 0 22px 20px; }
+  .rule-code { font-weight: 800; color: var(--blue); white-space: nowrap; }
+  .handoff-row { border: 1px solid var(--line); border-radius: 16px; padding: 18px; margin-bottom: 14px; }
+  .handoff-row h3 { font-size: 17px; }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="page-head">
+    <span class="eyebrow">練習一｜第一單元</span>
+    <h1>AI 客服流程拆解與風險評估</h1>
+    <p class="lead">宏岳設備銷售商用設備。內部客服人員使用 AI 助手查詢產品與保固資訊、擬定回覆草稿，並在客服確認後建立維修工單。</p>
+  </div>
+
+  <details class="ref" open>
+    <summary>作答說明</summary>
+    <div class="inner">
+      <ol style="padding-left:1.3em;margin:0">
+        <li>每個案例用「步驟卡」畫一張流程圖。每張卡寫一個動作，系統自動加上步驟編號。用「下一步」設定交接，在分支上寫明判斷條件；右側會即時畫出流程圖。</li>
+        <li>同一張步驟卡就是「任務拆解表」的一列，記錄角色、輸入、輸出及尚待確認事項。可自行新增、刪除、調整順序。</li>
+        <li>每個案例至少填一筆風險。指出錯誤發生在哪一步、影響誰、後果、嚴重程度及把關方式。最後在「銜接第二單元」選出一項優先風險並說明理由，再標出全班共用案例的對應步驟。</li>
+      </ol>
+    </div>
+  </details>
+  <details class="ref">
+    <summary>公司規範與風險分級</summary>
+    <div class="inner grid c2">
+      <div class="table-wrap"><table><thead><tr><th>規則</th><th>公司規範</th></tr></thead><tbody id="rulesBody"></tbody></table></div>
+      <div class="table-wrap"><table><thead><tr><th>分級</th><th>評估依據</th></tr></thead><tbody id="lightsBody"></tbody></table></div>
+    </div>
+  </details>
+
+  <div class="tabs" id="tabs" role="tablist"></div>
+  <div id="panel"></div>
+
+  <section id="refPanel" class="ref-panel" hidden></section>
+</main>
+
+<div class="save-bar">
+  <span class="save-status" id="saveStatus">尚未開始</span>
+  <span class="submitted-badge" id="submittedBadge" hidden>✓ 已送出（仍可修改後再次送出）</span>
+  <span class="spacer"></span>
+  <button class="btn primary" id="submitBtn">送出作答</button>
+</div>
+
+<script type="module">
+import { renderHeader, ensureIdentity, showIdentity, loadResponse, autosaver, watchReveal, esc, toast, uid8 } from './assets/app.js';
+import { RULES, LIGHTS, CASES, ROLES } from './assets/unit1-data.js';
+import { renderFlow, stepNo, edgesOf, END, ROLE_LEGEND } from './assets/flow.js';
+
+renderHeader('u1');
+document.getElementById('rulesBody').innerHTML = RULES.map(([k, v]) => `<tr><td class="rule-code">${k}</td><td>${v}</td></tr>`).join('');
+document.getElementById('lightsBody').innerHTML = Object.entries(LIGHTS).map(([k, [n, d]]) => `<tr><td class="code"><span class="dot ${k}"></span> ${n}</td><td>${d}</td></tr>`).join('');
+
+const UNIT = 'u1';
+let id, saver, state, tab = 'A';
+
+function blankCase(key) {
+  const steps = Array.from({ length: CASES[key].rows }, () => ({ id: uid8(), action: '', role: '', input: '', output: '', pending: '', next: [] }));
+  return { steps, start: steps[0].id, risks: [{ id: uid8(), step: '', issue: '', impact: '', light: '', reason: '', control: '' }] };
+}
+function blankState() {
+  return { cases: { A: blankCase('A'), B: blankCase('B'), C: blankCase('C') }, handoff: { priority: { case: '', step: '', reason: '' }, shared: { step: '', reason: '' } } };
+}
+
+// ---------- 啟動 ----------
+async function boot() {
+  id = await ensureIdentity();
+  showIdentity(id, () => ensureIdentity({ force: true }).then(() => location.reload()));
+  const saved = await loadResponse(id, UNIT);
+  state = saved?.data && saved.data.cases ? saved.data : blankState();
+  saver = autosaver(id, UNIT, () => state, document.getElementById('saveStatus'));
+  if (saved?.status === 'submitted') { saver.setStatus('submitted'); document.getElementById('submittedBadge').hidden = false; }
+  else document.getElementById('submittedBadge').hidden = true;
+  document.getElementById('saveStatus').textContent = saved ? '已載入先前的作答' : '作答會自動儲存';
+  watchReveal(id, UNIT, document.getElementById('refPanel'));
+  renderTabs(); renderPanel();
+}
+
+// ---------- 分頁 ----------
+function renderTabs() {
+  const t = document.getElementById('tabs');
+  const items = [...Object.entries(CASES).map(([k, c]) => [k, `${c.no}｜${c.title}`]), ['H', '銜接第二單元']];
+  t.innerHTML = items.map(([k, n]) => {
+    const cnt = k === 'H' ? '' : `<span class="count">${state.cases[k].risks.filter((r) => r.light).length} 風險</span>`;
+    return `<button role="tab" data-tab="${k}" class="${tab === k ? 'on' : ''}">${n}${cnt}</button>`;
+  }).join('');
+  t.onclick = (e) => { const b = e.target.closest('[data-tab]'); if (!b) return; tab = b.dataset.tab; renderTabs(); renderPanel(); scrollTo({ top: t.offsetTop - 70, behavior: 'smooth' }); };
+}
+
+const stepOpts = (key, sel, { allowEnd = false, empty = '選擇步驟' } = {}) => {
+  const c = state.cases[key];
+  let h = `<option value="">${empty}</option>`;
+  c.steps.forEach((s, i) => { h += `<option value="${s.id}" ${s.id === sel ? 'selected' : ''}>${stepNo(key, i)}　${esc((s.action || '').slice(0, 18))}</option>`; });
+  if (allowEnd) h += `<option value="${END}" ${sel === END ? 'selected' : ''}>（結束）</option>`;
+  return h;
+};
+
+function renderPanel() {
+  const p = document.getElementById('panel');
+  if (tab === 'H') return renderHandoff(p);
+  const key = tab, C = CASES[key], c = state.cases[key];
+  p.innerHTML = `
+    <div class="card case-head">
+      <div><span class="pill blue">${C.no}</span></div>
+      <h2 style="margin:0">${C.title}</h2>
+      <blockquote class="quote">客戶：「${esc(C.quote)}」</blockquote>
+      <p style="margin:0">${C.desc}</p>
+    </div>
+    <div class="case-layout">
+      <div>
+        <div class="card">
+          <div class="row-end" style="justify-content:space-between;align-items:center;margin-bottom:14px">
+            <h3 style="margin:0">流程步驟與任務拆解</h3>
+            <label style="display:flex;gap:8px;align-items:center;font-size:14px">起點
+              <select data-start style="width:auto;min-width:130px">${stepOpts(key, c.start, { empty: '第一步' })}</select></label>
+          </div>
+          <div id="steps"></div>
+          <button class="btn ghost" data-add-step style="width:100%">＋ 新增步驟</button>
+        </div>
+      </div>
+      <div class="card flow-card">
+        <h3>流程圖預覽</h3>
+        <div class="flow-box" id="flowBox"></div>
+        <div class="legend">${ROLE_LEGEND}</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="row-end" style="justify-content:space-between;align-items:center;margin-bottom:10px">
+        <h3 style="margin:0">風險評估</h3><span class="muted tiny">每案至少一筆</span>
+      </div>
+      <div id="risks"></div>
+      <button class="btn ghost" data-add-risk style="width:100%">＋ 新增風險</button>
+    </div>
+    <div class="row-end">${key !== 'C' ? `<button class="btn dark" data-goto="${key === 'A' ? 'B' : 'C'}">下一個案例 →</button>` : '<button class="btn dark" data-goto="H">前往銜接第二單元 →</button>'}</div>`;
+  renderSteps(); renderRisks(); drawFlow();
+
+  p.querySelector('[data-start]').onchange = (e) => { c.start = e.target.value || c.steps[0]?.id; changed(true); };
+  p.querySelector('[data-add-step]').onclick = () => { c.steps.push({ id: uid8(), action: '', role: '', input: '', output: '', pending: '', next: [] }); renderSteps(); refreshSelects(); renderRisks(); changed(true); };
+  p.querySelector('[data-add-risk]').onclick = () => { c.risks.push({ id: uid8(), step: '', issue: '', impact: '', light: '', reason: '', control: '' }); renderRisks(); changed(); };
+  p.querySelector('[data-goto]').onclick = (e) => { tab = e.target.dataset.goto; renderTabs(); renderPanel(); scrollTo({ top: 0, behavior: 'smooth' }); };
+}
+
+function renderSteps() {
+  const key = tab, c = state.cases[key];
+  const box = document.getElementById('steps');
+  box.innerHTML = c.steps.map((s, i) => `
+    <div class="step" data-sid="${s.id}">
+      <div class="step-top">
+        <span class="step-no">${stepNo(key, i)}</span><span class="grow"></span>
+        <button class="icon-btn" data-up title="上移" aria-label="上移" ${i === 0 ? 'disabled' : ''}>↑</button>
+        <button class="icon-btn" data-down title="下移" aria-label="下移" ${i === c.steps.length - 1 ? 'disabled' : ''}>↓</button>
+        <button class="icon-btn" data-del title="刪除步驟" aria-label="刪除步驟">✕</button>
+      </div>
+      <div class="fgrid">
+        <label class="field full"><span>動作</span><input data-f="action" value="${esc(s.action)}" placeholder="這一步做什麼？"></label>
+        <label class="field"><span>負責角色</span><input data-f="role" list="roleList" value="${esc(s.role)}" placeholder="客服／AI 助手／工單系統"></label>
+        <label class="field"><span>輸入</span><input data-f="input" value="${esc(s.input)}"></label>
+        <label class="field"><span>輸出／交給誰</span><input data-f="output" value="${esc(s.output)}"></label>
+        <label class="field"><span>尚待確認</span><input data-f="pending" value="${esc(s.pending)}"></label>
+      </div>
+      <div class="conns">
+        <div class="label">下一步（交接與分支）</div>
+        ${(s.next || []).map((n, j) => `
+          <div class="conn" data-ci="${j}">
+            <span class="arrow">→</span>
+            <select data-cto>${stepOpts(key, n.to, { allowEnd: true, empty: '選擇下一步' }).replace(`<option value="${s.id}"`, `<option disabled value="${s.id}"`)}</select>
+            <input class="cond" data-ccond value="${esc(n.cond)}" placeholder="判斷條件（例：有既有工單）">
+            <button class="icon-btn" data-cdel aria-label="移除連線">✕</button>
+          </div>`).join('')}
+        ${(s.next || []).length ? '' : `<p class="conn-hint">未設定時自動接到${i < c.steps.length - 1 ? '下一個步驟' : '「結束」'}。</p>`}
+        <button class="link tiny" data-cadd>＋ 新增下一步／分支</button>
+      </div>
+    </div>`).join('') + `<datalist id="roleList">${ROLES.map((r) => `<option value="${r}">`).join('')}</datalist>`;
+
+  box.oninput = (e) => {
+    const card = e.target.closest('[data-sid]'); if (!card) return;
+    const s = c.steps.find((x) => x.id === card.dataset.sid);
+    if (e.target.dataset.f) { s[e.target.dataset.f] = e.target.value; if (e.target.dataset.f === 'action') refreshSelects(); changed(true); }
+    else if (e.target.hasAttribute('data-ccond')) { s.next[+e.target.closest('[data-ci]').dataset.ci].cond = e.target.value; changed(true); }
+  };
+  box.onchange = (e) => {
+    if (!e.target.hasAttribute('data-cto')) return;
+    const card = e.target.closest('[data-sid]');
+    const s = c.steps.find((x) => x.id === card.dataset.sid);
+    s.next[+e.target.closest('[data-ci]').dataset.ci].to = e.target.value; changed(true);
+  };
+  box.onclick = (e) => {
+    const card = e.target.closest('[data-sid]'); if (!card) return;
+    const i = c.steps.findIndex((x) => x.id === card.dataset.sid); const s = c.steps[i];
+    if (e.target.closest('[data-up]') && i > 0) [c.steps[i - 1], c.steps[i]] = [c.steps[i], c.steps[i - 1]];
+    else if (e.target.closest('[data-down]') && i < c.steps.length - 1) [c.steps[i + 1], c.steps[i]] = [c.steps[i], c.steps[i + 1]];
+    else if (e.target.closest('[data-del]')) {
+      if (c.steps.length <= 1) return toast('至少保留一個步驟');
+      c.steps.splice(i, 1);
+      c.steps.forEach((x) => { x.next = (x.next || []).filter((n) => n.to !== s.id); });
+      c.risks.forEach((r) => { if (r.step === s.id) r.step = ''; });
+      if (c.start === s.id) c.start = c.steps[0].id;
+      const h = state.handoff;
+      if (h.priority.step === s.id) h.priority.step = '';
+      if (tab === 'C' && h.shared.step === s.id) h.shared.step = '';
+    }
+    else if (e.target.closest('[data-cadd]')) { s.next = s.next || []; const nx = c.steps[i + 1]; s.next.push({ to: nx ? nx.id : END, cond: '' }); }
+    else if (e.target.closest('[data-cdel]')) s.next.splice(+e.target.closest('[data-ci]').dataset.ci, 1);
+    else return;
+    renderSteps(); refreshSelects(); renderRisks(); changed(true);
+  };
+}
+
+/** 動作文字或順序改變時，更新所有步驟下拉選單的標籤 */
+function refreshSelects() {
+  const key = tab, c = state.cases[key];
+  document.querySelectorAll('#panel select[data-cto], #panel select[data-rstep], #panel select[data-start]').forEach((sel) => {
+    [...sel.options].forEach((o) => {
+      const i = c.steps.findIndex((s) => s.id === o.value);
+      if (i >= 0) o.textContent = `${stepNo(key, i)}　${(c.steps[i].action || '').slice(0, 18)}`;
+    });
+  });
+  const st = document.querySelector('#panel select[data-start]');
+  if (st) st.innerHTML = stepOpts(key, c.start, { empty: '第一步' });
+}
+
+function renderRisks() {
+  const key = tab, c = state.cases[key];
+  const box = document.getElementById('risks');
+  box.innerHTML = c.risks.map((r) => `
+    <div class="risk" data-rid="${r.id}" data-light="${r.light}">
+      <div class="fgrid">
+        <label class="field"><span>步驟編號</span><select data-rstep>${stepOpts(key, r.step)}</select></label>
+        <div class="field"><span class="label">紅／黃／綠</span>
+          <div class="seg" role="radiogroup">
+            ${Object.entries(LIGHTS).map(([k, [n]]) => `<label class="l-${k}"><input type="radio" name="l_${r.id}" value="${k}" ${r.light === k ? 'checked' : ''}><span><i class="dot ${k}"></i>${n}</span></label>`).join('')}
+          </div>
+        </div>
+        <label class="field full"><span>可能出錯的情況</span><textarea data-r="issue" rows="2">${esc(r.issue)}</textarea></label>
+        <label class="field"><span>影響對象與後果</span><textarea data-r="impact" rows="2">${esc(r.impact)}</textarea></label>
+        <label class="field"><span>分級理由</span><textarea data-r="reason" rows="2">${esc(r.reason)}</textarea></label>
+        <label class="field full"><span>現有把關或待確認事項</span><textarea data-r="control" rows="2">${esc(r.control)}</textarea></label>
+      </div>
+      <div class="row-end"><button class="btn small ghost danger" data-rdel>刪除這筆風險</button></div>
+    </div>`).join('') || '<p class="muted">尚未新增風險。</p>';
+  box.oninput = (e) => {
+    const card = e.target.closest('[data-rid]'); if (!card) return;
+    const r = c.risks.find((x) => x.id === card.dataset.rid);
+    if (e.target.dataset.r) r[e.target.dataset.r] = e.target.value;
+    else if (e.target.type === 'radio') { r.light = e.target.value; card.dataset.light = r.light; renderTabs(); }
+    changed();
+  };
+  box.onchange = (e) => {
+    if (!e.target.hasAttribute('data-rstep')) return;
+    c.risks.find((x) => x.id === e.target.closest('[data-rid]').dataset.rid).step = e.target.value; changed();
+  };
+  box.onclick = (e) => {
+    if (!e.target.closest('[data-rdel]')) return;
+    const rid = e.target.closest('[data-rid]').dataset.rid;
+    c.risks = c.risks.filter((x) => x.id !== rid); renderRisks(); renderTabs(); changed();
+  };
+}
+
+let flowT = null;
+function drawFlow() {
+  clearTimeout(flowT);
+  flowT = setTimeout(() => { const el = document.getElementById('flowBox'); if (el && tab !== 'H') renderFlow(el, tab, state.cases[tab]); }, 250);
+}
+
+function changed(flow = false) { if (flow) drawFlow(); saver.touch(); }
+
+// ---------- 銜接第二單元 ----------
+function renderHandoff(p) {
+  const h = state.handoff;
+  const caseOpts = `<option value="">選擇案例</option>` + Object.entries(CASES).map(([k, c]) => `<option value="${k}" ${h.priority.case === k ? 'selected' : ''}>${c.no}｜${c.title}</option>`).join('');
+  p.innerHTML = `
+    <div class="card">
+      <h2>銜接第二單元</h2>
+      <p>先記錄你選出的優先風險。第二單元全班共用 H100 保固詢問與建單紀錄，其中一案會模擬建單逾時。請另外從案例三的流程圖找出「回報建單結果」的步驟，指出等候逾時後可能發生的風險。若這就是你選的優先風險，可填同一步驟。</p>
+      <div class="handoff-row">
+        <h3>① 自選優先風險</h3>
+        <div class="fgrid">
+          <label class="field"><span>案例</span><select data-pcase>${caseOpts}</select></label>
+          <label class="field"><span>步驟編號</span><select data-pstep ${h.priority.case ? '' : 'disabled'}>${h.priority.case ? stepOpts(h.priority.case, h.priority.step) : '<option>先選案例</option>'}</select></label>
+          <label class="field full"><span>風險與理由</span><textarea data-preason rows="3">${esc(h.priority.reason)}</textarea></label>
+        </div>
+      </div>
+      <div class="handoff-row" style="border-color:#CFE2FA;background:#F7FAFE">
+        <h3>② 全班共用案例：工單逾時後回報結果</h3>
+        <p class="tiny muted">這一步會帶到練習二與練習三的題目上方。</p>
+        <div class="fgrid">
+          <label class="field"><span>案例三的步驟編號</span><select data-sstep>${stepOpts('C', h.shared.step)}</select></label>
+          <div></div>
+          <label class="field full"><span>逾時後可能發生的風險與理由</span><textarea data-sreason rows="3">${esc(h.shared.reason)}</textarea></label>
+        </div>
+      </div>
+    </div>`;
+  p.querySelector('[data-pcase]').onchange = (e) => { h.priority.case = e.target.value; h.priority.step = ''; renderHandoff(p); changed(); };
+  p.querySelector('[data-pstep]').onchange = (e) => { h.priority.step = e.target.value; changed(); };
+  p.querySelector('[data-sstep]').onchange = (e) => { h.shared.step = e.target.value; changed(); };
+  p.querySelector('[data-preason]').oninput = (e) => { h.priority.reason = e.target.value; changed(); };
+  p.querySelector('[data-sreason]').oninput = (e) => { h.shared.reason = e.target.value; changed(); };
+}
+
+// ---------- 送出 ----------
+function missing() {
+  const out = [];
+  for (const [k, C] of Object.entries(CASES)) {
+    const c = state.cases[k];
+    if (!c.steps.some((s) => s.action.trim())) out.push(`${C.no}：尚未填寫任何步驟動作`);
+    if (!c.risks.some((r) => r.step && r.light && r.issue.trim())) out.push(`${C.no}：至少要有一筆完整的風險（步驟、燈號、情況）`);
+  }
+  const h = state.handoff;
+  if (!h.priority.step || !h.priority.reason.trim()) out.push('銜接第二單元：自選優先風險未完成');
+  if (!h.shared.step || !h.shared.reason.trim()) out.push('銜接第二單元：全班共用案例未完成');
+  return out;
+}
+async function doSubmit() {
+  try { await saver.flush('submitted'); document.getElementById('submittedBadge').hidden = false; toast('已送出，講師已收到你的作答'); }
+  catch { toast('送出失敗，請檢查網路後再試一次', 'err'); }
+}
+document.getElementById('submitBtn').onclick = () => {
+  const m = missing();
+  if (!m.length) return doSubmit();
+  const w = document.createElement('div');
+  w.className = 'modal-backdrop';
+  w.innerHTML = `<div class="modal"><h2>還有項目沒完成</h2><ul class="warn-list">${m.map((x) => `<li>${esc(x)}</li>`).join('')}</ul><p class="muted tiny" style="margin-top:12px">可以先送出，之後再補完並再次送出。</p><div class="row-end"><button class="btn ghost" data-x>回去修改</button><button class="btn primary" data-go>仍要送出</button></div></div>`;
+  document.body.appendChild(w);
+  w.querySelector('[data-x]').onclick = () => w.remove();
+  w.querySelector('[data-go]').onclick = () => { w.remove(); doSubmit(); };
+};
+
+boot();
+</script>
+</body>
+</html>

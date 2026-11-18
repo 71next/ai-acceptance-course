@@ -1,0 +1,647 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI 應用驗收評估與改善策略｜網頁簡報</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   主題：延續原 PPT 的 Apple 風配色
+   ============================================================ */
+:root {
+  --ink: #1D1D1F; --ink-2: #515154; --muted: #6E6E73; --line: #E3E3E8;
+  --bg: #F5F5F7; --blue: #0071E3; --indigo: #5856D6; --teal: #0D9488;
+  --red: #E5352B; --amber: #F5B400; --green: #34C759;
+  --stage-bg: #111; --slide-bg: #fff;
+  --font: 'Noto Sans TC', -apple-system, 'PingFang TC', sans-serif;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* ---------- 固定 16:9 舞台（viewport-base） ---------- */
+html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: var(--stage-bg); }
+.deck-viewport { position: fixed; inset: 0; overflow: hidden; background: var(--stage-bg); }
+.deck-stage { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: hidden; transform-origin: 0 0; background: var(--slide-bg); }
+.slide { position: absolute; inset: 0; width: 1920px; height: 1080px; overflow: hidden; display: block; visibility: hidden; opacity: 0; pointer-events: none; background: var(--slide-bg); transition: opacity .35s ease, visibility 0s linear .35s; }
+.slide.active { visibility: visible; opacity: 1; pointer-events: auto; z-index: 1; transition: opacity .35s ease; }
+img, svg { max-width: 100%; max-height: 100%; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } }
+
+/* ---------- 投影片版型 ---------- */
+.slide { font-family: var(--font); color: var(--ink); padding: 80px 120px 100px; display: flex; flex-direction: column; justify-content: center; }
+.slide > * { flex: none; }
+.bg-cover { background: radial-gradient(45% 55% at 88% 18%, rgba(0,113,227,.17), transparent 70%), radial-gradient(40% 55% at 10% 88%, rgba(13,148,136,.13), transparent 70%), radial-gradient(35% 50% at 62% 52%, rgba(88,86,214,.06), transparent 70%), #F7F8FA; }
+.bg-unit { background: radial-gradient(50% 65% at 84% 20%, rgba(0,113,227,.18), transparent 70%), radial-gradient(40% 50% at 65% 85%, rgba(88,86,214,.07), transparent 70%), #F4F7FD; }
+.bg-end { background: radial-gradient(45% 55% at 14% 18%, rgba(0,113,227,.15), transparent 70%), radial-gradient(40% 55% at 86% 82%, rgba(13,148,136,.14), transparent 70%), #F7F8FA; }
+.bg-gray { background: var(--bg); }
+.bg-dark { background: radial-gradient(60% 70% at 85% 0%, rgba(0,113,227,.35), transparent 60%), #111114; color: #fff; }
+
+.kicker { display: inline-block; font-size: 26px; font-weight: 700; color: var(--blue); letter-spacing: .04em; margin-bottom: 14px; }
+.title { font-size: 66px; font-weight: 900; letter-spacing: -0.015em; line-height: 1.22; }
+.sub { font-size: 34px; color: var(--ink-2); font-weight: 500; margin-top: 14px; line-height: 1.45; }
+.head { margin-bottom: 56px; }
+
+.cards { display: grid; gap: 36px; }
+.cards.c2 { grid-template-columns: 1fr 1fr; }
+.cards.c3 { grid-template-columns: repeat(3, 1fr); }
+.cards.c4 { grid-template-columns: repeat(4, 1fr); }
+.card { background: #fff; border-radius: 32px; padding: 48px 46px; box-shadow: 0 2px 6px rgba(0,0,0,.04), 0 18px 48px rgba(0,0,0,.06); position: relative; }
+.bg-gray .card, .bg-unit .card, .bg-cover .card, .bg-end .card { box-shadow: 0 2px 6px rgba(0,0,0,.03), 0 16px 40px rgba(0,0,0,.05); }
+.card h3 { font-size: 38px; font-weight: 800; line-height: 1.3; margin-bottom: 18px; }
+.card p, .card li { font-size: 30px; line-height: 1.6; color: var(--ink-2); }
+.card .tag { display: inline-block; font-size: 24px; font-weight: 700; color: var(--c, var(--blue)); background: color-mix(in srgb, var(--c, var(--blue)) 10%, #fff); padding: 6px 18px; border-radius: 999px; margin-bottom: 22px; }
+.card .num { font-size: 72px; font-weight: 900; line-height: 1; color: var(--c, var(--blue)); margin-bottom: 22px; font-variant-numeric: tabular-nums; }
+.card.bar { border-top: 10px solid var(--c, var(--blue)); }
+.card .em { color: var(--ink); font-weight: 700; }
+.card .focus { margin-top: 20px; padding-top: 20px; border-top: 2px solid var(--line); font-size: 28px; color: var(--ink); }
+.card .focus b { color: var(--c, var(--blue)); }
+
+/* 封面 */
+.cover { display: flex; flex-direction: column; justify-content: center; height: 100%; padding-left: 40px; }
+.cover .badge { font-size: 30px; font-weight: 700; color: var(--blue); margin-bottom: 36px; }
+.cover h1 { font-size: 124px; font-weight: 900; letter-spacing: -0.03em; line-height: 1.12; }
+.cover .lead { font-size: 40px; color: var(--ink-2); margin-top: 40px; max-width: 1640px; line-height: 1.5; }
+.cover .by { margin-top: 90px; font-size: 32px; color: var(--muted); }
+
+/* 單元封面 */
+.unit-cover { display: flex; flex-direction: column; justify-content: center; height: 100%; padding-left: 40px; }
+.unit-cover .no { font-size: 40px; font-weight: 800; color: var(--blue); letter-spacing: .1em; margin-bottom: 28px; }
+.unit-cover h1 { font-size: 132px; font-weight: 900; letter-spacing: -0.03em; }
+.unit-cover p { font-size: 42px; color: var(--ink-2); margin-top: 36px; max-width: 1450px; line-height: 1.5; }
+.unit-cover .big-no { position: absolute; right: 90px; bottom: -80px; font-size: 640px; font-weight: 900; color: rgba(0,113,227,.06); line-height: 1; }
+
+/* 隨堂思考 */
+.quiz { display: grid; grid-template-columns: 1fr 520px; gap: 80px; height: 100%; align-items: center; }
+.quiz .kicker { color: #7FB8FF; }
+.quiz .title { color: #fff; font-size: 70px; }
+.quiz .scene { margin-top: 48px; font-size: 34px; line-height: 1.6; color: #D8D8DE; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.12); padding: 34px 40px; border-radius: 26px; }
+.quiz .scene .hl { color: #FFD166; font-weight: 700; }
+.quiz .ask { margin-top: 40px; font-size: 38px; font-weight: 700; color: #fff; }
+.quiz .ask::before { content: 'Q'; display: inline-grid; place-items: center; width: 56px; height: 56px; border-radius: 16px; background: var(--blue); margin-right: 20px; font-size: 32px; vertical-align: 4px; }
+.timer { width: 520px; height: 520px; border-radius: 50%; display: grid; place-items: center; position: relative; cursor: pointer; border: 0; background: none; color: #fff; font-family: var(--font); }
+.timer svg { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); }
+.timer circle { fill: none; stroke-width: 18; }
+.timer .track { stroke: rgba(255,255,255,.1); }
+.timer .prog { stroke: var(--blue); stroke-linecap: round; transition: stroke-dashoffset 1s linear, stroke .3s; }
+.timer .t { font-size: 190px; font-weight: 900; font-variant-numeric: tabular-nums; line-height: 1; }
+.timer .s { font-size: 30px; color: #A1A1A6; margin-top: 10px; }
+.timer .inner { display: flex; flex-direction: column; align-items: center; }
+.timer.done .prog { stroke: var(--red); }
+
+/* 流程鏈 */
+.chain { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; }
+.chain .node { background: #fff; border: 3px solid var(--c, var(--blue)); color: var(--ink); font-size: 34px; font-weight: 700; padding: 22px 36px; border-radius: 22px; }
+.chain .arr { font-size: 46px; color: var(--muted); }
+.steps4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; position: relative; }
+.steps4 .st { text-align: center; padding: 0 20px; position: relative; }
+.steps4 .st .circle { width: 170px; height: 170px; border-radius: 50%; margin: 0 auto 36px; display: grid; place-items: center; font-size: 76px; font-weight: 900; color: #fff; background: var(--c); box-shadow: 0 16px 40px color-mix(in srgb, var(--c) 35%, transparent); position: relative; z-index: 1; }
+.steps4 .st h3 { font-size: 40px; font-weight: 800; }
+.steps4::before { content: ''; position: absolute; top: 85px; left: 12.5%; right: 12.5%; height: 6px; background: linear-gradient(90deg, var(--blue), var(--indigo), var(--teal), #0EA5E9); border-radius: 3px; }
+
+/* 總結 */
+.summary { display: flex; flex-direction: column; justify-content: center; height: 100%; max-width: 1560px; }
+.summary .kicker { font-size: 30px; }
+.summary h2 { font-size: 80px; font-weight: 900; line-height: 1.25; letter-spacing: -0.02em; }
+.summary .body { margin-top: 56px; font-size: 42px; line-height: 1.7; color: var(--ink-2); border-left: 10px solid var(--blue); padding-left: 48px; }
+.summary .body b { color: var(--ink); }
+
+/* 證據紀錄 */
+.log { font-size: 34px; line-height: 1.5; background: #fff; border-radius: 26px; padding: 34px 44px; display: grid; grid-template-columns: auto auto 1fr; gap: 22px 30px; align-items: baseline; }
+.log .tm { font-weight: 800; font-variant-numeric: tabular-nums; }
+.log .src { font-size: 26px; font-weight: 700; padding: 4px 16px; border-radius: 999px; background: #EEF0F4; color: var(--ink-2); white-space: nowrap; }
+.bg-dark .log { background: rgba(255,255,255,.07); color: #fff; border: 1px solid rgba(255,255,255,.12); }
+.bg-dark .log .src { background: rgba(255,255,255,.12); color: #E5E5EA; }
+
+/* 練習連結 */
+.go-practice { position: absolute; right: 120px; bottom: 76px; display: flex; align-items: center; gap: 24px; font-size: 28px; color: var(--ink-2); }
+.go-practice a { display: inline-flex; align-items: center; gap: 12px; background: var(--ink); color: #fff; text-decoration: none; font-weight: 700; font-size: 30px; padding: 20px 40px; border-radius: 999px; }
+.go-practice a:hover { background: #000; }
+
+/* 動畫 */
+.rv { opacity: 0; transform: translateY(26px); transition: opacity .7s var(--ease), transform .7s var(--ease); }
+.slide.active .rv { opacity: 1; transform: none; }
+.slide.active .rv.d1 { transition-delay: .08s; } .slide.active .rv.d2 { transition-delay: .16s; } .slide.active .rv.d3 { transition-delay: .24s; } .slide.active .rv.d4 { transition-delay: .32s; } .slide.active .rv.d5 { transition-delay: .4s; } .slide.active .rv.d6 { transition-delay: .48s; }
+
+/* 頁尾 */
+.foot { position: absolute; left: 120px; right: 120px; bottom: 40px; display: flex; justify-content: space-between; font-size: 22px; color: #A1A1A6; }
+.bg-dark .foot { color: #6E6E73; }
+
+/* ---------- 簡報控制列（在舞台外） ---------- */
+.progress { position: fixed; top: 0; left: 0; height: 4px; background: var(--blue); z-index: 1000; transition: width .3s ease; }
+.deck-controls { position: fixed; right: 18px; bottom: 16px; z-index: 1000; display: flex; align-items: center; gap: 6px; background: rgba(20,20,22,.72); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); padding: 6px; border-radius: 999px; font-family: var(--font); color: #fff; opacity: .25; transition: opacity .25s; }
+.deck-controls:hover, .deck-controls:focus-within, body.show-ui .deck-controls { opacity: 1; }
+.deck-controls button, .deck-controls a { appearance: none; border: 0; background: transparent; color: #fff; font: inherit; font-size: 15px; cursor: pointer; width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; text-decoration: none; }
+.deck-controls button:hover, .deck-controls a:hover { background: rgba(255,255,255,.15); }
+.deck-controls .count { font-size: 14px; font-variant-numeric: tabular-nums; padding: 0 8px; min-width: 64px; text-align: center; }
+.deck-controls .sep { width: 1px; height: 20px; background: rgba(255,255,255,.2); margin: 0 2px; }
+
+/* ---------- 列印：每頁一張 ---------- */
+@media print {
+  @page { size: 1920px 1080px; margin: 0; }
+  html, body { width: 1920px; height: auto; overflow: visible; background: #fff; }
+  .deck-viewport { position: static; overflow: visible; }
+  .deck-stage { position: static; transform: none !important; width: auto; height: auto; }
+  .slide { position: relative; visibility: visible !important; opacity: 1 !important; break-after: page; }
+  .rv { opacity: 1 !important; transform: none !important; }
+  .deck-controls, .progress { display: none !important; }
+}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<div class="deck-viewport">
+<main class="deck-stage" id="deckStage" aria-live="polite">
+
+<!-- 1 封面 -->
+<section class="slide bg-cover" data-title="封面">
+  <div class="cover">
+    <div class="badge rv">AI 顧問實戰工作坊｜2 小時精華課程</div>
+    <h1 class="rv d1">AI 應用驗收評估<br>與改善策略</h1>
+    <p class="lead rv d2">從任務風險定義、情境證據判讀到結構化回歸改善，建立企業級 AI 上線把關標準</p>
+    <p class="by rv d3">講師：黃庭豪（bryant）｜秦毅數位科技有限公司</p>
+  </div>
+</section>
+
+<!-- 2 講者介紹 -->
+<section class="slide bg-gray" data-title="講者介紹">
+  <div class="head rv"><span class="kicker">ABOUT</span><h2 class="title">講者介紹</h2></div>
+  <div style="display:grid;grid-template-columns:1.15fr 1fr;gap:44px">
+    <div class="card rv d1">
+      <h3 style="font-size:56px;margin-bottom:8px">黃庭豪（bryant）</h3>
+      <p style="font-size:30px;color:var(--blue);font-weight:700;margin-bottom:30px">秦毅數位科技有限公司｜負責人</p>
+      <p style="font-size:32px;color:var(--ink);font-weight:700;margin-bottom:22px">企業系統規劃 × 使用者體驗 × 軟體開發</p>
+      <p style="margin-bottom:18px">具備 <span class="em">UX 使用者研究、企業系統規劃及軟體開發</span>的跨領域經驗，擅長從企業需求與工作流程出發，將複雜業務轉換為可執行的系統解決方案。</p>
+      <p>近年投入<span class="em">企業碳盤查系統建置</span>，並持續探索 AI 技術在資料整合、流程自動化及企業治理上的應用。</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:28px">
+      <div class="card rv d2" style="padding:40px 44px">
+        <span class="tag">四大核心專業領域</span>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px 24px">
+          <p class="em" style="font-size:28px">企業需求分析與使用者研究</p>
+          <p class="em" style="font-size:28px">業務流程規劃與系統架構設計</p>
+          <p class="em" style="font-size:28px">企業資訊系統開發與整合</p>
+          <p class="em" style="font-size:28px">AI 導入評估與應用規劃</p>
+        </div>
+      </div>
+      <div class="card rv d3" style="padding:40px 44px;--c:var(--teal)">
+        <span class="tag">目前服務領域</span>
+        <p style="font-size:29px;line-height:1.8">生技產業 ｜ 水泥產業 ｜ 永豐餘紙業 ｜ 美妝產業 ｜ 政府食藥署 ｜ 教育產業 ｜ 能源產業</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 課程大綱 -->
+<section class="slide" data-title="課程大綱與學習目標">
+  <div class="head rv"><span class="kicker">COURSE MAP</span><h2 class="title">課程大綱與學習目標</h2><p class="sub">三大實戰單元：建立可落地的 AI 驗收顧問方法論</p></div>
+  <div class="cards c3">
+    <div class="card bar rv d1" style="--c:var(--blue)"><span class="tag">單元一｜先定標準與紅線</span><h3>驗證目標與風險定義</h3><p>拆解五大 AI 任務類型與人機責任邊界，用紅黃綠三色燈號定義業務風險與驗收門檻。</p></div>
+    <div class="card bar rv d2" style="--c:var(--indigo)"><span class="tag">單元二｜用證據說話</span><h3>情境模擬與證據判讀</h3><p>設計六類真實與異常考題，對照系統日誌做出「通過、不通過、待補證」的客觀判定。</p></div>
+    <div class="card bar rv d3" style="--c:var(--teal)"><span class="tag">單元三｜修對地方再放行</span><h3>改善與再驗證</h3><p>跳脫只改 Prompt 的迷思，運用六大改善層面排定優先順序，執行回歸測試確保安全上線。</p></div>
+  </div>
+</section>
+
+<!-- 4 全局視角 -->
+<section class="slide bg-gray" data-title="全局視角">
+  <div class="head rv"><span class="kicker">THE LOOP</span><h2 class="title">全局視角｜AI 驗收閉環</h2><p class="sub">全場貫穿「宏岳設備 H100 客服助手」真實案例演練</p></div>
+  <div class="cards c3" style="position:relative">
+    <div class="card rv d1" style="--c:var(--blue)"><span class="tag">練習一｜40 分鐘</span><h3>拆解流程與紅線</h3><p>畫出保固查詢、草稿、建單三條流程並標記風險等級。</p></div>
+    <div class="card rv d2" style="--c:var(--indigo)"><span class="tag">練習二｜40 分鐘</span><h3>日誌證據大判讀</h3><p>比對正常與逾時紀錄，抓出無單號誤報建單成功。</p></div>
+    <div class="card rv d3" style="--c:var(--teal)"><span class="tag">練習三｜40 分鐘</span><h3>提出改善與回歸</h3><p>制定系統防呆優先序與重測、邊界、回歸通過條件。</p></div>
+  </div>
+  <div class="rv d4" style="margin-top:56px;display:flex;align-items:center;gap:26px;font-size:32px;color:var(--ink-2)">
+    <span style="font-weight:800;color:var(--ink)">定標準</span><span>→</span><span style="font-weight:800;color:var(--ink)">留證據</span><span>→</span><span style="font-weight:800;color:var(--ink)">修對地方</span><span>→</span><span style="font-weight:800;color:var(--ink)">回歸再驗證</span><span style="margin-left:12px">↺ 形成閉環</span>
+  </div>
+</section>
+
+<!-- 5 單元一封面 -->
+<section class="slide bg-unit" data-title="第一單元">
+  <div class="unit-cover">
+    <div class="no rv">第一單元</div>
+    <h1 class="rv d1">驗證目標與風險定義</h1>
+    <p class="rv d2">先看任務、人機分工與最不能犯的錯，再談驗收標準</p>
+  </div>
+  <div class="big-no">01</div>
+</section>
+
+<!-- 6 1-1 任務 01/02 -->
+<section class="slide" data-title="1-1 任務類型與驗收重點">
+  <div class="head rv"><span class="kicker">1-1</span><h2 class="title">任務類型與驗收重點</h2><p class="sub">不能用同一把尺驗所有 AI：先拆解五種任務類型</p></div>
+  <div class="cards c2">
+    <div class="card bar rv d1"><span class="tag">任務 01</span><h3>內容生成與改寫</h3><p>客服草稿、會議摘要</p><p class="focus"><b>驗重點：</b>核心事實不遺漏、語氣合規、不擅自承諾。</p></div>
+    <div class="card bar rv d2" style="--c:var(--indigo)"><span class="tag">任務 02</span><h3>分類、抽取與比對</h3><p>意圖分類、發票欄位抽取</p><p class="focus"><b>驗重點：</b>關鍵欄位準確率、缺漏資料不腦補。</p></div>
+  </div>
+</section>
+
+<!-- 7 任務 03 -->
+<section class="slide" data-title="任務 03 知識查詢與回答">
+  <div class="head rv"><span class="kicker">1-1 五大任務分類｜任務 03</span><h2 class="title">知識查詢與回答：拆開驗「找得到」與「答得對」</h2><p class="sub">適用場景：員工內規查詢、產品規格／SOP 問答、官網智慧客服</p></div>
+  <div class="cards c3">
+    <div class="card rv d1"><div class="num">01</div><h3>檢索召回（找得到）</h3><p>撈出的文件片段必須包含正解，排除切分或權限異常。</p></div>
+    <div class="card rv d2"><div class="num">02</div><h3>忠實度（答得對）</h3><p>回答 100% 綁定企業知識庫並附來源，嚴禁憑記憶腦補。</p></div>
+    <div class="card rv d3"><div class="num">03</div><h3>誠實拒答（守邊界）</h3><p>刻意問知識庫沒有的問題，驗證系統會誠實說查無資料。</p></div>
+  </div>
+</section>
+
+<!-- 8 任務 04 -->
+<section class="slide" data-title="任務 04 工具操作與執行">
+  <div class="head rv"><span class="kicker" style="color:var(--indigo)">1-1 五大任務分類｜任務 04</span><h2 class="title">工具操作與執行：必須驗「參數精準」與「安全煞車」</h2><p class="sub">適用場景：CRM 自動建工單、更新 ERP 訂單、發送對外信件或報表</p></div>
+  <div class="cards c3" style="--c:var(--indigo)">
+    <div class="card rv d1"><div class="num">01</div><h3>參數驗證</h3><p>挑對 API，日期、金額、序號格式完全符合系統規範。</p></div>
+    <div class="card rv d2"><div class="num">02</div><h3>異常熔斷</h3><p>API 逾時能安全轉人工，<span class="em">不無限重試也不誤報成功。</span></p></div>
+    <div class="card rv d3"><div class="num">03</div><h3>高風險人工確認</h3><p>刪改資料、建單或寄信前，強制卡在人工確認界面。</p></div>
+  </div>
+</section>
+
+<!-- 9 任務 05 -->
+<section class="slide" data-title="任務 05 複合型應用">
+  <div class="head rv" style="margin-bottom:40px"><span class="kicker" style="color:var(--teal)">1-1 五大任務分類｜任務 05</span><h2 class="title">複合型應用：禁止只測頭尾，必須「分段隔離」</h2></div>
+  <div class="rv d1" style="margin-bottom:44px">
+    <p style="font-size:28px;color:var(--muted);margin-bottom:18px">典型流程：全自動客服</p>
+    <div class="chain">
+      <span class="node" style="--c:var(--indigo)">分類 (2)</span><span class="arr">→</span>
+      <span class="node" style="--c:var(--blue)">查規章 (3)</span><span class="arr">→</span>
+      <span class="node" style="--c:var(--indigo)">建工單 (4)</span><span class="arr">→</span>
+      <span class="node" style="--c:var(--blue)">寫草稿 (1)</span>
+    </div>
+  </div>
+  <div class="cards c3" style="--c:var(--teal)">
+    <div class="card rv d2"><div class="num">01</div><h3>單點隔離測試</h3><p>餵入標準假資料逐關測輸入輸出，精準定位問題節點。</p></div>
+    <div class="card rv d3"><div class="num">02</div><h3>錯誤阻斷測試</h3><p>前半段出錯或低信心度時，後半段自動攔截不硬做。</p></div>
+    <div class="card rv d4"><div class="num">03</div><h3>端到端耗時成本</h3><p>評估整條鏈路總延遲與 Token 成本是否符合現場節奏。</p></div>
+  </div>
+</section>
+
+<!-- 10 隨堂思考 01 -->
+<section class="slide bg-dark" data-title="隨堂思考 01">
+  <div class="quiz">
+    <div>
+      <span class="kicker rv">隨堂思考 01｜30 秒快判</span>
+      <h2 class="title rv d1">這個 AI 客服能查手冊、寫草稿、建工單，只測回答準不準夠嗎？</h2>
+      <div class="scene rv d2">廠商展示 Demo 時問了 10 題保固規定，<span class="hl">AI 全部答對</span>。主管非常滿意，準備下週直接開放全公司上線。</div>
+      <p class="ask rv d3">如果只驗「問答準確率」，會漏掉哪兩個致命風險？</p>
+    </div>
+    <button class="timer rv d2" data-timer aria-label="30 秒計時器，點擊開始"></button>
+  </div>
+</section>
+
+<!-- 11 1-2 角色分工 -->
+<section class="slide bg-gray" data-title="1-2 角色分工與責任邊界">
+  <div class="head rv"><span class="kicker">1-2</span><h2 class="title">角色分工與責任邊界</h2><p class="sub">AI 不是來取代人，是來重新切分責任</p></div>
+  <div class="cards c3">
+    <div class="card bar rv d1" style="--c:var(--teal)"><span class="tag">輔助型</span><h3>給草稿</h3><p>AI 擬稿、人決定。</p><p class="focus"><b>驗重點：</b>人工接手好不好改。</p></div>
+    <div class="card bar rv d2" style="--c:var(--blue)"><span class="tag">把關型</span><h3>人確認放行</h3><p>AI 填單、人按確認。</p><p class="focus"><b>驗重點：</b>防變成無效橡皮圖章。</p></div>
+    <div class="card bar rv d3" style="--c:var(--indigo)"><span class="tag">全自動型</span><h3>獨立執行</h3><p>AI 完事、人看報表。</p><p class="focus"><b>驗重點：</b>異常時有沒有逃生門。</p></div>
+  </div>
+</section>
+
+<!-- 12 1-3 四種後果 -->
+<section class="slide" data-title="1-3 錯誤後果與風險維度">
+  <div class="head rv" style="margin-bottom:44px"><span class="kicker">1-3</span><h2 class="title">錯誤後果與風險維度</h2><p class="sub">先看清楚：AI 犯錯會帶來哪四種後果</p></div>
+  <div class="cards c2" style="gap:30px">
+    <div class="card rv d1" style="padding:40px 46px;display:flex;gap:34px;align-items:center"><div class="num" style="margin:0">01</div><div><h3 style="margin-bottom:8px">財務與營運損失</h3><p>金額算錯、派單派錯產線。</p></div></div>
+    <div class="card rv d2" style="padding:40px 46px;display:flex;gap:34px;align-items:center;--c:var(--indigo)"><div class="num" style="margin:0">02</div><div><h3 style="margin-bottom:8px">法規與合約違約</h3><p>漏抓賠償條款、違規承諾。</p></div></div>
+    <div class="card rv d3" style="padding:40px 46px;display:flex;gap:34px;align-items:center;--c:var(--red)"><div class="num" style="margin:0">03</div><div><h3 style="margin-bottom:8px">資安與權限越界</h3><p>越權查出薪資或他人個資。</p></div></div>
+    <div class="card rv d4" style="padding:40px 46px;display:flex;gap:34px;align-items:center;--c:var(--teal)"><div class="num" style="margin:0">04</div><div><h3 style="margin-bottom:8px">品牌商譽與客訴</h3><p>客服離譜幻覺遭截圖公審。</p></div></div>
+  </div>
+</section>
+
+<!-- 13 1-3 紅黃綠 -->
+<section class="slide bg-gray" data-title="1-3 風險嚴重度分級">
+  <div class="head rv" style="margin-bottom:28px"><span class="kicker">1-3</span><h2 class="title">風險嚴重度示意與分級標準</h2><p class="sub">燈號不是技術分類，而是用來決定「這個錯誤企業賠不賠得起」與「上線前要設多嚴格的把關」</p></div>
+  <div class="cards c3" style="gap:30px">
+    <div class="card bar rv d1" style="--c:var(--red);padding:40px 42px"><span class="tag">高風險示意｜零容忍</span><h3>🔴 紅燈：不可逆重大損失</h3><p><span class="em">示意情境：</span>亂承諾免費維修、未確認建工單、機密外洩。</p><p class="focus"><b>把關做法：</b>強制人工確認，未解決禁上線。</p></div>
+    <div class="card bar rv d2" style="--c:#C27C00;border-top-color:var(--amber);padding:40px 42px"><span class="tag">中風險示意｜設定及格線</span><h3>🟡 黃燈：可補救但耗工時</h3><p><span class="em">示意情境：</span>工單分類分錯部門、查無資料未妥善引導。</p><p class="focus"><b>把關做法：</b>留好「轉交人工」的逃生門。</p></div>
+    <div class="card bar rv d3" style="--c:#1E8E3E;border-top-color:var(--green);padding:40px 42px"><span class="tag">低風險示意｜不阻擋上線</span><h3>🟢 綠燈：體驗瑕疵易修改</h3><p><span class="em">示意情境：</span>草稿語氣略生硬、段落排版小瑕疵。</p><p class="focus"><b>把關做法：</b>人員順手微調，列入後續優化。</p></div>
+  </div>
+</section>
+
+<!-- 14 隨堂思考 02 -->
+<section class="slide bg-dark" data-title="隨堂思考 02">
+  <div class="quiz">
+    <div>
+      <span class="kicker rv">隨堂思考 02｜30 秒快判</span>
+      <h2 class="title rv d1">這一個字寫錯，是哪個風險等級？</h2>
+      <div class="scene rv d2">H100 主機開不了機，故障原因尚未檢測。AI 擬的草稿卻寫著：<br><span class="hl">「保固期內，將為您免費維修。」</span></div>
+      <p class="ask rv d3">這是紅燈、黃燈，還是綠燈？誰是最後一道防線？</p>
+    </div>
+    <button class="timer rv d2" data-timer aria-label="30 秒計時器，點擊開始"></button>
+  </div>
+</section>
+
+<!-- 15 1-4 驗證範圍 -->
+<section class="slide" data-title="1-4 驗證範圍、條件與判定依據">
+  <div class="head rv"><span class="kicker">1-4</span><h2 class="title">驗證範圍、條件與判定依據</h2><p class="sub">沒有先講好「幾分算及格」，驗收只會變成無止盡爭吵</p></div>
+  <div class="cards c3">
+    <div class="card rv d1"><div class="num">01</div><h3>驗證範圍（Scope）</h3><p>鎖定高頻與紅燈場景，排除範圍外功能。</p></div>
+    <div class="card rv d2" style="--c:var(--indigo)"><div class="num">02</div><h3>驗證條件（考題）</h3><p>標準題 ＋ 缺漏髒資料題 ＋ 拒答越權題。</p></div>
+    <div class="card rv d3" style="--c:var(--teal)"><div class="num">03</div><h3>判定依據（門檻）</h3>
+      <div style="display:flex;flex-direction:column;gap:12px;margin-top:6px">
+        <p><span class="em" style="color:var(--red)">紅燈 0%</span></p>
+        <p><span class="em">核心欄位 ≥ 95%</span></p>
+        <p><span class="em">採納率 ≥ 70%</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 16 第一單元實戰演練 -->
+<section class="slide bg-gray" data-title="第一單元實戰演練">
+  <div class="head rv" style="margin-bottom:44px"><span class="kicker">第一單元實戰演練｜宏岳設備 H100</span><h2 class="title">拆解宏岳設備 H100 客服流程與風險</h2></div>
+  <div class="cards c3">
+    <div class="card bar rv d1"><span class="tag">案例一</span><h3>保固查詢</h3><p style="font-size:32px;color:var(--ink)">「買三個月裡面零件壞了，可免費換嗎？」</p></div>
+    <div class="card bar rv d2" style="--c:var(--indigo)"><span class="tag">案例二</span><h3>回覆草稿</h3><p style="font-size:32px;color:var(--ink)">「H100 開不了機，請問可以免費修嗎？」</p></div>
+    <div class="card bar rv d3" style="--c:var(--teal)"><span class="tag">案例三</span><h3>建立工單</h3><p style="font-size:32px;color:var(--ink)">「H100 開不了機，請幫我開維修工單。」</p></div>
+  </div>
+  <div class="go-practice rv d4"><span>畫流程圖、拆任務、評風險</span><a href="unit1.html" target="_blank" rel="noopener">開啟練習一 ↗</a></div>
+</section>
+
+<!-- 17 第一單元總結 -->
+<section class="slide bg-unit" data-title="第一單元總結">
+  <div class="summary">
+    <span class="kicker rv">第一單元最後總結</span>
+    <h2 class="rv d1">依照 AI 要完成的任務，<br>設計不同的驗證方式</h2>
+    <p class="body rv d2">顧問的第一步，不是立刻判斷 AI 好不好，而是協助企業把<b>「想要什麼、不能錯什麼、依據什麼判斷」</b>說清楚。</p>
+  </div>
+</section>
+
+<!-- 18 單元二封面 -->
+<section class="slide bg-unit" data-title="第二單元">
+  <div class="unit-cover">
+    <div class="no rv" style="color:var(--indigo)">第二單元</div>
+    <h1 class="rv d1">情境模擬與證據判讀</h1>
+    <p class="rv d2">知道怎麼驗、憑什麼判斷：設計六類測試考題並依據系統日誌下結論</p>
+  </div>
+  <div class="big-no" style="color:rgba(88,86,214,.07)">02</div>
+</section>
+
+<!-- 19 單元二四步驟 -->
+<section class="slide" data-title="先訂預期結果，再看 AI 表現">
+  <div class="head rv" style="margin-bottom:90px"><span class="kicker" style="color:var(--indigo)">第二單元｜情境模擬與證據判讀</span><h2 class="title">先訂預期結果，再看 AI 表現</h2></div>
+  <div class="steps4">
+    <div class="st rv d1" style="--c:var(--blue)"><div class="circle">1</div><h3>看需求與規則</h3></div>
+    <div class="st rv d2" style="--c:var(--indigo)"><div class="circle">2</div><h3>訂預期結果</h3></div>
+    <div class="st rv d3" style="--c:var(--teal)"><div class="circle">3</div><h3>執行並留紀錄</h3></div>
+    <div class="st rv d4" style="--c:#0EA5E9"><div class="circle">4</div><h3>對照證據判定</h3></div>
+  </div>
+</section>
+
+<!-- 20 2-1 六大情境 -->
+<section class="slide bg-gray" data-title="2-1 六大測試情境設計">
+  <div class="head rv" style="margin-bottom:36px"><span class="kicker" style="color:var(--indigo)">2-1 六大測試情境設計｜以宏岳設備 H100 為例</span><h2 class="title">好考題要涵蓋六種真實考驗</h2></div>
+  <div class="cards c3" style="gap:26px">
+    <div class="card rv d1" style="padding:34px 38px"><span class="tag">1. 正常情境</span><p>問「H100 主機保固多久？」<br><span class="em">→ 準確答一年。</span></p></div>
+    <div class="card rv d2" style="padding:34px 38px"><span class="tag">2. 資訊不足</span><p>問「H100 壞了在保固內嗎？」<br><span class="em">→ 先問購買日。</span></p></div>
+    <div class="card rv d3" style="padding:34px 38px"><span class="tag">3. 模糊或衝突</span><p>問「裡面零件壞了有保固嗎？」<br><span class="em">→ 先問哪個零件。</span></p></div>
+    <div class="card rv d4" style="padding:34px 38px;--c:var(--indigo)"><span class="tag">4. 例外情境</span><p>問「買三個月濾芯壞了可免費換？」<br><span class="em">→ 排除耗材。</span></p></div>
+    <div class="card rv d5" style="padding:34px 38px;--c:var(--red)"><span class="tag">5. 權限與安全</span><p>客服要求「查另一位客戶維修紀錄」<br><span class="em">→ 拒絕越權。</span></p></div>
+    <div class="card rv d6" style="padding:34px 38px;--c:var(--red)"><span class="tag">6. 系統失敗</span><p>模擬工單系統連線逾時<br><span class="em">→ 誠實轉人工不亂報。</span></p></div>
+  </div>
+</section>
+
+<!-- 21 隨堂思考 03 -->
+<section class="slide bg-dark" data-title="隨堂思考 03">
+  <div class="quiz">
+    <div>
+      <span class="kicker rv">隨堂思考 03｜30 秒快判</span>
+      <h2 class="title rv d1">看到這兩行紀錄，你能直接判「重複建單」嗎？</h2>
+      <div class="log rv d2" style="margin-top:44px;font-size:31px">
+        <span class="tm">11:02</span><span class="src">系統紀錄</span><span>送出建單請求，等待回應逾時，未取得工單編號</span>
+        <span class="tm">11:03</span><span class="src">AI 回覆</span><span style="color:#FFD166">「上一筆已成功建立，我再幫你送一次。」</span>
+      </div>
+      <p class="ask rv d3">關於「有沒有重複建單」，現在該判「不通過」還是「待補證」？</p>
+    </div>
+    <button class="timer rv d2" data-timer aria-label="30 秒計時器，點擊開始"></button>
+  </div>
+</section>
+
+<!-- 24 第二單元實戰演練 -->
+<section class="slide bg-gray" data-title="第二單元實戰演練">
+  <div class="head rv" style="margin-bottom:44px"><span class="kicker" style="color:var(--indigo)">第二單元實戰演練｜案例 A 與案例 B</span><h2 class="title">實戰判讀：對照規則 P01–P10，為五個查核點下結論</h2></div>
+  <div class="cards c2">
+    <div class="card bar rv d1" style="--c:var(--green)"><span class="tag" style="color:#1E8E3E">案例 A｜正常情境（證據 A1–A5）</span><h3>A-1 ～ A-3 查核點</h3><p>檢查保固回覆、客服確認與工單 MW-1001 回報。</p></div>
+    <div class="card bar rv d2" style="--c:var(--red)"><span class="tag">案例 B｜風險情境（證據 B1–B4）</span><h3>B-1 ～ B-2 查核點</h3><p>檢查 11:02 逾時誤報成功與重複建單風險。</p></div>
+  </div>
+  <div class="go-practice rv d3"><span>作答 5 分鐘・講評 5 分鐘</span><a href="unit2.html" target="_blank" rel="noopener">開啟練習二 ↗</a></div>
+</section>
+
+<!-- 25 第二單元講評 -->
+<section class="slide" data-title="第二單元講評">
+  <div class="head rv"><span class="kicker" style="color:var(--indigo)">第二單元講評｜參考判定與關鍵證據</span><h2 class="title">B-1 是明確違規「不通過」，<br>B-2 必須調閱日誌「待補證」</h2></div>
+  <div class="cards c3">
+    <div class="card bar rv d1" style="--c:#1E8E3E;border-top-color:var(--green)"><span class="tag">A-1～A-3</span><h3>通過</h3><p>先核對確認，取得單號 MW-1001 才回報（A1–A5）。</p></div>
+    <div class="card bar rv d2" style="--c:var(--red)"><span class="tag">B-1</span><h3>不通過</h3><p>證據 B3 回應逾時，B4 卻無單號直接宣稱成功。</p></div>
+    <div class="card bar rv d3" style="--c:#C27C00;border-top-color:var(--amber)"><span class="tag">B-2</span><h3>待補證</h3><p>需調閱後續工具呼叫與工單系統實際紀錄確認。</p></div>
+  </div>
+</section>
+
+<!-- 26 第二單元總結 -->
+<section class="slide bg-unit" data-title="第二單元總結">
+  <div class="summary">
+    <span class="kicker rv" style="color:var(--indigo)">第二單元最後總結</span>
+    <h2 class="rv d1">沒有紀錄的測試只是聊天，<br>有證據的判讀才能服人</h2>
+    <p class="body rv d2" style="border-color:var(--indigo)">驗收不能只看「正常情況答得多順」，必須用例外、越權與系統異常情境考驗邊界，並以<b>系統實際執行紀錄作為唯一判讀依據</b>。</p>
+  </div>
+</section>
+
+<!-- 27 單元三封面 -->
+<section class="slide bg-unit" data-title="第三單元">
+  <div class="unit-cover">
+    <div class="no rv" style="color:var(--teal)">第三單元</div>
+    <h1 class="rv d1">改善與再驗證</h1>
+    <p class="rv d2">知道下一步要改什麼、如何證明改善有效：區分事實假設並執行回歸測試</p>
+  </div>
+  <div class="big-no" style="color:rgba(13,148,136,.08)">03</div>
+</section>
+
+<!-- 28 六大改善層面 -->
+<section class="slide bg-gray" data-title="六大改善層面">
+  <div class="head rv"><span class="kicker" style="color:var(--teal)">第三單元｜改善與再驗證</span><h2 class="title">超過一半的 AI 問題，解法不在「改 Prompt」</h2></div>
+  <div class="cards c3" style="gap:28px;--c:var(--teal)">
+    <div class="card rv d1" style="padding:36px 40px;display:flex;align-items:center;gap:28px"><div class="num" style="margin:0;font-size:64px">1</div><h3 style="margin:0">規則與資料</h3></div>
+    <div class="card rv d2" style="padding:36px 40px;display:flex;align-items:center;gap:28px"><div class="num" style="margin:0;font-size:64px">2</div><h3 style="margin:0">AI 回答與判斷</h3></div>
+    <div class="card rv d3" style="padding:36px 40px;display:flex;align-items:center;gap:28px"><div class="num" style="margin:0;font-size:64px">3</div><h3 style="margin:0">工具與系統防呆</h3></div>
+    <div class="card rv d4" style="padding:36px 40px;display:flex;align-items:center;gap:28px"><div class="num" style="margin:0;font-size:64px">4</div><h3 style="margin:0">權限與人工核準</h3></div>
+    <div class="card rv d5" style="padding:36px 40px;display:flex;align-items:center;gap:28px"><div class="num" style="margin:0;font-size:64px">5</div><h3 style="margin:0">現場工作流程</h3></div>
+    <div class="card rv d6" style="padding:36px 40px;display:flex;align-items:center;gap:28px"><div class="num" style="margin:0;font-size:64px">6</div><h3 style="margin:0">使用規範與管理</h3></div>
+  </div>
+</section>
+
+<!-- 29 隨堂思考 05 -->
+<section class="slide bg-dark" data-title="隨堂思考 05">
+  <div class="quiz">
+    <div>
+      <span class="kicker rv">隨堂思考 05｜30 秒快判</span>
+      <h2 class="title rv d1">AI 逾時卻亂報「建單成功」，第一時間該改哪裡？</h2>
+      <div class="rv d2" style="display:grid;gap:22px;margin-top:44px">
+        <div class="scene" style="margin:0"><span class="hl">選項 A</span>　修改 Prompt，叫 AI「語氣誠實一點，不要亂講」</div>
+        <div class="scene" style="margin:0"><span class="hl">選項 B</span>　修改系統程式，沒收到「工單編號」就不准顯示成功畫面</div>
+      </div>
+      <p class="ask rv d3">你是顧問，你會把哪一個列為「第一時間馬上先改」？</p>
+    </div>
+    <button class="timer rv d2" data-timer aria-label="30 秒計時器，點擊開始"></button>
+  </div>
+</section>
+
+<!-- 30 3-2 優先序 -->
+<section class="slide" data-title="3-2 排定改善優先順序">
+  <div class="head rv"><span class="kicker" style="color:var(--teal)">3-2</span><h2 class="title">排定改善優先順序</h2><p class="sub">資源有限，依嚴重度與暫時控制排定三級優先序</p></div>
+  <div class="cards c3">
+    <div class="card bar rv d1" style="--c:var(--red)"><div class="num">P0</div><h3>立即處理</h3><p>涉及越權、不可逆或紅燈錯誤，<span class="em">不改禁上線。</span></p></div>
+    <div class="card bar rv d2" style="--c:#C27C00;border-top-color:var(--amber)"><div class="num">P1</div><h3>試行前處理</h3><p>影響核心效率，或先設人工核對暫時控制。</p></div>
+    <div class="card bar rv d3" style="--c:#1E8E3E;border-top-color:var(--green)"><div class="num">P2</div><h3>持續優化</h3><p>語氣與排版體驗微調，上線後逐步迭代。</p></div>
+  </div>
+</section>
+
+<!-- 31 3-3 回歸 -->
+<section class="slide bg-gray" data-title="3-3 設計再驗證方式">
+  <div class="head rv"><span class="kicker" style="color:var(--teal)">3-3</span><h2 class="title">設計再驗證方式（回歸測試）</h2><p class="sub">修好 B 不能改壞 A，上線前必須完成再驗證</p></div>
+  <div class="cards c3" style="--c:var(--teal)">
+    <div class="card rv d1"><div class="num">01</div><h3>重測與變形</h3><p>重跑失敗案例並增加相似異常情境。</p></div>
+    <div class="card rv d2"><div class="num">02</div><h3>回歸與盲測</h3><p>重跑通過案例防副作用，留盲測題防死背。</p></div>
+    <div class="card rv d3"><div class="num">03</div><h3>版本與限制</h3><p>比較前後工時與錯誤率，標明適用限制。</p></div>
+  </div>
+  <div class="go-practice rv d4"><span>改善與再驗證計畫</span><a href="unit3.html" target="_blank" rel="noopener">開啟練習三 ↗</a></div>
+</section>
+
+<!-- 32 隨堂思考 06 -->
+<section class="slide bg-dark" data-title="隨堂思考 06">
+  <div class="quiz">
+    <div>
+      <span class="kicker rv">隨堂思考 06｜30 秒快判</span>
+      <h2 class="title rv d1">剛剛出錯的案例 B 終於重測通過了，可以直接上線嗎？</h2>
+      <div class="scene rv d2">工程師回報：<span class="hl">「逾時誤報的問題修好了，我重跑一次案例 B 已經完全正常！」</span></div>
+      <p class="ask rv d3">上線放行前，顧問還必須堅持多做哪一件事？</p>
+    </div>
+    <button class="timer rv d2" data-timer aria-label="30 秒計時器，點擊開始"></button>
+  </div>
+</section>
+
+<!-- 34 第三單元總結 -->
+<section class="slide bg-unit" data-title="第三單元總結">
+  <div class="summary">
+    <span class="kicker rv" style="color:var(--teal)">第三單元最後總結</span>
+    <h2 class="rv d1">用結構化改善與回歸測試，<br>讓每一次調整都經得起檢驗</h2>
+    <p class="body rv d2" style="border-color:var(--teal)">真正的 AI 顧問價值，不在於把準確率從 90% 調到 92%，而是<b>透過流程與系統防呆消除紅燈風險</b>，並用完整的回歸測試守住上線品質。</p>
+  </div>
+</section>
+
+<!-- 35 全場總結 -->
+<section class="slide bg-end" data-title="全場總結思考">
+  <div style="display:flex;flex-direction:column;justify-content:center;height:100%">
+    <span class="kicker rv" style="font-size:30px">全場總結思考｜顧問心法</span>
+    <h2 class="rv d1" style="font-size:72px;font-weight:900;line-height:1.4;letter-spacing:-0.015em;max-width:1600px">「AI 導入的成敗，從來不在模型有多聰明，<br>而在企業是否<span style="color:var(--blue)">定義清楚紅線、留下證據</span>，<br>並<span style="color:var(--teal)">守住每一次回歸底線</span>。」</h2>
+    <div class="card rv d2" style="margin-top:56px;max-width:1500px;padding:36px 44px"><p style="font-size:32px"><span class="em">課後思考：</span>回到你的組織，目前哪一個 AI 應用最需要立刻補上「人工確認防呆」與「異常考題」？</p></div>
+    <p class="rv d3" style="margin-top:56px;font-size:28px;color:var(--muted)">黃庭豪（bryant）｜秦毅數位科技有限公司　·　bryant6831@gmail.com　·　www.71next.com</p>
+  </div>
+</section>
+
+</main>
+</div>
+
+<nav class="deck-controls" aria-label="簡報控制">
+  <a href="index.html" title="回課程首頁" aria-label="回課程首頁">⌂</a>
+  <span class="sep"></span>
+  <button id="prevBtn" title="上一頁（←）" aria-label="上一頁">‹</button>
+  <span class="count" id="count">1 / 1</span>
+  <button id="nextBtn" title="下一頁（→）" aria-label="下一頁">›</button>
+  <span class="sep"></span>
+  <button id="fsBtn" title="全螢幕（F）" aria-label="全螢幕">⛶</button>
+</nav>
+
+<script>
+/* ============================================================
+   簡報控制器：舞台縮放、鍵盤／滑鼠滾輪／觸控翻頁、網址 #頁碼、30 秒計時器
+   ============================================================ */
+class SlidePresentation {
+  constructor() {
+    this.slides = [...document.querySelectorAll('.slide')];
+    this.stage = document.getElementById('deckStage');
+    this.count = document.getElementById('count');
+    this.progress = document.getElementById('progress');
+    this.current = -1;
+    this.setupScale();
+    this.setupNav();
+    this.setupTimers();
+    const n = parseInt(location.hash.slice(1), 10);
+    this.show(Number.isFinite(n) ? n - 1 : 0);
+  }
+  setupScale() {
+    const fit = () => {
+      const f = Math.min(innerWidth / 1920, innerHeight / 1080);
+      this.stage.style.transform = `translate(${(innerWidth - 1920 * f) / 2}px, ${(innerHeight - 1080 * f) / 2}px) scale(${f})`;
+    };
+    fit(); addEventListener('resize', fit);
+  }
+  setupNav() {
+    document.addEventListener('keydown', (e) => {
+      if (e.target.closest('a, button, input, textarea, select, [contenteditable]') && [' ', 'Enter'].includes(e.key)) return;
+      if (e.target.closest('input, textarea, select, [contenteditable]')) return;
+      const k = e.key;
+      if (['ArrowRight', 'ArrowDown', 'PageDown', ' ', 'Enter'].includes(k)) { e.preventDefault(); this.next(); }
+      else if (['ArrowLeft', 'ArrowUp', 'PageUp', 'Backspace'].includes(k)) { e.preventDefault(); this.prev(); }
+      else if (k === 'Home') this.show(0);
+      else if (k === 'End') this.show(this.slides.length - 1);
+      else if (k === 'f' || k === 'F') this.fullscreen();
+    });
+    document.getElementById('prevBtn').onclick = () => this.prev();
+    document.getElementById('nextBtn').onclick = () => this.next();
+    document.getElementById('fsBtn').onclick = () => this.fullscreen();
+    let lock = false;
+    addEventListener('wheel', (e) => {
+      if (lock || Math.abs(e.deltaY) < 30) return;
+      lock = true; setTimeout(() => lock = false, 650);
+      e.deltaY > 0 ? this.next() : this.prev();
+    }, { passive: true });
+    let sx = 0, sy = 0;
+    addEventListener('touchstart', (e) => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive: true });
+    addEventListener('touchend', (e) => {
+      const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) dx < 0 ? this.next() : this.prev();
+      else { document.body.classList.add('show-ui'); clearTimeout(this.uiT); this.uiT = setTimeout(() => document.body.classList.remove('show-ui'), 2500); }
+    }, { passive: true });
+    addEventListener('hashchange', () => { const n = parseInt(location.hash.slice(1), 10); if (Number.isFinite(n) && n - 1 !== this.current) this.show(n - 1); });
+  }
+  next() { this.show(this.current + 1); }
+  prev() { this.show(this.current - 1); }
+  show(i) {
+    i = Math.max(0, Math.min(i, this.slides.length - 1));
+    if (i === this.current) return;
+    this.slides.forEach((s, j) => s.classList.toggle('active', j === i));
+    this.current = i;
+    this.count.textContent = `${i + 1} / ${this.slides.length}`;
+    this.progress.style.width = `${((i + 1) / this.slides.length) * 100}%`;
+    history.replaceState(null, '', `#${i + 1}`);
+    document.title = `${this.slides[i].dataset.title || ''}｜AI 應用驗收評估與改善策略`;
+  }
+  fullscreen() {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen?.();
+    else document.exitFullscreen?.();
+  }
+  /* 隨堂思考的 30 秒計時器：點一下開始，再點一下重設 */
+  setupTimers() {
+    const R = 240, C = 2 * Math.PI * R;
+    document.querySelectorAll('[data-timer]').forEach((btn) => {
+      btn.innerHTML = `<svg viewBox="0 0 520 520"><circle class="track" cx="260" cy="260" r="${R}"/><circle class="prog" cx="260" cy="260" r="${R}" stroke-dasharray="${C}" stroke-dashoffset="0"/></svg><span class="inner"><span class="t">30</span><span class="s">點擊開始計時</span></span>`;
+      const prog = btn.querySelector('.prog'), t = btn.querySelector('.t'), s = btn.querySelector('.s');
+      let left = 30, iv = null;
+      const reset = () => { clearInterval(iv); iv = null; left = 30; t.textContent = '30'; s.textContent = '點擊開始計時'; prog.style.strokeDashoffset = 0; btn.classList.remove('done'); };
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (iv || btn.classList.contains('done')) return reset();
+        s.textContent = '秒';
+        iv = setInterval(() => {
+          left--; t.textContent = left; prog.style.strokeDashoffset = C * (1 - left / 30);
+          if (left <= 0) { clearInterval(iv); iv = null; btn.classList.add('done'); s.textContent = '時間到！'; }
+        }, 1000);
+      });
+    });
+  }
+}
+new SlidePresentation();
+</script>
+</body>
+</html>

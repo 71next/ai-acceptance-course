@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>講師後台｜AI 應用驗收評估</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  .admin-grid { display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 20px; align-items: start; }
+  @media (max-width: 900px) { .admin-grid { grid-template-columns: 1fr; } }
+  .sess-list { list-style: none; margin: 0 0 14px; padding: 0; }
+  .sess-list button { width: 100%; text-align: left; appearance: none; border: 1px solid transparent; background: none; cursor: pointer; font: inherit; padding: 10px 12px; border-radius: 12px; display: flex; flex-direction: column; }
+  .sess-list button:hover { background: var(--bg); }
+  .sess-list button.on { background: var(--blue-soft); border-color: #CFE2FA; }
+  .sess-list .c { font-weight: 800; }
+  .sess-list .n { font-size: 13px; color: var(--muted); }
+  .ctrl-row { display: flex; flex-wrap: wrap; gap: 10px 20px; align-items: center; }
+  .switch { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 600; font-size: 15px; user-select: none; }
+  .switch input { position: absolute; opacity: 0; pointer-events: none; }
+  .switch .tg { width: 42px; height: 26px; border-radius: 999px; background: #D2D2D7; position: relative; transition: background .2s; flex: none; }
+  .switch .tg::after { content: ''; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.2); transition: transform .2s; }
+  .switch input:checked + .tg { background: var(--green-dot); }
+  .switch input:checked + .tg::after { transform: translateX(16px); }
+  .switch input:focus-visible + .tg { box-shadow: 0 0 0 3px rgba(0,113,227,.3); }
+  .stat { background: var(--bg); border-radius: 14px; padding: 14px 16px; }
+  .stat .v { font-size: 28px; font-weight: 900; font-variant-numeric: tabular-nums; }
+  .stat .l { font-size: 13px; color: var(--muted); }
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 18px; }
+  .bar { display: flex; height: 30px; border-radius: 8px; overflow: hidden; background: var(--bg); margin: 8px 0; }
+  .bar span { display: grid; place-items: center; color: #fff; font-size: 13px; font-weight: 700; min-width: 0; transition: width .4s; white-space: nowrap; overflow: hidden; }
+  .bar .pass, .bar .green { background: var(--green); } .bar .fail, .bar .red { background: var(--red); } .bar .pending, .bar .yellow { background: var(--amber-dot); color: #3A2A00; } .bar .none { background: #C7C7CC; }
+  .legend-row { display: flex; gap: 14px; flex-wrap: wrap; font-size: 13px; color: var(--ink-2); }
+  .aq { border: 1px solid var(--line); border-radius: 16px; padding: 18px; margin-bottom: 14px; }
+  .aq h3 { font-size: 17px; }
+  .ans-list { list-style: none; padding: 0; margin: 10px 0 0; max-height: 360px; overflow: auto; }
+  .ans-list li { padding: 8px 0; border-top: 1px solid var(--line); font-size: 15px; }
+  .ans-list .who { font-weight: 700; margin-right: 8px; }
+  .ev-chips { display: flex; gap: 6px; flex-wrap: wrap; }
+  .ev-chips span { font-size: 13px; padding: 3px 9px; border-radius: 7px; background: var(--blue-soft); color: var(--blue); font-weight: 700; }
+  .ev-chips span.zero { background: var(--bg); color: var(--muted); }
+  .st-dot { display: inline-block; font-size: 13px; font-weight: 700; padding: 2px 8px; border-radius: 999px; }
+  .st-dot.sub { background: var(--green-soft); color: var(--green); }
+  .st-dot.dr { background: var(--amber-soft); color: var(--amber); }
+  .st-dot.no { background: var(--bg); color: var(--muted); }
+  body.project { font-size: 19px; }
+  body.project .ans-list li { font-size: 19px; }
+  body.project .aq h3 { font-size: 22px; }
+  .flow-mini { background: #FAFAFC; border: 1px solid var(--line); border-radius: 12px; padding: 10px; overflow: auto; margin: 8px 0 14px; }
+  .flow-mini svg { max-width: 100%; height: auto; }
+  textarea.md-edit { min-height: 320px; font-family: ui-monospace, Menlo, monospace; font-size: 13px; }
+  .detail-sec { margin-bottom: 22px; }
+  .login-box { max-width: 520px; margin: 60px auto; text-align: center; }
+  code.uid { display: inline-block; background: var(--bg); padding: 6px 10px; border-radius: 8px; font-size: 13px; word-break: break-all; user-select: all; }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="page-head">
+    <span class="eyebrow">講師後台</span>
+    <h1>梯次管理與作答總覽</h1>
+    <p class="lead" id="modeNote"></p>
+  </div>
+  <div id="app"><p class="muted">載入中…</p></div>
+</main>
+
+<script type="module">
+import { CLOUD, fb, currentUser, LS, esc, normCode, localSessions, saveLocalSessions, UNITS, toast } from './assets/app.js';
+import { CASES } from './assets/unit1-data.js';
+import { renderFlow, stepNo } from './assets/flow.js';
+import { U2_QUESTIONS, VERDICTS } from './assets/carry.js';
+
+const app = document.getElementById('app');
+const header = document.createElement('header');
+header.className = 'site-header';
+header.innerHTML = `<a class="brand" href="index.html"><span class="brand-mark"></span><span>AI 應用驗收評估</span></a><nav><a href="index.html">回網站</a><a href="slides.html" target="_blank">簡報</a></nav><div class="who" id="who"></div>`;
+document.body.prepend(header);
+
+document.getElementById('modeNote').innerHTML = CLOUD
+  ? '雲端模式：學員作答即時同步到 Firebase。'
+  : '<span class="pill yellow">本機模式</span>　尚未設定 Firebase，只看得到這台電腦瀏覽器裡的作答（適合預覽測試）。設定方式見專案的 <code>部署與Firebase設定.md</code>。';
+
+let sessions = {};          // code -> session
+let cur = null;             // 目前梯次代碼
+let responses = [];         // 目前梯次全部作答
+let tab = 'overview';
+let refs = { u1: '', u2: '', u3: '' };
+let unsubS = () => { }, unsubR = () => { };
+
+// ============================================================
+// 登入
+// ============================================================
+async function start() {
+  if (!CLOUD) { refs = { u1: '', u2: '', u3: '', ...LS.get('aiw:refs', {}) }; watchSessions(); return; }
+  const f = await fb();
+  const u = await currentUser();
+  if (!u || u.isAnonymous) return renderLogin();
+  const who = document.getElementById('who');
+  who.innerHTML = `<span class="who-name">${esc(u.displayName || u.email || '')}</span><button class="link" id="logout">登出</button>`;
+  document.getElementById('logout').onclick = async () => { await f.au.signOut(f.auth); location.reload(); };
+  let isAdmin = false;
+  try { isAdmin = (await f.fs.getDoc(f.fs.doc(f.db, 'admins', u.uid))).exists(); } catch (e) { console.warn(e); }
+  if (!isAdmin) {
+    app.innerHTML = `<div class="card login-box"><h2>這個帳號還不是講師</h2>
+      <p>請到 Firebase Console → Firestore Database → 建立集合 <code>admins</code>，新增一份文件，<strong>文件 ID</strong> 填入下面這串 UID（欄位可隨意，例如 <code>name</code>）。完成後重新整理此頁。</p>
+      <p><code class="uid">${esc(u.uid)}</code></p>
+      <div class="row-end" style="justify-content:center"><button class="btn" id="copyUid">複製 UID</button><button class="btn primary" onclick="location.reload()">重新整理</button></div></div>`;
+    document.getElementById('copyUid').onclick = () => navigator.clipboard?.writeText(u.uid).then(() => toast('已複製'));
+    return;
+  }
+  try {
+    const snaps = await Promise.all(['u1', 'u2', 'u3'].map((k) => f.fs.getDoc(f.fs.doc(f.db, 'refs', k))));
+    snaps.forEach((s, i) => { if (s.exists()) refs[['u1', 'u2', 'u3'][i]] = s.data().md || ''; });
+  } catch (e) { console.warn(e); }
+  watchSessions();
+}
+
+function renderLogin() {
+  app.innerHTML = `<div class="card login-box"><h2>講師登入</h2><p class="muted">請用你的 Google 帳號登入。</p><button class="btn primary" id="login">使用 Google 登入</button><p class="form-error" id="lerr" hidden></p></div>`;
+  document.getElementById('login').onclick = async () => {
+    const f = await fb();
+    try { await f.au.signInWithPopup(f.auth, new f.au.GoogleAuthProvider()); location.reload(); }
+    catch (e) { const el = document.getElementById('lerr'); el.textContent = '登入失敗：' + (e.code || e.message); el.hidden = false; }
+  };
+}
+
+// ============================================================
+// 梯次
+// ============================================================
+async function watchSessions() {
+  if (!CLOUD) {
+    const load = () => { sessions = localSessions(); render(); };
+    addEventListener('storage', load); load();
+    return;
+  }
+  const f = await fb();
+  f.fs.onSnapshot(f.fs.collection(f.db, 'sessions'), (qs) => {
+    sessions = {}; qs.forEach((d) => { sessions[d.id] = d.data(); });
+    render();
+  }, (e) => { app.innerHTML = `<div class="card">讀取梯次失敗：${esc(e.message)}</div>`; });
+}
+
+async function createSession(code, name) {
+  const data = { name: name || code, open: true, reveal: { u1: false, u2: false, u3: false }, createdAt: Date.now() };
+  if (!CLOUD) { const m = localSessions(); if (m[code]) throw new Error('代碼已存在'); m[code] = data; saveLocalSessions(m); sessions = m; return; }
+  const f = await fb();
+  const ref = f.fs.doc(f.db, 'sessions', code);
+  if ((await f.fs.getDoc(ref)).exists()) throw new Error('代碼已存在');
+  await f.fs.setDoc(ref, data);
+}
+
+async function patchSession(code, patch) {
+  if (!CLOUD) { const m = localSessions(); m[code] = { ...m[code], ...patch, reveal: { ...m[code].reveal, ...(patch.reveal || {}) } }; saveLocalSessions(m); sessions = m; render(); return; }
+  const f = await fb();
+  const upd = {};
+  for (const [k, v] of Object.entries(patch)) {
+    if (k === 'reveal') for (const [u, b] of Object.entries(v)) upd[`reveal.${u}`] = b;
+    else upd[k] = v;
+  }
+  await f.fs.updateDoc(f.fs.doc(f.db, 'sessions', code), upd);
+}
+
+async function setReveal(code, unit, on) {
+  if (on && !refs[unit].trim()) { toast('請先在「參考答案」分頁填入或匯入這個單元的參考答案', 'err'); render(); return; }
+  if (CLOUD && on) {
+    const f = await fb();
+    await f.fs.setDoc(f.fs.doc(f.db, 'sessions', code, 'refs', unit), { md: refs[unit], at: Date.now() });
+  }
+  await patchSession(code, { reveal: { [unit]: on } });
+  toast(on ? `已開放${UNITS[unit]}參考答案` : `已關閉${UNITS[unit]}參考答案`);
+}
+
+function selectSession(code) {
+  cur = code; responses = []; unsubR();
+  if (!CLOUD) {
+    const load = () => {
+      responses = LS.keys().filter((k) => k.startsWith(`aiw:resp:${code}:`)).map((k) => {
+        const r = LS.get(k, {}); return { id: k, uid: 'local:' + r.name, name: r.name, unit: r.unit, data: r.data, status: r.status, clientUpdatedAt: r.clientUpdatedAt };
+      }).filter((r) => r.unit);
+      render();
+    };
+    const on = (e) => { if (!e.key || e.key.startsWith('aiw:resp:')) load(); };
+    addEventListener('storage', on); addEventListener('aiw-local', load);
+    unsubR = () => { removeEventListener('storage', on); removeEventListener('aiw-local', load); };
+    load(); return;
+  }
+  fb().then((f) => {
+    unsubR = f.fs.onSnapshot(f.fs.collection(f.db, 'sessions', code, 'responses'), (qs) => {
+      responses = []; qs.forEach((d) => responses.push({ id: d.id, ...d.data() }));
+      render();
+    }, (e) => toast('讀取作答失敗：' + e.message, 'err'));
+  });
+  render();
+}
+
+// ============================================================
+// 畫面
+// ============================================================
+function render() {
+  const codes = Object.keys(sessions).sort((a, b) => (sessions[b].createdAt || 0) - (sessions[a].createdAt || 0));
+  if (cur && !sessions[cur]) cur = null;
+  const focused = document.activeElement?.closest?.('[data-keep]') ? document.activeElement.dataset.keep : null;
+  if (focused) return; // 編輯參考答案時不重繪
+  // 重繪前保存「建立梯次」表單內容與焦點，避免學員即時更新時清掉講師正在輸入的文字
+  const oldForm = app.querySelector('#newSess');
+  const keep = oldForm ? { code: oldForm.code.value, name: oldForm.name.value, focus: document.activeElement?.form === oldForm ? document.activeElement.name : null } : null;
+  app.innerHTML = `
+    <div class="admin-grid">
+      <aside class="card">
+        <h3>梯次</h3>
+        <ul class="sess-list">${codes.map((c) => `<li><button data-sess="${esc(c)}" class="${c === cur ? 'on' : ''}"><span class="c">${esc(c)}</span><span class="n">${esc(sessions[c].name || '')}${sessions[c].open === false ? '・已關閉' : ''}</span></button></li>`).join('') || '<li class="muted tiny">尚無梯次</li>'}</ul>
+        <form id="newSess" autocomplete="off">
+          <label class="field"><span>新梯次代碼</span><input name="code" required placeholder="例如 III-1119" maxlength="30"></label>
+          <label class="field"><span>名稱（選填）</span><input name="name" placeholder="例如 資策會 11/19 下午班" maxlength="60"></label>
+          <button class="btn primary" style="width:100%">建立梯次</button>
+        </form>
+      </aside>
+      <section>${cur ? sessionView() : '<div class="card muted">← 選擇或建立一個梯次。學員用梯次代碼進入練習。</div>'}</section>
+    </div>`;
+  if (keep) {
+    const f = app.querySelector('#newSess');
+    f.code.value = keep.code; f.name.value = keep.name;
+    if (keep.focus) f[keep.focus].focus();
+  }
+  app.querySelectorAll('[data-sess]').forEach((b) => b.onclick = () => selectSession(b.dataset.sess));
+  app.querySelector('#newSess').onsubmit = async (e) => {
+    e.preventDefault();
+    const code = normCode(e.target.code.value);
+    if (!/^[A-Z0-9_-]{2,30}$/.test(code)) return toast('代碼只能用英數字、- 或 _', 'err');
+    try { await createSession(code, e.target.name.value.trim()); e.target.reset(); toast('已建立梯次 ' + code); selectSession(code); app.querySelector('#newSess')?.reset(); }
+    catch (ex) { toast(ex.message, 'err'); }
+  };
+  if (cur) bindSession();
+}
+
+function sessionView() {
+  const s = sessions[cur];
+  const tabs = [['overview', '總覽'], ['u1', '練習一'], ['u2', '練習二'], ['u3', '練習三'], ['refs', '參考答案']];
+  const cnt = (u) => responses.filter((r) => r.unit === u).length;
+  return `
+    <div class="card">
+      <div class="row-end" style="justify-content:space-between;align-items:flex-start">
+        <div><h2 style="margin:0">${esc(cur)}</h2><p class="muted" style="margin:0">${esc(s.name || '')}</p></div>
+        <div class="row-end"><button class="btn small ghost" id="projBtn">${document.body.classList.contains('project') ? '一般字級' : '投影放大'}</button><button class="btn small" id="csvBtn">匯出 CSV</button></div>
+      </div>
+      <div class="ctrl-row" style="margin-top:16px">
+        <label class="switch"><input type="checkbox" data-open ${s.open !== false ? 'checked' : ''}><span class="tg"></span>開放作答</label>
+        ${['u1', 'u2', 'u3'].map((u) => `<label class="switch"><input type="checkbox" data-reveal="${u}" ${s.reveal?.[u] ? 'checked' : ''}><span class="tg"></span>${UNITS[u]}參考答案</label>`).join('')}
+      </div>
+    </div>
+    <div class="tabs">${tabs.map(([k, n]) => `<button data-tab="${k}" class="${tab === k ? 'on' : ''}">${n}${['u1', 'u2', 'u3'].includes(k) ? `<span class="count">${cnt(k)}</span>` : ''}</button>`).join('')}</div>
+    <div id="tabBody">${tabBody()}</div>`;
+}
+
+function bindSession() {
+  app.querySelectorAll('[data-tab]').forEach((b) => b.onclick = () => { tab = b.dataset.tab; render(); });
+  app.querySelector('[data-open]').onchange = (e) => patchSession(cur, { open: e.target.checked });
+  app.querySelectorAll('[data-reveal]').forEach((el) => el.onchange = () => setReveal(cur, el.dataset.reveal, el.checked));
+  app.querySelector('#projBtn').onclick = () => { document.body.classList.toggle('project'); render(); };
+  app.querySelector('#csvBtn').onclick = exportCsv;
+  app.querySelectorAll('[data-detail]').forEach((b) => b.onclick = () => showDetail(b.dataset.detail));
+  if (tab === 'refs') bindRefs();
+}
+
+const byUnit = (u) => responses.filter((r) => r.unit === u).sort((a, b) => String(a.name).localeCompare(String(b.name), 'zh-Hant'));
+const stDot = (r) => !r ? '<span class="st-dot no">未作答</span>' : r.status === 'submitted' ? '<span class="st-dot sub">已送出</span>' : '<span class="st-dot dr">作答中</span>';
+const fmtT = (t) => t ? new Date(t).toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit' }) : '';
+
+function tabBody() {
+  if (tab === 'overview') return overview();
+  if (tab === 'u1') return u1View();
+  if (tab === 'u2') return u2View();
+  if (tab === 'u3') return u3View();
+  if (tab === 'refs') return refsView();
+  return '';
+}
+
+// ---------- 總覽 ----------
+function people() {
+  const m = new Map();
+  responses.forEach((r) => { const k = r.uid || r.name; if (!m.has(k)) m.set(k, { key: k, name: r.name, u: {} }); m.get(k).u[r.unit] = r; });
+  return [...m.values()].sort((a, b) => String(a.name).localeCompare(String(b.name), 'zh-Hant'));
+}
+function overview() {
+  const ps = people();
+  const sub = (u) => responses.filter((r) => r.unit === u && r.status === 'submitted').length;
+  return `<div class="card">
+    <div class="stats">
+      <div class="stat"><div class="v">${ps.length}</div><div class="l">參與人數／組數</div></div>
+      ${['u1', 'u2', 'u3'].map((u) => `<div class="stat"><div class="v">${sub(u)}<span class="muted" style="font-size:16px"> / ${byUnit(u).length}</span></div><div class="l">${UNITS[u]} 已送出／作答中</div></div>`).join('')}
+    </div>
+    <div class="table-wrap"><table><thead><tr><th>姓名／組別</th><th>練習一</th><th>練習二</th><th>練習三</th><th>最後更新</th><th></th></tr></thead><tbody>
+    ${ps.map((p) => `<tr><td><strong>${esc(p.name)}</strong></td>${['u1', 'u2', 'u3'].map((u) => `<td>${stDot(p.u[u])}</td>`).join('')}<td class="muted">${fmtT(Math.max(...Object.values(p.u).map((r) => r.clientUpdatedAt || 0)))}</td><td><button class="btn small ghost" data-detail="${esc(p.key)}">查看</button></td></tr>`).join('') || '<tr><td colspan="6" class="muted">還沒有人作答。</td></tr>'}
+    </tbody></table></div></div>`;
+}
+
+// ---------- 練習一 ----------
+const LNAME = { red: '紅燈', yellow: '黃燈', green: '綠燈' };
+// 學員資料不可信：燈號、判定、優先序一律用白名單轉換後才放進 HTML
+const okLight = (v) => (['red', 'yellow', 'green'].includes(v) ? v : '');
+const okVerdict = (v) => (['pass', 'fail', 'pending'].includes(v) ? v : '');
+const okPrio = (v) => (['P0', 'P1', 'P2'].includes(v) ? v : '');
+function stepLabel(d, ck, sid) {
+  const c = d?.cases?.[ck]; if (!c || !sid) return '';
+  const i = c.steps.findIndex((s) => s.id === sid);
+  return i < 0 ? '' : `${stepNo(ck, i)} ${c.steps[i].action || ''}`;
+}
+function distBar(counts, order, names) {
+  const tot = order.reduce((a, k) => a + (counts[k] || 0), 0);
+  if (!tot) return '<div class="bar"><span class="none" style="width:100%">尚無資料</span></div>';
+  return `<div class="bar">${order.map((k) => counts[k] ? `<span class="${k}" style="width:${(counts[k] / tot) * 100}%">${names[k]} ${counts[k]}</span>` : '').join('')}</div>`;
+}
+function u1View() {
+  const rs = byUnit('u1');
+  if (!rs.length) return '<div class="card muted">還沒有人作答練習一。</div>';
+  let out = '';
+  for (const [ck, C] of Object.entries(CASES)) {
+    const all = rs.flatMap((r) => (r.data?.cases?.[ck]?.risks || []).filter((x) => x.light || x.issue).map((x) => ({ r, x })));
+    const cnt = {}; all.forEach(({ x }) => { const l = okLight(x.light); if (l) cnt[l] = (cnt[l] || 0) + 1; });
+    out += `<div class="aq"><h3>${C.no}｜${C.title}</h3>${distBar(cnt, ['red', 'yellow', 'green'], LNAME)}
+      <ul class="ans-list">${all.map(({ r, x }) => `<li><span class="who">${esc(r.name)}</span>${okLight(x.light) ? `<span class="pill ${okLight(x.light)}">${LNAME[okLight(x.light)]}</span> ` : ''}<span class="muted">${esc(stepLabel(r.data, ck, x.step))}</span><br>${esc(x.issue)}${x.impact ? `<div class="tiny muted">影響：${esc(x.impact)}</div>` : ''}</li>`).join('') || '<li class="muted">尚無風險</li>'}</ul></div>`;
+  }
+  out += `<div class="aq"><h3>全班共用案例：工單逾時後回報結果（案例三步驟）</h3><ul class="ans-list">${rs.map((r) => { const h = r.data?.handoff?.shared; return h?.step || h?.reason ? `<li><span class="who">${esc(r.name)}</span><span class="pill blue">${esc(stepLabel(r.data, 'C', h.step) || '未選步驟')}</span><br>${esc(h.reason || '')}</li>` : ''; }).join('') || '<li class="muted">尚無</li>'}</ul></div>`;
+  out += `<div class="aq"><h3>自選優先風險</h3><ul class="ans-list">${rs.map((r) => { const h = r.data?.handoff?.priority; return h?.case ? `<li><span class="who">${esc(r.name)}</span><span class="pill">${esc(CASES[h.case]?.no || '')} ${esc(stepLabel(r.data, h.case, h.step))}</span><br>${esc(h.reason || '')}</li>` : ''; }).join('') || '<li class="muted">尚無</li>'}</ul></div>`;
+  out += `<p class="muted tiny">要看某位學員的流程圖，請到「總覽」按「查看」。</p>`;
+  return `<div class="card">${out}</div>`;
+}
+
+// ---------- 練習二 ----------
+function u2View() {
+  const rs = byUnit('u2');
+  if (!rs.length) return '<div class="card muted">還沒有人作答練習二。</div>';
+  const EV = ['A1', 'A2', 'A3', 'A4', 'A5', 'B1', 'B2', 'B3', 'B4'];
+  return `<div class="card"><div class="legend-row" style="margin-bottom:10px"><span><i class="dot green"></i> 通過</span><span><i class="dot red"></i> 不通過</span><span><i class="dot yellow"></i> 待補證</span></div>` + U2_QUESTIONS.map((q) => {
+    const cnt = {}; const evc = {};
+    rs.forEach((r) => { const a = r.data?.q?.[q.k]; const v = okVerdict(a?.verdict); if (v) cnt[v] = (cnt[v] || 0) + 1; (Array.isArray(a?.evidence) ? a.evidence : []).forEach((e) => { if (EV.includes(e)) evc[e] = (evc[e] || 0) + 1; }); });
+    return `<div class="aq"><h3>${q.no}　${q.q}</h3>${distBar(cnt, ['pass', 'fail', 'pending'], VERDICTS)}
+      <div class="ev-chips"><span class="muted" style="background:none;padding-left:0">引用證據</span>${EV.map((e) => `<span class="${evc[e] ? '' : 'zero'}">${e} ${evc[e] || 0}</span>`).join('')}</div>
+      <ul class="ans-list">${rs.map((r) => { const a = r.data?.q?.[q.k]; return a?.verdict || a?.reason ? `<li><span class="who">${esc(r.name)}</span>${okVerdict(a.verdict) ? `<span class="pill ${{ pass: 'green', fail: 'red', pending: 'yellow' }[okVerdict(a.verdict)]}">${VERDICTS[okVerdict(a.verdict)]}</span>` : ''} <span class="tiny muted">${esc([].concat(a.evidence || []).join('、'))}</span><br>${esc(a.reason || '')}</li>` : ''; }).join('')}</ul></div>`;
+  }).join('') + '</div>';
+}
+
+// ---------- 練習三 ----------
+const U3F = [
+  ['第 1 題｜整理問題與根因假設', [['q1.problem', '已證實的問題與證據編號'], ['q1.impact', '可能造成的影響'], ['q1.hypothesis', '根因假設'], ['q1.verify', '查證資料'], ['q1.missing', '確認重複建單需補的紀錄']]],
+  ['第 2 題｜優先改善措施', [['q2.measure', '要改的流程步驟與措施'], ['q2.reason', '優先序理由'], ['q2.owner', '負責角色'], ['q2.interim', '修正前的使用建議']]],
+  ['第 3 題｜再驗證', [['q3.retest.pass', '① 重測原案例：通過條件'], ['q3.retest.evidence', '① 重測原案例：查核證據'], ['q3.edge.pass', '② 補測邊界：通過條件'], ['q3.edge.evidence', '② 補測邊界：查核證據'], ['q3.regress.pass', '③ 回歸測試：通過條件'], ['q3.regress.evidence', '③ 回歸測試：查核證據']]]
+];
+const gp = (o, p) => p.split('.').reduce((x, k) => (x ? x[k] : undefined), o);
+function u3View() {
+  const rs = byUnit('u3');
+  if (!rs.length) return '<div class="card muted">還沒有人作答練習三。</div>';
+  const pc = {}; rs.forEach((r) => { const p = okPrio(r.data?.q2?.priority); if (p) pc[p] = (pc[p] || 0) + 1; });
+  let out = `<div class="aq"><h3>優先序分布</h3>${distBar({ red: pc.P0, yellow: pc.P1, green: pc.P2 }, ['red', 'yellow', 'green'], { red: 'P0 立即', yellow: 'P1 試行前', green: 'P2 持續' })}</div>`;
+  for (const [title, fields] of U3F) {
+    out += `<h3 style="margin:22px 0 10px">${title}</h3>`;
+    out += fields.map(([p, n]) => `<div class="aq"><h3>${n}</h3><ul class="ans-list">${rs.map((r) => { const v = gp(r.data, p); return v ? `<li><span class="who">${esc(r.name)}</span>${p === 'q2.reason' && r.data?.q2?.priority ? `<span class="pill">${esc(r.data.q2.priority)}</span> ` : ''}${esc(v)}</li>` : ''; }).join('') || '<li class="muted">尚無</li>'}</ul></div>`).join('');
+  }
+  return `<div class="card">${out}</div>`;
+}
+
+// ---------- 參考答案 ----------
+function refsView() {
+  return `<div class="card">
+    <p>參考答案以 Markdown 撰寫，存在${CLOUD ? ' Firebase（只有講師讀得到）' : '這台電腦的瀏覽器'}。在上方切換「參考答案」開關後，才會複製到該梯次讓學員看到。</p>
+    <div class="row-end" style="justify-content:flex-start;margin-bottom:16px">
+      <label class="btn ghost" style="cursor:pointer">從檔案匯入（.md）<input type="file" id="refFile" accept=".md,.txt,text/markdown" hidden></label>
+      <span class="muted tiny" style="align-self:center">檔案中以 &lt;!-- u1 --&gt;、&lt;!-- u2 --&gt;、&lt;!-- u3 --&gt; 分隔三個單元</span>
+    </div>
+    ${['u1', 'u2', 'u3'].map((u) => `<label class="field"><span>${UNITS[u]}</span><textarea class="md-edit" data-keep="${u}" data-ref="${u}">${esc(refs[u])}</textarea></label>`).join('')}
+    <div class="row-end"><button class="btn primary" id="saveRefs">儲存參考答案</button></div>
+    <p class="tiny muted">若某梯次已開放參考答案，修改後請把該單元開關關掉再打開，學員端才會更新。</p>
+  </div>`;
+}
+function bindRefs() {
+  app.querySelectorAll('[data-ref]').forEach((t) => t.oninput = () => { refs[t.dataset.ref] = t.value; });
+  app.querySelector('#refFile').onchange = async (e) => {
+    const file = e.target.files[0]; if (!file) return;
+    const text = await file.text();
+    const parts = text.split(/<!--\s*(u[123])\s*-->/);
+    let n = 0;
+    for (let i = 1; i < parts.length; i += 2) { refs[parts[i]] = parts[i + 1].trim(); n++; }
+    if (!n) return toast('檔案裡找不到 <!-- u1 --> 等分隔標記', 'err');
+    render(); toast(`已匯入 ${n} 個單元，記得按「儲存參考答案」`);
+  };
+  app.querySelector('#saveRefs').onclick = async () => {
+    try {
+      if (!CLOUD) LS.set('aiw:refs', refs);
+      else { const f = await fb(); await Promise.all(['u1', 'u2', 'u3'].map((u) => f.fs.setDoc(f.fs.doc(f.db, 'refs', u), { md: refs[u], at: Date.now() }))); }
+      toast('參考答案已儲存');
+    } catch (e) { toast('儲存失敗：' + e.message, 'err'); }
+  };
+}
+
+// ---------- 個人詳細 ----------
+async function showDetail(key) {
+  const p = people().find((x) => x.key === key); if (!p) return;
+  const w = document.createElement('div');
+  w.className = 'modal-backdrop';
+  const u1 = p.u.u1?.data, u2 = p.u.u2?.data, u3 = p.u.u3?.data;
+  let h = `<div class="modal wide"><div class="row-end" style="justify-content:space-between"><h2>${esc(p.name)}</h2><button class="btn small ghost" data-x>關閉</button></div>`;
+  h += `<div class="detail-sec"><h3>練習一 ${stDot(p.u.u1)}</h3>`;
+  if (u1?.cases) {
+    for (const [ck, C] of Object.entries(CASES)) {
+      const c = u1.cases[ck];
+      h += `<h4>${C.no}｜${C.title}</h4><div class="flow-mini" data-flow="${ck}"></div>`;
+      h += `<div class="table-wrap"><table><thead><tr><th>步驟</th><th>動作</th><th>角色</th><th>輸入</th><th>輸出／交給誰</th><th>尚待確認</th></tr></thead><tbody>${c.steps.map((s, i) => `<tr><td class="code">${stepNo(ck, i)}</td><td>${esc(s.action)}</td><td>${esc(s.role)}</td><td>${esc(s.input)}</td><td>${esc(s.output)}</td><td>${esc(s.pending)}</td></tr>`).join('')}</tbody></table></div>`;
+      h += `<ul class="ans-list">${(c.risks || []).filter((x) => x.issue || x.light).map((x) => `<li>${okLight(x.light) ? `<span class="pill ${okLight(x.light)}">${LNAME[okLight(x.light)]}</span> ` : ''}<span class="muted">${esc(stepLabel(u1, ck, x.step))}</span><br>${esc(x.issue)}<div class="tiny muted">影響：${esc(x.impact)}｜理由：${esc(x.reason)}｜把關：${esc(x.control)}</div></li>`).join('')}</ul>`;
+    }
+  } else h += '<p class="muted">未作答</p>';
+  h += `</div><div class="detail-sec"><h3>練習二 ${stDot(p.u.u2)}</h3>`;
+  h += u2?.q ? `<div class="table-wrap"><table><thead><tr><th>題號</th><th>判定</th><th>證據</th><th>理由</th></tr></thead><tbody>${U2_QUESTIONS.map((q) => { const a = u2.q[q.k] || {}; return `<tr><td class="code">${q.no}</td><td>${VERDICTS[okVerdict(a.verdict)] || ''}</td><td>${esc([].concat(a.evidence || []).join('、'))}</td><td>${esc(a.reason)}</td></tr>`; }).join('')}</tbody></table></div>` : '<p class="muted">未作答</p>';
+  h += `</div><div class="detail-sec"><h3>練習三 ${stDot(p.u.u3)}</h3>`;
+  h += u3 ? `<div class="table-wrap"><table><tbody>${U3F.flatMap(([, fs]) => fs).map(([pth, n]) => `<tr><th style="white-space:normal;width:34%">${n}</th><td>${esc(gp(u3, pth) || '')}</td></tr>`).join('')}<tr><th>優先序</th><td>${esc(u3.q2?.priority || '')}</td></tr></tbody></table></div>` : '<p class="muted">未作答</p>';
+  h += '</div></div>';
+  w.innerHTML = h;
+  document.body.appendChild(w);
+  w.querySelector('[data-x]').onclick = () => w.remove();
+  w.onclick = (e) => { if (e.target === w) w.remove(); };
+  if (u1?.cases) for (const el of w.querySelectorAll('[data-flow]')) await renderFlow(el, el.dataset.flow, u1.cases[el.dataset.flow]);
+}
+
+// ---------- CSV ----------
+function exportCsv() {
+  const rows = [['單元', '姓名/組別', '狀態', '項目', '步驟', '燈號/判定', '證據', '內容', '補充']];
+  byUnit('u1').forEach((r) => {
+    const d = r.data || {};
+    Object.entries(CASES).forEach(([ck, C]) => {
+      (d.cases?.[ck]?.steps || []).forEach((s, i) => rows.push(['練習一', r.name, r.status, `${C.no} 步驟`, stepNo(ck, i), s.role, '', s.action, `輸入：${s.input}｜輸出：${s.output}｜待確認：${s.pending}`]));
+      (d.cases?.[ck]?.risks || []).forEach((x) => rows.push(['練習一', r.name, r.status, `${C.no} 風險`, stepLabel(d, ck, x.step), LNAME[okLight(x.light)] || '', '', x.issue, `影響：${x.impact}｜理由：${x.reason}｜把關：${x.control}`]));
+    });
+    const h = d.handoff || {};
+    rows.push(['練習一', r.name, r.status, '自選優先風險', h.priority?.case ? stepLabel(d, h.priority.case, h.priority.step) : '', '', '', h.priority?.reason || '', '']);
+    rows.push(['練習一', r.name, r.status, '共用案例步驟', stepLabel(d, 'C', h.shared?.step), '', '', h.shared?.reason || '', '']);
+  });
+  byUnit('u2').forEach((r) => U2_QUESTIONS.forEach((q) => { const a = r.data?.q?.[q.k] || {}; rows.push(['練習二', r.name, r.status, q.no, '', VERDICTS[okVerdict(a.verdict)] || '', [].concat(a.evidence || []).join(' '), a.reason || '', '']); }));
+  byUnit('u3').forEach((r) => {
+    U3F.flatMap(([, fs]) => fs).forEach(([p, n]) => rows.push(['練習三', r.name, r.status, n, '', '', '', gp(r.data, p) || '', '']));
+    rows.push(['練習三', r.name, r.status, '優先序', '', r.data?.q2?.priority || '', '', '', '']);
+  });
+  const csv = '﻿' + rows.map((r) => r.map((v) => `"${String(v ?? '').replace(/"/g, '""')}"`).join(',')).join('\r\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+  a.download = `作答_${cur}_${new Date().toISOString().slice(0, 10)}.csv`;
+  a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+
+start();
+</script>
+</body>
+</html>
