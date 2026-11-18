@@ -110,6 +110,15 @@ img, svg { max-width: 100%; max-height: 100%; }
 .answer .quote { margin-top: 32px; display: flex; align-items: center; gap: 28px; background: var(--ink); color: #fff; border-radius: 26px; padding: 26px 40px; font-size: 30px; line-height: 1.5; font-weight: 600; }
 .answer .quote::before { content: '“'; font-size: 110px; line-height: .6; color: #7FB8FF; font-weight: 900; transform: translateY(18px); }
 .answer .quote em { font-style: normal; color: #FFD166; }
+.answer .split { display: grid; grid-template-columns: 1.08fr 1fr; gap: 28px; }
+.answer .why h4 { font-size: 29px; font-weight: 800; margin: 0 0 8px; color: var(--ink); }
+.answer .why h4 + p { margin-bottom: 22px; }
+.answer .why p:last-child { margin-bottom: 0; }
+.answer .lights { display: grid; gap: 16px; }
+.answer .lights .lt { display: grid; grid-template-columns: 30px 1fr; gap: 6px 16px; align-items: start; }
+.answer .lights .dot { width: 26px; height: 26px; border-radius: 50%; margin-top: 6px; }
+.answer .lights b { font-size: 27px; }
+.answer .lights p { grid-column: 2; font-size: 24px; line-height: 1.55; }
 
 /* 流程鏈 */
 .chain { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; }
@@ -354,13 +363,34 @@ img, svg { max-width: 100%; max-height: 100%; }
 <section class="slide bg-dark" data-title="隨堂思考 02">
   <div class="quiz">
     <div>
-      <span class="kicker rv">隨堂思考 02｜30 秒快判</span>
+      <span class="kicker rv">隨堂思考 02</span>
       <h2 class="title rv d1">這一個字寫錯，是哪個風險等級？</h2>
       <div class="scene rv d2">H100 主機開不了機，故障原因尚未檢測。AI 擬的草稿卻寫著：<br><span class="hl">「保固期內，將為您免費維修。」</span></div>
       <p class="ask rv d3">這是紅燈、黃燈，還是綠燈？誰是最後一道防線？</p>
     </div>
-    <button class="timer rv d2" data-timer aria-label="30 秒計時器，點擊開始"></button>
+    <button class="answer-btn rv d2" data-next aria-label="看解答（下一頁）"><span class="inner"><span class="t">解答</span><span class="s">點擊看解答 →</span></span></button>
   </div>
+</section>
+
+<!-- 14-1 隨堂思考 02 解答 -->
+<section class="slide answer" data-title="隨堂思考 02 解答">
+  <div class="head rv"><span class="kicker">隨堂思考 02｜解答</span><h2 class="title"><span class="verdict">🔴 紅燈（高風險）</span>：收不回來、賠錢又失信</h2><p class="sub">未檢測就承諾免費維修（違反 P04）、未經客服確認直接建單（違反 P06），都是紅燈。</p></div>
+  <div class="split">
+    <div class="card why rv d1" style="--c:var(--red)"><span class="tag">判定理由</span>
+      <h4>後果不可逆，且造成實質損失</h4>
+      <p>未確認就寫入工單系統，會造成資料污染、重複建單等<b>難以撤回的操作</b>；未檢測就承諾免費維修，是<b>對外作出錯誤保固承諾</b>，直接引發客訴與財務損失。</p>
+      <h4>把關原則：零容忍紅線</h4>
+      <p>不能靠「事後抽檢」或「提示詞碰運氣」。系統流程必須強制<b>人工確認（HITL）與異常熔斷</b>，未通過測試前禁止上線。</p>
+    </div>
+    <div class="card rv d2"><span class="tag" style="--c:var(--ink-2)">三種燈號快速對照</span>
+      <div class="lights">
+        <div class="lt"><span class="dot" style="background:var(--red)"></span><b>紅燈｜高風險</b><p>跳過客服確認直接建單、API 逾時卻誤報建單成功、未檢測就承諾免費維修。</p></div>
+        <div class="lt"><span class="dot" style="background:var(--amber)"></span><b>黃燈｜中風險</b><p>客戶沒給購買日期，AI 漏問（違反 P03 精神），客服得回頭追問；可由人工接手補救。</p></div>
+        <div class="lt"><span class="dot" style="background:var(--green)"></span><b>綠燈｜低風險</b><p>草稿開場白略生硬，但保固條件與「建議安排檢測」完全正確，客服微調即可。</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="quote rv d4"><span>如果這一步 AI 錯了，後果是「改幾個字就好」，還是「收不回來、賠錢又失信」？<em>只要會動到外部系統或對外做承諾，一律亮紅燈、設下人工確認關卡。</em></span></div>
 </section>
 
 <!-- 15 1-4 驗證範圍 -->
