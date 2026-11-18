@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>練習一｜AI 客服流程拆解與風險評估</title>
+<title>練習一｜宏岳設備 AI 客服流程拆解與風險評估</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -49,31 +49,68 @@
   .rule-code { font-weight: 800; color: var(--blue); white-space: nowrap; }
   .handoff-row { border: 1px solid var(--line); border-radius: 16px; padding: 18px; margin-bottom: 14px; }
   .handoff-row h3 { font-size: 17px; }
+  .brief h2 { font-size: 20px; margin-bottom: 10px; }
+  .brief h3 { font-size: 15px; color: var(--muted); margin: 18px 0 10px; }
+  .brief p { margin: 0; color: var(--ink-2); line-height: 1.75; }
+  .deliver { list-style: none; counter-reset: d; padding: 0; margin: 14px 0 0; display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+  .deliver li { counter-increment: d; position: relative; padding: 12px 14px 12px 46px; border: 1px solid var(--line); border-radius: 14px; background: #FAFAFC; }
+  .deliver li::before { content: counter(d); position: absolute; left: 14px; top: 12px; width: 22px; height: 22px; border-radius: 50%; background: var(--ink); color: #fff; font-size: 13px; font-weight: 800; display: grid; place-items: center; }
+  .deliver b { display: block; font-size: 15px; }
+  .deliver span { font-size: 13px; color: var(--muted); }
+  .caps { display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+  .caps button { appearance: none; font: inherit; text-align: left; cursor: pointer; display: grid; gap: 6px; justify-items: start; padding: 12px 14px; border: 1px solid var(--line); border-radius: 14px; background: #fff; transition: border-color .15s, box-shadow .15s; }
+  .caps button:hover { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-soft); }
+  .caps b { font-size: 15px; color: var(--ink); }
+  .goal { margin-top: 14px; display: flex; gap: 12px; align-items: baseline; padding: 12px 14px; border-radius: 14px; background: var(--amber-soft); }
+  .goal-k { font-weight: 800; color: var(--amber); white-space: nowrap; font-size: 14px; }
 </style>
 </head>
 <body>
 <main class="wrap">
   <div class="page-head">
     <span class="eyebrow">練習一｜第一單元</span>
-    <h1>AI 客服流程拆解與風險評估</h1>
-    <p class="lead">宏岳設備銷售商用設備。內部客服人員使用 AI 助手查詢產品與保固資訊、擬定回覆草稿，並在客服確認後建立維修工單。</p>
+    <h1>宏岳設備 AI 客服的流程拆解與風險評估</h1>
   </div>
 
-  <details class="ref" open>
-    <summary>作答說明</summary>
+  <section class="card brief">
+    <h2>作業任務</h2>
+    <p>依公司背景與規範，完成「查詢產品與保固資訊」、「產生客服回覆草稿」、「建立維修工單」三個案例。</p>
+    <ol class="deliver">
+      <li><b>每個案例一張流程圖</b><span>用步驟卡建立，右側自動畫出</span></li>
+      <li><b>每個案例至少一筆風險評估</b><span>對應到流程中的步驟編號</span></li>
+      <li><b>選出一項優先風險並說明原因</b><span>填在「銜接第二單元」</span></li>
+      <li><b>標出案例三「回報建單結果」的步驟</b><span>帶到第二單元的共用案例</span></li>
+    </ol>
+  </section>
+
+  <section class="card brief">
+    <h2>公司背景</h2>
+    <p>宏岳設備銷售商用設備，客服每天處理產品規格、安裝、保固與維修問題。公司近期導入 AI 客服助手，已匯入產品手冊和保固辦法，供內部客服人員使用。</p>
+    <h3>AI 助手能做的事</h3>
+    <div class="caps" id="caps">
+      <button type="button" data-goto="A"><span class="pill blue">案例一</span><b>查詢產品與保固資訊</b></button>
+      <button type="button" data-goto="B"><span class="pill indigo">案例二</span><b>擬定回覆草稿</b></button>
+      <button type="button" data-goto="C"><span class="pill teal">案例三</span><b>在客服確認後建立維修工單</b></button>
+    </div>
+    <div class="goal"><span class="goal-k">主管目標</span><span>下個月讓全體客服開始使用，並至少節省一半的客服處理時間。</span></div>
+  </section>
+
+  <details class="ref">
+    <summary>公司規範與風險分級</summary>
+    <div class="inner grid c2">
+      <div class="table-wrap"><table><thead><tr><th>規則</th><th>公司規範</th></tr></thead><tbody id="rulesBody"></tbody></table></div>
+      <div class="table-wrap"><table><thead><tr><th>分級</th><th>評估依據</th></tr></thead><tbody id="lightsBody"></tbody></table></div>
+    </div>
+  </details>
+
+  <details class="ref">
+    <summary>作答操作說明</summary>
     <div class="inner">
       <ol style="padding-left:1.3em;margin:0">
         <li>每個案例用「步驟卡」畫一張流程圖。每張卡寫一個動作，系統自動加上步驟編號。用「下一步」設定交接，在分支上寫明判斷條件；右側會即時畫出流程圖。</li>
         <li>同一張步驟卡就是「任務拆解表」的一列，記錄角色、輸入、輸出及尚待確認事項。可自行新增、刪除、調整順序。</li>
         <li>每個案例至少填一筆風險。指出錯誤發生在哪一步、影響誰、後果、嚴重程度及把關方式。最後在「銜接第二單元」選出一項優先風險並說明理由，再標出全班共用案例的對應步驟。</li>
       </ol>
-    </div>
-  </details>
-  <details class="ref">
-    <summary>公司規範與風險分級</summary>
-    <div class="inner grid c2">
-      <div class="table-wrap"><table><thead><tr><th>規則</th><th>公司規範</th></tr></thead><tbody id="rulesBody"></tbody></table></div>
-      <div class="table-wrap"><table><thead><tr><th>分級</th><th>評估依據</th></tr></thead><tbody id="lightsBody"></tbody></table></div>
     </div>
   </details>
 
@@ -96,6 +133,7 @@ import { RULES, LIGHTS, CASES, ROLES } from './assets/unit1-data.js';
 import { renderFlow, stepNo, edgesOf, END, ROLE_LEGEND } from './assets/flow.js';
 
 renderHeader('u1');
+document.getElementById('caps').onclick = (e) => { const b = e.target.closest('[data-goto]'); if (b) document.querySelector(`#tabs [data-tab="${b.dataset.goto}"]`)?.click(); };
 document.getElementById('rulesBody').innerHTML = RULES.map(([k, v]) => `<tr><td class="rule-code">${k}</td><td>${v}</td></tr>`).join('');
 document.getElementById('lightsBody').innerHTML = Object.entries(LIGHTS).map(([k, [n, d]]) => `<tr><td class="code"><span class="dot ${k}"></span> ${n}</td><td>${d}</td></tr>`).join('');
 
