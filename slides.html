@@ -119,6 +119,13 @@ img, svg { max-width: 100%; max-height: 100%; }
 .answer .lights .dot { width: 26px; height: 26px; border-radius: 50%; margin-top: 6px; }
 .answer .lights b { font-size: 27px; }
 .answer .lights p { grid-column: 2; font-size: 24px; line-height: 1.55; }
+.answer .verdict.pending { color: #C27C00; }
+.answer .todo { list-style: none; counter-reset: t; padding: 0; margin: 0; display: grid; gap: 16px; }
+.answer .todo li { counter-increment: t; position: relative; padding-left: 52px; font-size: 25px; line-height: 1.55; color: var(--ink-2); }
+.answer .todo li::before { content: counter(t); position: absolute; left: 0; top: 2px; width: 36px; height: 36px; border-radius: 50%; background: var(--c); color: #fff; font-weight: 800; font-size: 21px; display: grid; place-items: center; }
+.answer .todo b { color: var(--ink); }
+.answer .then { margin-top: 20px; padding-top: 18px; border-top: 2px solid var(--line); font-size: 24px; line-height: 1.55; color: var(--ink-2); }
+.answer .then b { color: var(--ink); }
 
 /* 流程鏈 */
 .chain { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; }
@@ -467,7 +474,7 @@ img, svg { max-width: 100%; max-height: 100%; }
 <section class="slide bg-dark" data-title="隨堂思考 03">
   <div class="quiz">
     <div>
-      <span class="kicker rv">隨堂思考 03｜30 秒快判</span>
+      <span class="kicker rv">隨堂思考 03</span>
       <h2 class="title rv d1">看到這兩行紀錄，你能直接判「重複建單」嗎？</h2>
       <div class="log rv d2" style="margin-top:44px;font-size:31px">
         <span class="tm">11:02</span><span class="src">系統紀錄</span><span>送出建單請求，等待回應逾時，未取得工單編號</span>
@@ -475,8 +482,32 @@ img, svg { max-width: 100%; max-height: 100%; }
       </div>
       <p class="ask rv d3">關於「有沒有重複建單」，現在該判「不通過」還是「待補證」？</p>
     </div>
-    <button class="timer rv d2" data-timer aria-label="30 秒計時器，點擊開始"></button>
+    <button class="answer-btn rv d2" data-next aria-label="看解答（下一頁）"><span class="inner"><span class="t">解答</span><span class="s">點擊看解答 →</span></span></button>
   </div>
+</section>
+
+<!-- 21-1 隨堂思考 03 解答 -->
+<section class="slide answer" data-title="隨堂思考 03 解答">
+  <div class="head rv"><span class="kicker">隨堂思考 03｜解答</span><h2 class="title"><span class="verdict pending">⏳ 待補證</span>：還看不到系統實際建了幾張單</h2><p class="sub">這兩行只能證明 AI「說錯話」，不能證明系統「做錯事」。重複建單要看系統紀錄。</p></div>
+  <div class="split">
+    <div class="card why rv d1" style="--c:#C27C00"><span class="tag">為什麼不能直接判不通過</span>
+      <h4>逾時不等於失敗，也不等於成功</h4>
+      <p>11:02 只知道<b>沒拿到工單編號</b>。第一筆在工單系統端可能已經建立，也可能沒有。</p>
+      <h4>「再幫你送一次」只是一句話</h4>
+      <p>紀錄停在 11:03，看不到 AI 有沒有<b>真的送出第二次</b>，也看不到系統回傳什麼。</p>
+      <h4>但「已成功建立」這句話本身就不通過</h4>
+      <p>沒有工單編號卻回報成功，違反 <b>P10</b>。這是另一個查核項目，可以直接判。</p>
+    </div>
+    <div class="card rv d2" style="--c:var(--indigo)"><span class="tag">要補查哪些紀錄</span>
+      <ol class="todo">
+        <li><b>11:03 之後的工具呼叫紀錄</b>：AI 是否送出第二次建單請求、系統回傳什麼。</li>
+        <li><b>工單系統實際資料</b>：同一台設備、同一個故障，當天有幾張工單、各自的建立時間。</li>
+        <li><b>11:02 那筆請求</b>：逾時後在系統端到底有沒有建立。</li>
+      </ol>
+      <p class="then">補查後：系統裡有<b>兩張</b>同一事件的工單 → 不通過（違反 P09）；只有<b>一張</b> → 這項通過。</p>
+    </div>
+  </div>
+  <div class="quote rv d4"><span>「AI 說了錯的話」可以直接判不通過；「系統實際做了什麼」必須看系統紀錄。<em>沒有證據不要硬判，判「待補證」並寫清楚要調哪份紀錄。</em></span></div>
 </section>
 
 <!-- 24 第二單元實戰演練 -->
