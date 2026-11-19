@@ -72,6 +72,7 @@ import { CLOUD, fb, currentUser, LS, esc, normCode, localSessions, saveLocalSess
 import { CASES } from './assets/unit1-data.js';
 import { renderFlow, stepNo } from './assets/flow.js';
 import { U2_QUESTIONS, VERDICTS } from './assets/carry.js';
+import { AI_ON, feedbackHtml, loadFeedbackFor } from './assets/ai-feedback.js';
 
 const app = document.getElementById('app');
 const header = document.createElement('header');
@@ -411,12 +412,16 @@ async function showDetail(key) {
       h += `<ul class="ans-list">${(c.risks || []).filter((x) => x.issue || x.light).map((x) => `<li>${okLight(x.light) ? `<span class="pill ${okLight(x.light)}">${LNAME[okLight(x.light)]}</span> ` : ''}<span class="muted">${esc(stepLabel(u1, ck, x.step))}</span><br>${esc(x.issue)}<div class="tiny muted">影響：${esc(x.impact)}｜理由：${esc(x.reason)}｜把關：${esc(x.control)}</div></li>`).join('')}</ul>`;
     }
   } else h += '<p class="muted">未作答</p>';
-  h += `</div><div class="detail-sec"><h3>練習二 ${stDot(p.u.u2)}</h3>`;
+  h += `<div data-ai="u1"></div></div><div class="detail-sec"><h3>練習二 ${stDot(p.u.u2)}</h3>`;
   h += u2?.q ? `<div class="table-wrap"><table><thead><tr><th>題號</th><th>判定</th><th>證據</th><th>理由</th></tr></thead><tbody>${U2_QUESTIONS.map((q) => { const a = u2.q[q.k] || {}; return `<tr><td class="code">${q.no}</td><td>${VERDICTS[okVerdict(a.verdict)] || ''}</td><td>${esc([].concat(a.evidence || []).join('、'))}</td><td>${esc(a.reason)}</td></tr>`; }).join('')}</tbody></table></div>` : '<p class="muted">未作答</p>';
-  h += `</div><div class="detail-sec"><h3>練習三 ${stDot(p.u.u3)}</h3>`;
+  h += `<div data-ai="u2"></div></div><div class="detail-sec"><h3>練習三 ${stDot(p.u.u3)}</h3>`;
   h += u3 ? `<div class="table-wrap"><table><tbody>${U3F.flatMap(([, fs]) => fs).map(([pth, n]) => `<tr><th style="white-space:normal;width:34%">${n}</th><td>${esc(gp(u3, pth) || '')}</td></tr>`).join('')}<tr><th>優先序</th><td>${esc(u3.q2?.priority || '')}</td></tr></tbody></table></div>` : '<p class="muted">未作答</p>';
-  h += '</div></div>';
+  h += '<div data-ai="u3"></div></div></div>';
   w.innerHTML = h;
+  if (AI_ON) for (const el of w.querySelectorAll('[data-ai]')) {
+    const r = p.u[el.dataset.ai];
+    loadFeedbackFor(cur, r?.uid, el.dataset.ai).then((f) => { if (f) el.innerHTML = `<details class="ai-admin"><summary>AI 回饋</summary>${feedbackHtml(f)}</details>`; });
+  }
   document.body.appendChild(w);
   w.querySelector('[data-x]').onclick = () => w.remove();
   w.onclick = (e) => { if (e.target === w) w.remove(); };

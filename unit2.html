@@ -72,6 +72,8 @@
 
 <script type="module">
 import { renderHeader, ensureIdentity, showIdentity, loadResponse, autosaver, watchReveal, esc, toast } from './assets/app.js';
+import { mountFeedback } from './assets/ai-feedback.js';
+let ai = { run() {} };
 import { U2_QUESTIONS, VERDICTS, u1Shared, u1SharedHtml } from './assets/carry.js';
 
 renderHeader('u2');
@@ -215,6 +217,7 @@ async function boot() {
   document.getElementById('saveStatus').textContent = saved ? '已載入先前的作答' : '作答會自動儲存';
   renderEvidence(); renderQuestions(); bindQuestions();
   watchReveal(id, UNIT, document.getElementById('refPanel'), (k) => { KEY = k; renderQuestions(); if (focusQ) document.querySelector(`[data-q="${focusQ}"]`)?.classList.add('focus'); });
+  ai = mountFeedback(id, UNIT, document.getElementById('refPanel'));
   u1Shared(id).then((s) => { document.getElementById('u1Step').innerHTML = u1SharedHtml(s); });
 }
 
@@ -222,7 +225,7 @@ function missing() {
   return U2_QUESTIONS.filter((q) => { const a = state.q[q.k]; return !a.verdict || !a.evidence.length || !a.reason.trim(); }).map((q) => `${q.no}：判定、證據編號或理由未完成`);
 }
 async function doSubmit() {
-  try { await saver.flush('submitted'); document.getElementById('submittedBadge').hidden = false; toast('已送出，講師已收到你的作答'); }
+  try { await saver.flush('submitted'); document.getElementById('submittedBadge').hidden = false; ai.run(); toast('已送出，講師已收到你的作答'); }
   catch { toast('送出失敗，請檢查網路後再試一次', 'err'); }
 }
 document.getElementById('submitBtn').onclick = () => {

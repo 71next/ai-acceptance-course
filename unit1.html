@@ -134,6 +134,8 @@
 
 <script type="module">
 import { renderHeader, ensureIdentity, showIdentity, loadResponse, autosaver, watchReveal, esc, toast, uid8 } from './assets/app.js';
+import { mountFeedback } from './assets/ai-feedback.js';
+let ai = { run() {} };
 import { RULES, LIGHTS, CASES, ROLES, OPTIONS, REASONS } from './assets/unit1-data.js?v=2';
 import { renderFlow, stepNo, edgesOf, END, ROLE_LEGEND } from './assets/flow.js';
 
@@ -164,6 +166,7 @@ async function boot() {
   else document.getElementById('submittedBadge').hidden = true;
   document.getElementById('saveStatus').textContent = saved ? '已載入先前的作答' : '作答會自動儲存';
   watchReveal(id, UNIT, document.getElementById('refPanel'), (k) => { KEY = k; renderSummary(); renderPanel(); });
+  ai = mountFeedback(id, UNIT, document.getElementById('refPanel'));
   renderTabs(); renderPanel();
 }
 
@@ -469,7 +472,7 @@ function missing() {
   return out;
 }
 async function doSubmit() {
-  try { await saver.flush('submitted'); document.getElementById('submittedBadge').hidden = false; toast('已送出，講師已收到你的作答'); }
+  try { await saver.flush('submitted'); document.getElementById('submittedBadge').hidden = false; ai.run(); toast('已送出，講師已收到你的作答'); }
   catch { toast('送出失敗，請檢查網路後再試一次', 'err'); }
 }
 document.getElementById('submitBtn').onclick = () => {

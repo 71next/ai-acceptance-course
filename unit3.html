@@ -121,6 +121,8 @@
 
 <script type="module">
 import { renderHeader, ensureIdentity, showIdentity, loadResponse, autosaver, watchReveal, esc, toast } from './assets/app.js';
+import { mountFeedback } from './assets/ai-feedback.js';
+let ai = { run() {} };
 import { VERDICTS, u1Shared, u1SharedHtml, u2Answers } from './assets/carry.js';
 
 renderHeader('u3');
@@ -161,6 +163,7 @@ async function boot() {
   document.getElementById('prio').addEventListener('change', (e) => { state.q2.priority = e.target.value; prioFb(); saver.touch(); });
 
   watchReveal(id, UNIT, document.getElementById('refPanel'), (k) => { KEY = k; prioFb(); });
+  ai = mountFeedback(id, UNIT, document.getElementById('refPanel'));
   u1Shared(id).then((s) => { document.getElementById('u1Box').innerHTML = u1SharedHtml(s); });
   u2Answers(id).then((q) => {
     const box = document.getElementById('u2Box');
@@ -193,7 +196,7 @@ function receipt() {
   w.querySelector('[data-x]').onclick = () => w.remove();
 }
 async function doSubmit() {
-  try { await saver.flush('submitted'); document.getElementById('submittedBadge').hidden = false; receipt(); }
+  try { await saver.flush('submitted'); document.getElementById('submittedBadge').hidden = false; ai.run(); receipt(); }
   catch { toast('送出失敗，請檢查網路後再試一次', 'err'); }
 }
 document.getElementById('submitBtn').onclick = () => {
