@@ -373,15 +373,13 @@ function u1View() {
     g.list.push({ r, s, no: `S${i + 1}` });
   }));
   const groups = [...by.entries()].sort((a, b) => b[1].list.length - a[1].list.length);
-  // A. 問題類型：統計「交給 AI」的人數，並列出學員新增的類型
-  const tm = new Map();
-  rs.forEach((r) => (r.data.types || []).forEach((t) => {
-    if (!t.name) return;
-    const k = t.custom ? `＋ ${t.name}` : t.name;
-    if (!tm.has(k)) tm.set(k, { ai: 0, human: 0, no: 0, high: 0 });
-    const g = tm.get(k); if (g[t.handle] !== undefined) g[t.handle]++; if (t.freq === 'high') g.high++;
-  }));
-  const typesHtml = `<div class="aq"><h3>A. 問題類型盤點</h3><div class="table-wrap"><table><thead><tr><th>問題類型</th><th>標「常見」</th><th>AI 處理</th><th>轉人工</th><th>不處理</th></tr></thead><tbody>${[...tm.entries()].map(([k, g]) => `<tr><td>${esc(k)}</td><td>${g.high}</td><td>${g.ai}</td><td>${g.human}</td><td>${g.no}</td></tr>`).join('')}</tbody></table></div></div>`;
+  // A. 六種情境：列出學員寫的客戶說法與處理方式
+  const HN = { done: '直接完成', ask: '先補問或確認', human: '轉人工', refuse: '拒絕' };
+  const typesHtml = `<h3 style="margin:0 0 6px">A. 六種情境的客戶來電</h3>${Object.entries(TYPE_NAME).filter(([k]) => k !== 'duplicate').map(([k, n]) => {
+    const list = rs.map((r) => ({ r, t: (r.data.scen || []).find((x) => x.id === k) })).filter((x) => x.t && (x.t.say || x.t.handle));
+    const cnt = {}; list.forEach(({ t }) => { if (HN[t.handle]) cnt[t.handle] = (cnt[t.handle] || 0) + 1; });
+    return `<div class="aq"><h3>${n}　<span class="tiny muted">${Object.entries(cnt).map(([h, c]) => `${HN[h]} ${c}`).join('・')}</span></h3><ul class="ans-list">${list.map(({ r, t }) => `<li><span class="who">${esc(r.name)}</span>${HN[t.handle] ? `<span class="pill">${HN[t.handle]}</span> ` : ''}${esc(t.say)}</li>`).join('') || '<li class="muted">尚無</li>'}</ul></div>`;
+  }).join('')}`;
   return `<div class="card">${oldNote(all)}${typesHtml}<h3 style="margin:20px 0 6px">B. 報修流程的燈號</h3><p class="muted tiny">依學員選的「可能出錯的情況」分組，看全班給的燈號是否一致。要看某位學員的流程圖，請到「總覽」按「查看」。</p>
     ${groups.map(([k, g]) => `<div class="aq"><h3>${esc(k)}　<span class="muted tiny">${g.list.length} 人次</span></h3>${distBar(g.cnt, ['red', 'yellow', 'green'], LNAME)}
       <ul class="ans-list">${g.list.map(({ r, s, no }) => `<li><span class="who">${esc(r.name)}</span>${okLight(s.light) ? `<span class="pill ${okLight(s.light)}">${LNAME[okLight(s.light)]}</span> ` : ''}<span class="muted">${no}</span> ${esc(s.action)}</li>`).join('')}</ul></div>`).join('')}</div>`;
@@ -456,7 +454,7 @@ async function showDetail(key) {
   const u1 = simpleOf(p.u.u1), u2 = simpleOf(p.u.u2), u3 = simpleOf(p.u.u3);
   let h = `<div class="modal wide"><div class="row-end" style="justify-content:space-between"><h2>${esc(p.name)}</h2><button class="btn small ghost" data-x>關閉</button></div>`;
   h += `<div class="detail-sec"><h3>① 拆流程 ${stDot(p.u.u1)}</h3>`;
-  h += u1 ? `<p class="tiny">${(u1.types || []).filter((t) => t.name).map((t) => `${esc(t.name)}：${esc({ high: '常見', mid: '偶爾', low: '少見' }[t.freq] || '－')}／${esc({ ai: 'AI', human: '轉人工', no: '不處理' }[t.handle] || '－')}`).join('　')}</p><div class="flow-mini" data-flow></div><div class="table-wrap"><table><thead><tr><th>步驟</th><th>角色</th><th>動作</th><th>燈號</th><th>可能出錯</th></tr></thead><tbody>${(u1.steps || []).map((s, i) => `<tr><td class="code">S${i + 1}</td><td>${esc(s.role)}</td><td>${esc(s.action)}</td><td>${okLight(s.light) ? `<span class="pill ${okLight(s.light)}">${LNAME[okLight(s.light)]}</span>` : ''}</td><td>${esc(s.issue)}</td></tr>`).join('')}</tbody></table></div>` : '<p class="muted">未作答</p>';
+  h += u1 ? `<ul class="ans-list">${(u1.scen || []).filter((t) => t.say).map((t) => `<li><b>${esc(TYPE_NAME[t.id] || '')}</b>　${esc(t.say)}　<span class="pill">${esc({ done: '直接完成', ask: '先補問或確認', human: '轉人工', refuse: '拒絕' }[t.handle] || '－')}</span></li>`).join('')}</ul><div class="flow-mini" data-flow></div><div class="table-wrap"><table><thead><tr><th>步驟</th><th>角色</th><th>動作</th><th>燈號</th><th>可能出錯</th></tr></thead><tbody>${(u1.steps || []).map((s, i) => `<tr><td class="code">S${i + 1}</td><td>${esc(s.role)}</td><td>${esc(s.action)}</td><td>${okLight(s.light) ? `<span class="pill ${okLight(s.light)}">${LNAME[okLight(s.light)]}</span>` : ''}</td><td>${esc(s.issue)}</td></tr>`).join('')}</tbody></table></div>` : '<p class="muted">未作答</p>';
   h += `<div data-ai="u1"></div></div><div class="detail-sec"><h3>② 驗證條件 ${stDot(p.u.u2)}</h3>`;
   h += u2 ? `<div class="table-wrap"><table><thead><tr><th>編號</th><th>類型／序號</th><th>客服說法</th><th>預期</th><th>規則</th><th>通過標準</th></tr></thead><tbody>${allCases(u2).filter((c) => c.tier !== 'example').map((c) => `<tr><td class="code">${esc(c.no)}</td><td>${esc(TYPE_NAME[c.type] || '')}<br>${esc(c.serial || '')}</td><td>${esc(c.say)}</td><td>${esc(c.expect)}</td><td>${esc((c.rules || []).join('、'))}</td><td>${esc(c.pass)}</td></tr>`).join('')}</tbody></table></div>` : '<p class="muted">未作答</p>';
   h += `<div data-ai="u2"></div></div><div class="detail-sec"><h3>④ 驗收報告 ${stDot(p.u.u3)}</h3>`;

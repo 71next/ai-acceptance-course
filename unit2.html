@@ -83,6 +83,7 @@
   <div id="half"></div>
 
   <div class="tier"><span class="n">3</span><h2>自己出題：至少 1 題，建議 2 題</h2></div>
+  <p class="muted" style="margin:-4px 0 12px">從 ① 的六種情境挑一種（選了之後會帶入你在 ① 寫的客戶說法），或從下方的紅燈步驟出題。</p>
   <div class="card" id="redBox"></div>
   <div id="own"></div>
   <button class="btn ghost" id="addOwn" style="width:100%">＋ 新增一題自己設計的案例</button>
@@ -110,7 +111,7 @@ document.getElementById('devBody').innerHTML = DEVICES.map(([k, v]) => `<tr><td 
 
 const UNIT = 'u2';
 const MAX_OWN = 4;
-let id, saver, state, redSteps = [];
+let id, saver, state, redSteps = [], scen = {};
 let ai = { run() {} };
 
 const blankOwn = (step = '') => ({ id: uid8(), type: '', step, stepText: '', serial: '', say: '', expect: '', rules: [], pass: '' });
@@ -123,6 +124,7 @@ async function boot() {
   state = saved?.data?.track === TRACK ? saved.data : blankState();
   state.own = state.own || [];
   const d1 = u1?.data?.track === TRACK ? u1.data : null;
+  scen = Object.fromEntries((d1?.scen || []).filter((t) => t.say).map((t) => [t.id, t.say]));
   redSteps = (d1?.steps || []).map((s, i) => ({ ...s, no: `S${i + 1}` })).filter((s) => s.light === 'red' && s.action);
   saver = autosaver(id, UNIT, () => ({ ...state, redSteps: redSteps.map((s) => `${s.no} ${s.action}${s.issue ? `（可能出錯：${s.issue}）` : ''}`) }), document.getElementById('saveStatus'));
   if (saved?.status === 'submitted' && saved.data?.track === TRACK) { saver.setStatus('submitted'); document.getElementById('submittedBadge').hidden = false; }
@@ -209,7 +211,7 @@ function renderOwn() {
       <div class="fgrid">
         <div class="field full"><span class="label">① 選一種測試類型<span class="req">*</span></span>
           <div class="types">${TEST_TYPES.map(([k, n, d]) => `<label><input type="radio" name="t_${c.id}" value="${k}" ${c.type === k ? 'checked' : ''}><span><b>${n}</b>${d}</span></label>`).join('')}</div>
-          ${c.type ? `<div class="hint">💡 ${esc(TYPE_HINTS[c.type])}</div>` : ''}
+          ${c.type ? `<div class="hint">💡 ${esc(TYPE_HINTS[c.type])}${scen[c.type] ? `<br>你在 ① 為這個情境寫的客戶說法：「${esc(scen[c.type])}」` : ''}</div>` : ''}
         </div>
         <label class="field"><span>② 對應 ① 的哪個紅燈步驟？</span><select data-o="step">${stepOpts(c.step)}</select></label>
         <label class="field"><span>③ 用哪個序號？</span><select data-o="serial"><option value="">不指定</option>${DEVICES.map(([k, v]) => `<option value="${k}" ${c.serial === k ? 'selected' : ''}>${k}｜${v}</option>`).join('')}</select></label>
@@ -230,6 +232,7 @@ ownEl.addEventListener('input', (e) => {
     c.type = e.target.value;
     const t = TEST_TYPES.find(([k]) => k === c.type);
     if (t && t[3] && !c.serial) c.serial = t[3];
+    if (!c.say && scen[c.type]) c.say = `客戶說：「${scen[c.type]}」`;
     renderOwn(); saver.touch(); return;
   }
   if (e.target.dataset.rule) { c.rules = [...card.querySelectorAll(`[data-rule="${c.id}"]:checked`)].map((x) => x.value); saver.touch(); return; }

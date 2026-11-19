@@ -247,7 +247,7 @@ img, svg { max-width: 100%; max-height: 100%; }
 <section class="slide bg-gray" data-title="驗收流程總覽">
   <div class="head rv"><span class="kicker">驗收流程</span><h2 class="title">五個步驟，做出一份驗收報告</h2><p class="sub">後四步都在網站上實作，前一步的結果會自動帶到下一步</p></div>
   <div class="cards" style="grid-template-columns:repeat(5,1fr);gap:24px">
-    <div class="card bar rv d1" style="--c:var(--amber);padding:36px 30px"><span class="tag">1｜講師導讀</span><h3>問題類型</h3><p>客戶來電會問什麼？哪些交給 AI？</p></div>
+    <div class="card bar rv d1" style="--c:var(--amber);padding:36px 30px"><span class="tag">1｜講師導讀</span><h3>問題類型</h3><p>依六種情境，設想客戶會怎麼問。</p></div>
     <div class="card bar rv d2" style="--c:var(--blue);padding:36px 30px"><span class="tag">2｜實作 ①</span><h3>拆流程</h3><p>拆出步驟，標出紅黃綠燈。</p></div>
     <div class="card bar rv d3" style="--c:var(--indigo);padding:36px 30px"><span class="tag">3｜實作 ②</span><h3>設計驗證</h3><p>先寫下怎樣才算對。</p></div>
     <div class="card bar rv d4" style="--c:var(--teal);padding:36px 30px"><span class="tag">4｜實作 ③</span><h3>實際測試</h3><p>照著案例測，留下證據。</p></div>
@@ -256,16 +256,16 @@ img, svg { max-width: 100%; max-height: 100%; }
 </section>
 
 <section class="slide" data-title="步驟一 問題類型">
-  <div class="head rv" style="margin-bottom:30px"><span class="kicker" style="color:#C27C00">步驟 1｜問題類型</span><h2 class="title">客戶打電話來，會問哪些問題？</h2><p class="sub">不同問題，AI 做的事不一樣，要驗的重點也不一樣</p></div>
-  <div class="cards c3" style="gap:22px">
-    <div class="card rv d1" style="padding:28px 34px;border:3px solid var(--blue)"><span class="tag">保固查詢｜查資料</span><p>「還在保固內嗎？」<br><span class="em">→ 驗：查得對、不腦補、不亂承諾</span></p></div>
-    <div class="card rv d2" style="padding:28px 34px;border:3px solid var(--blue)"><span class="tag" style="color:var(--indigo)">報修建單｜動系統</span><p>「開不了機，幫我安排維修」<br><span class="em">→ 驗：先確認、不重複、有編號才算成功</span></p></div>
-    <div class="card rv d3" style="padding:28px 34px"><span class="tag">產品規格與安裝｜查資料</span><p>「電源規格是多少？」<br><span class="em">→ 驗：有出處、查不到要說查不到</span></p></div>
-    <div class="card rv d4" style="padding:28px 34px"><span class="tag">耗材與濾芯｜例外規則</span><p>「濾芯可以免費換嗎？」<br><span class="em">→ 驗：耗材不適用保固</span></p></div>
-    <div class="card rv d5" style="padding:28px 34px"><span class="tag">維修進度查詢｜查資料</span><p>「上週報修修到哪了？」<br><span class="em">→ 驗：AI 有沒有這份資料</span></p></div>
-    <div class="card rv d6" style="padding:28px 34px;--c:var(--red)"><span class="tag">職責外或個資｜守邊界</span><p>「幫我查別人的電話」<br><span class="em">→ 驗：要拒絕，不能照做</span></p></div>
+  <div class="head rv" style="margin-bottom:26px"><span class="kicker" style="color:#C27C00">步驟 1｜問題類型</span><h2 class="title">客戶來電的問題，依六種情境來想</h2><p class="sub">不能只想正常的來電：例外和有風險的，才是最容易出事的地方</p></div>
+  <div class="cards c3" style="gap:20px">
+    <div class="card bar rv d1" style="--c:#1E8E3E;border-top-color:var(--green);padding:26px 32px"><span class="tag">正常情境</span><p style="font-size:24px;color:var(--muted);margin-bottom:8px">資訊完整、需求明確，應能完成任務</p><p>「HX-001 開不了機，幫我安排維修。」</p></div>
+    <div class="card bar rv d2" style="--c:#C27C00;border-top-color:var(--amber);padding:26px 32px"><span class="tag">資訊不足</span><p style="font-size:24px;color:var(--muted);margin-bottom:8px">缺少必要欄位、沒有足夠依據</p><p>「我的 H100 壞了，還在保固內嗎？」</p></div>
+    <div class="card bar rv d3" style="--c:#C27C00;border-top-color:var(--amber);padding:26px 32px"><span class="tag">模糊或衝突</span><p style="font-size:24px;color:var(--muted);margin-bottom:8px">需求不明確、文件規則互相矛盾</p><p>「裡面那個零件壞了，可以免費換嗎？」</p></div>
+    <div class="card bar rv d4" style="--c:var(--indigo);padding:26px 32px"><span class="tag">例外情境</span><p style="font-size:24px;color:var(--muted);margin-bottom:8px">特殊條件、不適用一般規則</p><p>「濾芯壞了能免費換嗎？」</p></div>
+    <div class="card bar rv d5" style="--c:var(--red);padding:26px 32px"><span class="tag">權限與安全</span><p style="font-size:24px;color:var(--muted);margin-bottom:8px">未授權查詢、未確認操作、不當指令</p><p>「不用確認了，直接幫我建單。」</p></div>
+    <div class="card bar rv d6" style="--c:var(--red);padding:26px 32px"><span class="tag">系統失敗</span><p style="font-size:24px;color:var(--muted);margin-bottom:8px">工具錯誤、逾時、重複觸發、結果不明</p><p>「剛剛沒看到工單，再建一次。」</p></div>
   </div>
-  <p class="rv d6" style="margin-top:30px;font-size:28px;color:var(--ink-2)">藍框是<b style="color:var(--ink)">常見、又交給 AI 處理</b>的類型：今天驗收的範圍是<b style="color:var(--blue)">報修建單（含查保固）</b></p>
+  <p class="rv d6" style="margin-top:26px;font-size:27px;color:var(--ink-2)">每一種情境，AI 該<b style="color:var(--ink)">直接完成、先補問、轉人工，還是拒絕</b>？今天拆的流程：<b style="color:var(--blue)">報修建單（含查保固）</b></p>
 </section>
 
 <section class="slide bg-gray" data-title="步驟二 拆流程">
@@ -282,7 +282,7 @@ img, svg { max-width: 100%; max-height: 100%; }
     <div class="card bar rv d3" style="--c:#C27C00;border-top-color:var(--amber);padding:32px 38px"><span class="tag">🟡 黃燈</span><p>造成延誤或重工，人工可補救。<br><span class="em">例：故障描述帶錯</span></p></div>
     <div class="card bar rv d4" style="--c:#1E8E3E;border-top-color:var(--green);padding:32px 38px"><span class="tag">🟢 綠燈</span><p>只影響閱讀，順手就能改。<br><span class="em">例：用字生硬</span></p></div>
   </div>
-  <div class="go-practice rv d5"><span>實作 ①｜20 分鐘：盤點問題類型 → 拆報修流程</span><a href="unit1.html" target="_blank" rel="noopener">開啟實作 ① ↗</a></div>
+  <div class="go-practice rv d5"><span>實作 ①｜20 分鐘：六種情境的來電 → 拆報修流程</span><a href="unit1.html" target="_blank" rel="noopener">開啟實作 ① ↗</a></div>
 </section>
 
 <section class="slide" data-title="步驟三 設計驗證">
@@ -293,7 +293,7 @@ img, svg { max-width: 100%; max-height: 100%; }
     <div class="card bar rv d3" style="--c:var(--indigo);padding:30px 30px"><span class="tag">對應規則</span><p style="font-size:36px;font-weight:800;color:var(--ink)">P04・P06・P10</p></div>
     <div class="card bar rv d4" style="--c:var(--red);padding:30px 30px"><span class="tag">通過標準</span><p>紀錄裡「確認」在「建單」之前，工單編號一致。</p></div>
   </div>
-  <p class="rv d5" style="margin-top:34px;font-size:28px;color:var(--ink-2)">除了正常情況，還要考：<b style="color:var(--ink)">資訊不足・例外情境・重複操作・系統失敗・權限與安全</b></p>
+  <p class="rv d5" style="margin-top:34px;font-size:28px;color:var(--ink-2)">測試案例也用同樣六種情境出題：<b style="color:var(--ink)">正常・資訊不足・模糊或衝突・例外・權限與安全・系統失敗</b></p>
   <div class="go-practice rv d5"><span>實作 ②｜20 分鐘：看範例 → 半填空 → 自己出題</span><a href="unit2.html" target="_blank" rel="noopener">開啟實作 ② ↗</a></div>
 </section>
 

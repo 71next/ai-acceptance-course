@@ -50,6 +50,11 @@
   .deliver li::before { content: counter(d); position: absolute; left: 14px; top: 12px; width: 22px; height: 22px; border-radius: 50%; background: var(--ink); color: #fff; font-size: 13px; font-weight: 800; display: grid; place-items: center; }
   .deliver b { display: block; font-size: 15px; }
   .deliver span { font-size: 13px; color: var(--muted); }
+  .scen-list { display: grid; gap: 10px; }
+  .scen { border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; background: #FAFAFC; }
+  .scen-h { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
+  .scen-h b { font-size: 16px; }
+  .scen textarea { min-height: 44px; }
 </style>
 </head>
 <body>
@@ -63,7 +68,7 @@
   <section class="card brief">
     <p><b>使用情境：</b>宏岳設備的客服人員接到客戶來電時，把問題交給內部 AI 客服助手。AI 可以依設備序號<b>查詢保固</b>，並在客服確認後<b>建立維修工單</b>。主管的目標是<b>節省一半的客服處理時間</b>，希望下個月全體客服開始使用。上線前，你要幫公司驗收這個 AI 助手。</p>
     <ol class="deliver">
-      <li><b>A. 盤點問題類型</b><span>客戶來電會問什麼？哪些要交給 AI？</span></li>
+      <li><b>A. 依六種情境設想來電</b><span>正常、例外、有風險的客戶來電各會怎麼說？</span></li>
       <li><b>B. 拆報修流程</b><span>誰做、做什麼；右側自動畫出流程圖</span></li>
       <li><b>每一步標紅／黃／綠燈</b><span>紅燈步驟會帶到 ② 設計測試</span></li>
     </ol>
@@ -120,7 +125,7 @@
 <script type="module">
 import { renderHeader, ensureIdentity, showIdentity, loadResponse, autosaver, watchReveal, esc, toast, uid8, stepperHtml } from './assets/app.js';
 import { mountFeedback } from './assets/ai-feedback.js';
-import { TRACK, RULES, LIGHTS, CASE, ROLES, OPTIONS, QTYPES, FREQ, HANDLE } from './assets/simple-data.js';
+import { TRACK, RULES, LIGHTS, CASE, ROLES, OPTIONS, SCENARIOS, HANDLE } from './assets/simple-data.js';
 import { renderFlow, END, ROLE_LEGEND } from './assets/flow.js';
 
 renderHeader('u1');
@@ -140,16 +145,16 @@ let ai = { run() {} };
 const blankStep = () => ({ id: uid8(), action: '', role: '', light: '', issue: '', next: [] });
 function blankState() {
   const steps = Array.from({ length: CASE.rows }, blankStep);
-  return { track: TRACK, types: blankTypes(), steps, start: steps[0].id };
+  return { track: TRACK, scen: blankScen(), steps, start: steps[0].id };
 }
-const blankTypes = () => QTYPES.map(([k, name, ex]) => ({ id: k, name, example: ex, freq: '', handle: '' }));
+const blankScen = () => SCENARIOS.map(([k]) => ({ id: k, say: '', handle: '' }));
 
 async function boot() {
   id = await ensureIdentity();
   showIdentity(id, () => ensureIdentity({ force: true }).then(() => location.reload()));
   const saved = await loadResponse(id, UNIT);
   state = saved?.data?.track === TRACK && saved.data.steps ? saved.data : blankState();
-  if (!state.types) state.types = blankTypes();
+  if (!state.scen) state.scen = blankScen();
   saver = autosaver(id, UNIT, () => state, document.getElementById('saveStatus'));
   if (saved?.status === 'submitted' && saved.data?.track === TRACK) { saver.setStatus('submitted'); document.getElementById('submittedBadge').hidden = false; }
   document.getElementById('saveStatus').textContent = saved?.data?.track === TRACK ? '已載入先前的作答' : '作答會自動儲存';
@@ -158,192 +163,39 @@ async function boot() {
   renderTypes(); renderSteps();
 }
 
-// ---------- A. 問題類型盤點 ----------
+// ---------- A. 六種情境的客戶來電 ----------
 function renderTypes() {
   const el = document.getElementById('qtypes');
-  const radios = (t, f, map) => `<div class="seg">${Object.entries(map).map(([k, n]) => `<label><input type="radio" name="${f}_${t.id}" data-tf="${f}" value="${k}" ${t[f] === k ? 'checked' : ''}><span>${n}</span></label>`).join('')}</div>`;
   el.innerHTML = `<span class="pill blue">A. 客戶來電的問題類型</span>
-    <h2 style="margin:10px 0 4px">客戶打電話來，會問哪些問題？</h2>
-    <p class="muted" style="margin:0 0 14px">為每一類標出「常不常見」和「要不要交給 AI 助手」。常見又交給 AI 的類型，就是驗收的重點。可以自己新增類型。</p>
-    <div class="table-wrap"><table><thead><tr><th>問題類型</th><th>客戶可能這樣問</th><th>常不常見</th><th>誰來處理</th><th></th></tr></thead><tbody>
-    ${state.types.map((t) => `<tr data-tid="${t.id}">
-      <td>${t.custom ? `<input data-tt="name" value="${esc(t.name)}" placeholder="問題類型">` : `<b>${esc(t.name)}</b>`}</td>
-      <td>${t.custom ? `<input data-tt="example" value="${esc(t.example)}" placeholder="客戶可能怎麼問">` : `<span class="muted">「${esc(t.example)}」</span>`}</td>
-      <td>${radios(t, 'freq', FREQ)}</td><td>${radios(t, 'handle', HANDLE)}</td>
-      <td>${t.custom ? '<button class="icon-btn" data-tdel aria-label="刪除">✕</button>' : ''}</td></tr>`).join('')}
-    </tbody></table></div>
-    <div class="row-end" style="justify-content:space-between;align-items:center;margin-top:10px">
-      <button class="btn small ghost" data-tadd>＋ 新增問題類型</button>
-      <span class="tiny muted">本次實作與實測的範圍：<b>報修建單</b>（含查保固）</span>
-    </div>`;
+    <h2 style="margin:10px 0 4px">依六種情境，設想宏岳的客戶會怎麼說</h2>
+    <p class="muted" style="margin:0 0 14px">不能只想「正常」的來電。每一種情境寫一句客戶可能的說法，再選 AI 助手該怎麼處理。卡住時按「💡 例子」。這些說法會帶到 ② 當作出題的起點。</p>
+    <div class="scen-list">${SCENARIOS.map(([k, n, dir, ex]) => { const t = state.scen.find((x) => x.id === k) || {}; return `
+      <div class="scen" data-sid="${k}">
+        <div class="scen-h"><b>${n}</b><span class="muted tiny">${dir}</span><button type="button" class="hint-btn" data-ex>💡 例子</button></div>
+        <div class="hint" data-exbox hidden>${esc(ex)}</div>
+        <div class="fgrid">
+          <label class="field"><span>客戶可能這樣說</span><textarea data-st="say" rows="2">${esc(t.say || '')}</textarea></label>
+          <div class="field"><span class="label">AI 助手應該怎麼處理？</span><div class="seg">${Object.entries(HANDLE).map(([hk, hn]) => `<label><input type="radio" name="h_${k}" data-st="handle" value="${hk}" ${t.handle === hk ? 'checked' : ''}><span>${hn}</span></label>`).join('')}</div></div>
+        </div>
+      </div>`; }).join('')}</div>
+    <p class="tiny muted" style="margin:12px 0 0">B 段要拆的是其中最常見的一種：<b>報修建單（含查保固）</b>。</p>`;
 }
 const qEl = document.getElementById('qtypes');
 qEl.addEventListener('input', (e) => {
-  const t = state.types.find((x) => x.id === e.target.closest('[data-tid]')?.dataset.tid); if (!t) return;
-  if (e.target.dataset.tf) t[e.target.dataset.tf] = e.target.value;
-  else if (e.target.dataset.tt) t[e.target.dataset.tt] = e.target.value;
-  saver.touch();
+  const k = e.target.closest('[data-sid]')?.dataset.sid; if (!k || !e.target.dataset.st) return;
+  let t = state.scen.find((x) => x.id === k); if (!t) state.scen.push(t = { id: k, say: '', handle: '' });
+  t[e.target.dataset.st] = e.target.value; saver.touch();
 });
 qEl.addEventListener('click', (e) => {
-  if (e.target.closest('[data-tadd]')) { state.types.push({ id: uid8(), name: '', example: '', freq: '', handle: '', custom: true }); renderTypes(); saver.touch(); }
-  else if (e.target.closest('[data-tdel]')) { const id_ = e.target.closest('[data-tid]').dataset.tid; state.types = state.types.filter((x) => x.id !== id_); renderTypes(); saver.touch(); }
+  if (!e.target.closest('[data-ex]')) return;
+  const box = e.target.closest('.scen').querySelector('[data-exbox]'); box.hidden = !box.hidden;
 });
-
-/* ---------- 下拉選項（含「其他（自行輸入）」） ---------- */
-const OTHER = '__other';
-const hash = (t) => [...t].reduce((h, ch) => (h * 31 + ch.codePointAt(0)) >>> 0, 7);
-const mixed = (arr) => [...arr].sort((a, b) => hash(a) - hash(b));
-const wrongOf = (v) => (KEY && v && KEY.wrong?.[v]) || '';
-const wrongHtml = (w) => `<div class="fb bad">❌ 這是錯誤做法：${esc(w)}</div>`;
-function pick(attr, f, val, opts, ph = '請選擇') {
-  val = val || '';
-  const other = val !== '' && !opts.includes(val);
-  const w = wrongOf(val);
-  return `<div class="pick${w ? ' is-wrong' : ''}"><select ${attr}="${f}" data-pick>
-      <option value="">${ph}</option>
-      ${opts.map((o) => `<option value="${esc(o)}" ${o === val ? 'selected' : ''}>${esc(o)}</option>`).join('')}
-      <option value="${OTHER}" ${other ? 'selected' : ''}>✎ 其他（自行輸入）</option>
-    </select><input class="pick-other" ${attr}="${f}" data-other value="${other ? esc(val) : ''}" placeholder="自行輸入" ${other ? '' : 'hidden'}><div class="pick-fb">${w ? wrongHtml(w) : ''}</div></div>`;
-}
-function pickValue(el) {
-  if (el.matches('select[data-pick]')) {
-    const o = el.nextElementSibling;
-    if (el.value === OTHER) { o.hidden = false; o.focus(); return o.value; }
-    o.hidden = true; o.value = ''; return el.value;
-  }
-  return el.value;
-}
-function markPick(el, v) {
-  const box = el.closest('.pick'); if (!box) return;
-  const w = wrongOf(v);
-  box.classList.toggle('is-wrong', !!w);
-  box.querySelector('.pick-fb').innerHTML = w ? wrongHtml(w) : '';
-}
-const LIGHT_N = { red: '紅燈', yellow: '黃燈', green: '綠燈' };
-function lightFb(s) {
-  const ref = KEY?.lights?.[s.issue];
-  if (!ref || !s.light) return '';
-  return s.light === ref ? `<div class="fb ok">✅ 燈號和參考答案一致：${LIGHT_N[ref]}。</div>`
-    : `<div class="fb warn">參考燈號是 <b>${LIGHT_N[ref]}</b>，你選了${LIGHT_N[s.light]}。對照上方的評估依據想想差在哪。</div>`;
-}
-function renderSummary() {
-  const el = document.getElementById('fbSummary');
-  if (!KEY) { el.innerHTML = ''; return; }
-  const wrong = state.steps.reduce((n, s) => n + (wrongOf(s.action) ? 1 : 0) + (s.next || []).filter((x) => wrongOf(x.cond)).length, 0);
-  const diff = state.steps.filter((s) => KEY.lights?.[s.issue] && s.light && s.light !== KEY.lights[s.issue]).length;
-  el.innerHTML = `<div class="note fb-summary"><strong>講師已開放參考答案。</strong>${wrong ? `你選到 <b>${wrong}</b> 個錯誤做法` : '沒有選到錯誤做法'}${diff ? `，<b>${diff}</b> 個步驟的燈號和參考不同` : ''}。流程沒有唯一正解，參考流程在頁面最下方。</div>`;
-}
-
-const stepOpts = (sel, { allowEnd = false, empty = '選擇步驟' } = {}) => {
-  let h = `<option value="">${empty}</option>`;
-  state.steps.forEach((s, i) => { h += `<option value="${s.id}" ${s.id === sel ? 'selected' : ''}>${NO(i)}　${esc((s.action || '').slice(0, 18))}</option>`; });
-  if (allowEnd) h += `<option value="${END}" ${sel === END ? 'selected' : ''}>（結束）</option>`;
-  return h;
-};
-
-function renderSteps() {
-  const c = state;
-  document.querySelector('[data-start]').innerHTML = stepOpts(c.start, { empty: '第一步' });
-  const box = document.getElementById('steps');
-  box.innerHTML = c.steps.map((s, i) => `
-    <div class="step" data-sid="${s.id}" data-light="${s.light}">
-      <div class="step-top">
-        <span class="step-no">${NO(i)}</span><span class="grow"></span>
-        <button class="icon-btn" data-up title="上移" aria-label="上移" ${i === 0 ? 'disabled' : ''}>↑</button>
-        <button class="icon-btn" data-down title="下移" aria-label="下移" ${i === c.steps.length - 1 ? 'disabled' : ''}>↓</button>
-        <button class="icon-btn" data-del title="刪除步驟" aria-label="刪除步驟">✕</button>
-      </div>
-      <div class="fgrid">
-        <div class="field full"><span class="label">動作</span>${pick('data-f', 'action', s.action, mixed(OPTIONS.action), '這一步做什麼？')}</div>
-        <div class="field"><span class="label">負責角色</span>${pick('data-f', 'role', s.role, ROLES, '選擇角色')}</div>
-        <div class="field"><span class="label">紅／黃／綠</span>
-          <div class="seg" role="radiogroup">
-            ${Object.entries(LIGHTS).map(([k, [n]]) => `<label class="l-${k}"><input type="radio" name="l_${s.id}" value="${k}" ${s.light === k ? 'checked' : ''}><span><i class="dot ${k}"></i>${n}</span></label>`).join('')}
-          </div>
-        </div>
-        <div class="field full"><span class="label">這一步最可能出錯的情況</span>${pick('data-f', 'issue', s.issue, mixed(OPTIONS.issue), '選擇或自行輸入')}<div class="light-fb">${lightFb(s)}</div></div>
-      </div>
-      <div class="conns">
-        <div class="label">下一步（分支，可不設定）</div>
-        ${(s.next || []).map((n, j) => `
-          <div class="conn" data-ci="${j}">
-            <span class="arrow">→</span>
-            <select data-cto>${stepOpts(n.to, { allowEnd: true, empty: '選擇下一步' }).replace(`<option value="${s.id}"`, `<option disabled value="${s.id}"`)}</select>
-            <div class="cond">${pick('data-ccond', '1', n.cond, OPTIONS.cond, '判斷條件（可不選）')}</div>
-            <button class="icon-btn" data-cdel aria-label="移除連線">✕</button>
-          </div>`).join('')}
-        ${(s.next || []).length ? '' : `<p class="conn-hint">未設定時自動接到${i < c.steps.length - 1 ? '下一個步驟' : '「結束」'}。</p>`}
-        <button class="link tiny" data-cadd>＋ 新增分支</button>
-      </div>
-    </div>`).join('');
-  drawFlow(); lightSum();
-}
-
-const steps = document.getElementById('steps');
-steps.addEventListener('input', (e) => {
-  const card = e.target.closest('[data-sid]'); if (!card) return;
-  const s = state.steps.find((x) => x.id === card.dataset.sid);
-  if (e.target.dataset.f) {
-    const v = s[e.target.dataset.f] = pickValue(e.target); markPick(e.target, v);
-    if (e.target.dataset.f === 'issue') card.querySelector('.light-fb').innerHTML = lightFb(s);
-    if (e.target.dataset.f === 'action') refreshLabels();
-    if (KEY) renderSummary();
-    changed(true);
-  } else if (e.target.hasAttribute('data-ccond')) {
-    const v = s.next[+e.target.closest('[data-ci]').dataset.ci].cond = pickValue(e.target); markPick(e.target, v); changed(true);
-  } else if (e.target.type === 'radio') {
-    s.light = e.target.value; card.dataset.light = s.light; card.querySelector('.light-fb').innerHTML = lightFb(s); if (KEY) renderSummary(); lightSum(); changed();
-  }
-});
-steps.addEventListener('change', (e) => {
-  if (!e.target.hasAttribute('data-cto')) return;
-  const s = state.steps.find((x) => x.id === e.target.closest('[data-sid]').dataset.sid);
-  s.next[+e.target.closest('[data-ci]').dataset.ci].to = e.target.value; changed(true);
-});
-steps.addEventListener('click', (e) => {
-  const card = e.target.closest('[data-sid]'); if (!card) return;
-  const c = state;
-  const i = c.steps.findIndex((x) => x.id === card.dataset.sid); const s = c.steps[i];
-  if (e.target.closest('[data-up]') && i > 0) [c.steps[i - 1], c.steps[i]] = [c.steps[i], c.steps[i - 1]];
-  else if (e.target.closest('[data-down]') && i < c.steps.length - 1) [c.steps[i + 1], c.steps[i]] = [c.steps[i], c.steps[i + 1]];
-  else if (e.target.closest('[data-del]')) {
-    if (c.steps.length <= 1) return toast('至少保留一個步驟');
-    c.steps.splice(i, 1);
-    c.steps.forEach((x) => { x.next = (x.next || []).filter((n) => n.to !== s.id); });
-    if (c.start === s.id) c.start = c.steps[0].id;
-  }
-  else if (e.target.closest('[data-cadd]')) { s.next = s.next || []; const nx = c.steps[i + 1]; s.next.push({ to: nx ? nx.id : END, cond: '' }); }
-  else if (e.target.closest('[data-cdel]')) s.next.splice(+e.target.closest('[data-ci]').dataset.ci, 1);
-  else return;
-  renderSteps(); changed(true);
-});
-document.querySelector('[data-start]').onchange = (e) => { state.start = e.target.value || state.steps[0]?.id; changed(true); };
-document.getElementById('addStep').onclick = () => { state.steps.push(blankStep()); renderSteps(); changed(true); };
-
-function refreshLabels() {
-  document.querySelectorAll('select[data-cto], select[data-start]').forEach((sel) => {
-    [...sel.options].forEach((o) => {
-      const i = state.steps.findIndex((s) => s.id === o.value);
-      if (i >= 0) o.textContent = `${NO(i)}　${(state.steps[i].action || '').slice(0, 18)}`;
-    });
-  });
-}
-function lightSum() {
-  const n = (k) => state.steps.filter((s) => s.light === k).length;
-  document.getElementById('lightSum').innerHTML = `目前標記：<span class="dot red"></span> 紅燈 ${n('red')}　<span class="dot yellow"></span> 黃燈 ${n('yellow')}　<span class="dot green"></span> 綠燈 ${n('green')}　·　紅燈步驟會帶到 ②`;
-}
-
-let flowT = null;
-function drawFlow() {
-  clearTimeout(flowT);
-  flowT = setTimeout(() => renderFlow(document.getElementById('flowBox'), 'S', state), 250);
-}
-function changed(flow = false) { if (flow) drawFlow(); saver.touch(); }
 
 // ---------- 送出 ----------
 function missing() {
   const out = [];
-  if (state.types.some((t) => t.name && (!t.freq || !t.handle))) out.push('A. 每個問題類型都要標「常不常見」和「誰來處理」');
+  const done = state.scen.filter((t) => t.say.trim() && t.handle).length;
+  if (done < SCENARIOS.length) out.push(`A. 六種情境還有 ${SCENARIOS.length - done} 種沒寫客戶說法或沒選處理方式`);
   const filled = state.steps.filter((s) => s.action.trim());
   if (filled.length < 4) out.push('流程至少要有 4 個填好動作的步驟');
   if (filled.some((s) => !s.light)) out.push('每個步驟都要標紅／黃／綠燈');
