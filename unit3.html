@@ -179,7 +179,7 @@ $('#ev').onclick = (e) => {
   r.evidence = r.evidence.includes(n) ? r.evidence.filter((x) => x !== n) : [...r.evidence, n].sort((a, b) => a.slice(1) - b.slice(1));
   renderLog(); renderChips(picking); saver.touch();
 };
-$('#pickDone').onclick = () => { picking = ''; renderLog(); document.querySelectorAll('.tc').forEach((el) => el.classList.remove('active')); };
+$('#pickDone').onclick = () => { picking = ''; renderLog(); cases.forEach((c) => renderChips(c.id)); document.querySelectorAll('.tc').forEach((el) => el.classList.remove('active')); };
 $('#reload').onclick = loadLog;
 
 const chipsHtml = (r) => (r.evidence.length ? r.evidence.map((n) => `<span class="ev-chip">${n}<button type="button" data-unchip="${n}" aria-label="移除 ${n}">✕</button></span>`).join('') : '<span class="tiny muted">尚未引用</span>');

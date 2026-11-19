@@ -327,8 +327,8 @@ img, svg { max-width: 100%; max-height: 100%; }
   <div class="quiz">
     <div>
       <span class="kicker rv">講評</span>
-      <h2 class="title rv d1">這個 AI 客服助手藏了四個缺陷，你的報告抓到了幾個？</h2>
-      <div class="scene rv d2">提示：一個在<span class="hl">保固查詢</span>，一個在<span class="hl">回覆內容</span>，兩個在<span class="hl">建立工單</span>。</div>
+      <h2 class="title rv d1">這個 AI 客服助手藏了三個缺陷，你的報告抓到了幾個？</h2>
+      <div class="scene rv d2">提示：一個在<span class="hl">保固查詢</span>，兩個在<span class="hl">建立工單</span>。</div>
       <p class="ask rv d3">每抓到一個，說出你引用的證據編號與違反的規則。</p>
     </div>
     <button class="answer-btn rv d2" data-next aria-label="看解答（下一頁）"><span class="inner"><span class="t">解答</span><span class="s">點擊看解答 →</span></span></button>
@@ -336,12 +336,11 @@ img, svg { max-width: 100%; max-height: 100%; }
 </section>
 
 <section class="slide answer" data-title="講評 解答">
-  <div class="head rv"><span class="kicker">講評｜解答</span><h2 class="title"><span class="verdict">🔴 四個都是 P0</span>：修好之前，暫不可上線</h2><p class="sub">其中兩個不是 AI 答錯，而是系統把錯誤的結果傳給 AI：只改提示詞修不好</p></div>
-  <div class="cards c2" style="gap:24px">
-    <div class="card rv d1" style="--c:var(--red);padding:30px 36px"><span class="tag">HX-004｜違反 P03</span><h3>沒有購買日期，卻說在保固期內</h3><p>保固查詢寫「購買日期 無紀錄」，AI 卻說保固期內。改：缺日期一律回「無法判定」。</p></div>
-    <div class="card rv d2" style="--c:var(--red);padding:30px 36px"><span class="tag">回覆內容｜違反 P04</span><h3>故障原因未確認，就承諾免費維修</h3><p>AI 回覆出現「免費維修」。改：回覆固定加「待檢測」，系統檢查承諾字詞。</p></div>
-    <div class="card rv d3" style="--c:var(--red);padding:30px 36px"><span class="tag">建單｜違反 P06</span><h3>沒請客服確認，就直接建單</h3><p>建單請求之前沒有確認紀錄。改：系統強制確認後才能送出。</p></div>
-    <div class="card rv d4" style="--c:var(--red);padding:30px 36px"><span class="tag">HX-002｜違反 P10、P09</span><h3>逾時卻回報成功，再建一次就重複</h3><p>逾時沒有編號，AI 卻說已建立；調閱看到兩張單。改：沒有編號不得回報成功。</p></div>
+  <div class="head rv"><span class="kicker">講評｜解答</span><h2 class="title"><span class="verdict">🔴 三個都是 P0</span>：修好之前，暫不可上線</h2><p class="sub">其中兩個不是 AI 答錯，而是系統把錯誤的結果傳給 AI：只改提示詞修不好</p></div>
+  <div class="cards c3" style="gap:24px">
+    <div class="card bar rv d1" style="--c:var(--red);padding:32px 36px"><span class="tag">HX-004｜違反 P03</span><h3>沒有購買日期，卻說在保固期內</h3><p>證據：保固查詢寫「購買日期 無紀錄」，AI 卻說保固期內。<br><span class="em">改：缺日期一律回「無法判定」</span></p></div>
+    <div class="card bar rv d2" style="--c:var(--red);padding:32px 36px"><span class="tag">建單｜違反 P06</span><h3>沒請客服確認，就直接建單</h3><p>證據：建單請求之前，沒有客服確認的紀錄。<br><span class="em">改：系統強制確認後才能送出</span></p></div>
+    <div class="card bar rv d3" style="--c:var(--red);padding:32px 36px"><span class="tag">HX-002｜違反 P10、P09</span><h3>逾時卻回報成功，再建就重複</h3><p>證據：建單請求逾時、沒有編號，AI 卻說已建立；調閱看到兩張單。<br><span class="em">改：沒有編號不得回報成功</span></p></div>
   </div>
 </section>
 
