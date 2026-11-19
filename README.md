@@ -11,6 +11,7 @@
 | 練習一：流程拆解與風險評估 | <https://71next.github.io/ai-acceptance-course/unit1.html> |
 | 練習二：情境測試與證據判讀 | <https://71next.github.io/ai-acceptance-course/unit2.html> |
 | 練習三：改善與再驗證計畫 | <https://71next.github.io/ai-acceptance-course/unit3.html> |
+| 實測：宏岳 AI 客服助手 | <https://71next.github.io/ai-acceptance-course/lab.html> |
 | 講師後台 | <https://71next.github.io/ai-acceptance-course/admin.html> |
 
 ## 功能
@@ -34,6 +35,13 @@
   - 練習三：檢查優先序（P0／P1／P2）。
   - 答案鍵寫在參考答案母本的 `<!-- key {...} -->` 註解裡，跟著參考答案一起由講師開放，不會出現在公開的網站程式碼中。
 - **AI 回饋**：學員按「送出作答」後，由 Claude（Opus 5.5）依參考答案批改，練習頁顯示整體評語、各部分評等與修改建議；講師後台的個人詳細也看得到。批改服務是另一個 Cloudflare Worker（不公開），API 金鑰只存在 Worker。每位學員每個練習最多 5 次、全站每天最多 200 次。
+- **實測：宏岳 AI 客服助手**（`lab.html`）：學員扮演客服，跟模擬的 AI 助手對話（查保固、建工單），右側自動留下 L1、L2… 的證據紀錄，「AI 說的話」和「系統實際紀錄」分開記。
+  - 講師在後台「實測」分頁切換**工單系統狀況**（正常／逾時）與 **AI 版本**（改善前／改善後），立即對全班生效。
+  - 改善前：串接程式把逾時當成功轉給 AI，AI 因此誤報建單成功；客服要求重送就重送，造成重複工單（重現練習二案例 B）。也沒有建單前確認。
+  - 改善後：系統防呆擋下未經客服確認的建單（P06）、同序號重複建單（P09），逾時回傳「結果未知」，並攔下沒有成功結果卻宣稱成功的回覆（P10）。
+  - 「調閱工單系統」按鈕會把系統實際的工單資料加入證據紀錄。
+  - 學員的實測紀錄存到 Firestore `sessions/{梯次}/labs/{uid}`，講師在後台「實測」分頁查看。
+  - 使用 Claude Haiku（`claude-haiku-5-5`）；每位學員每個梯次最多 40 則，全站每天最多 3000 則。
 - **下載區**：課程簡報（pptx，37 頁，每頁是網頁簡報的 1920×1080 截圖）、宏岳設備案例對照表（pdf，A4 兩頁，供上課列印對照；原始檔在 repo 外的 `講義跟表單/宏岳設備案例對照表.html`，用 Chrome 列印成 PDF）、學員精華講義與三份評估表（docx），放在 `downloads/`。首頁上方也有「下載簡報 PPT」按鈕。
 
 ## 技術架構
@@ -73,6 +81,9 @@
 | `MAX_PER_UNIT` | `5` | 每位學員每個練習最多批改幾次 |
 | `DAILY_CAP` | `200` | 全站每天最多批改幾次（成本上限） |
 | `ALLOWED_ORIGINS` | 網站與本機預覽 | 允許呼叫的網站來源 |
+| `LAB_MODEL` | `claude-haiku-5-5` | 實測用的模型 |
+| `LAB_MAX_TURNS` | `40` | 實測：每位學員每個梯次最多幾則對話 |
+| `LAB_DAILY_CAP` | `3000` | 實測：全站每天最多幾則對話 |
 
 費用：一班 40 人三個練習各批改一次，約 US$3～5。實測一次批改約 15 秒。
 
@@ -99,7 +110,7 @@ downloads/          講義與評估表
 
 - **安全規則**：`firestore.rules`，已貼到 Firebase Console 發布。
 - **參考答案母本**：`參考答案.md`，由講師在後台匯入，部署 AI 批改時也會複製一份進 Worker。
-- **AI 批改服務**：`grader/`（`src/index.js` 主程式、`src/context.js` 題本與作答轉文字、`wrangler.toml` 設定）。
+- **AI 批改服務**：`grader/`（`src/index.js` 主程式（`/grade` 批改）、`src/lab.js` 實測（`/chat` 模擬 AI 助手與工單系統）、`src/context.js` 題本與作答轉文字、`wrangler.toml` 設定）。
 
 ## 製作過程
 
