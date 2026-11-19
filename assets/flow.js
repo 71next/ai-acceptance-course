@@ -18,7 +18,7 @@ export async function getMermaid() {
   return m;
 }
 
-export const stepNo = (caseKey, i) => `U1-${caseKey}${i + 1}`;
+export const stepNo = (caseKey, i) => (caseKey === 'S' ? `S${i + 1}` : `U1-${caseKey}${i + 1}`); // 'S'：簡單版的單一流程
 export const END = '__END__';
 
 /** 步驟的實際連線：未設定時依序接下一步，最後一步接結束 */

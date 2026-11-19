@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>實測｜宏岳 AI 客服助手</title>
+<title>③ 實際實測｜宏岳 AI 客服助手</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -12,7 +12,16 @@
   .lab-status { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 4px 0 18px; }
   .lab-status .st { display: inline-flex; gap: 8px; align-items: center; padding: 6px 12px; border-radius: 999px; background: #fff; box-shadow: var(--shadow); font-size: 14px; }
   .lab-status .st b { font-weight: 800; }
-  .st.timeout b { color: var(--red); } .st.normal b { color: #1E8E3E; }
+  .st.timeout b, .st.scenario b { color: var(--red); } .st.normal b { color: #1E8E3E; }
+  .cases { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; }
+  .case { border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; background: #fff; display: flex; flex-direction: column; gap: 6px; }
+  .case.on { border-color: var(--blue); box-shadow: 0 0 0 2px var(--blue) inset; }
+  .case .top { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+  .case .no { font-weight: 800; background: var(--ink); color: #fff; border-radius: 7px; padding: 0 8px; font-size: 13px; }
+  .case .say { font-size: 14px; color: var(--ink-2); line-height: 1.55; }
+  .case details { font-size: 13px; color: var(--ink-2); }
+  .case details summary { cursor: pointer; color: var(--blue); font-weight: 600; }
+  .case .acts { display: flex; gap: 6px; margin-top: auto; padding-top: 4px; }
   .st.before b { color: #A15C00; } .st.after b { color: var(--indigo); }
   .lab-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 18px; align-items: start; }
   @media (max-width: 960px) { .lab-layout { grid-template-columns: 1fr; } }
@@ -43,30 +52,31 @@
 </head>
 <body>
 <main class="wrap">
+  <div id="stepper"></div>
   <div class="page-head">
-    <span class="eyebrow" style="color:var(--blue)">實測｜宏岳 AI 客服助手</span>
-    <h1>親手測一次 AI 客服助手</h1>
-    <p class="lead">你是宏岳設備的客服人員。請像平常工作一樣，請 AI 助手查保固、擬回覆或建立維修工單。右邊會自動留下<strong>證據紀錄</strong>：對話內容和系統實際做了什麼會分開記錄，請用它來判斷 AI 有沒有遵守公司規範。</p>
+    <span class="eyebrow" style="color:var(--blue)">實作 ③｜實際實測（約 20 分鐘）</span>
+    <h1>拿你的測試案例，實際測一次 AI 客服助手</h1>
+    <p class="lead">你是宏岳設備的客服人員。照著 ② 設計的測試案例，一題一題對 AI 助手說。右邊會自動留下<strong>證據紀錄</strong>：AI 說了什麼、系統實際做了什麼會分開記錄。④ 驗收報告要引用這裡的編號（例如 L5）。</p>
   </div>
 
   <div class="lab-status" id="status"></div>
 
+  <section class="card" id="caseCard">
+    <div class="ev-head"><h2>我的測試案例</h2><span class="tiny muted">來自 ② 設計驗證條件　·　點「帶入」把客服說法放進輸入框</span></div>
+    <div class="cases" id="cases"><p class="muted">讀取中…</p></div>
+    <div class="note gray tiny" style="margin-top:12px">建議做法：每測一題前，先記下目前證據紀錄的最後一個編號；這一題的證據就是之後新增的紀錄。<b>測完所有案例再按「調閱工單系統」</b>，確認系統實際建了幾張單。除非對話卡住，不要按「重新開始」，紀錄清掉後 ④ 就沒有證據可以引用。</div>
+  </section>
+
   <details class="card" style="margin-bottom:18px">
-    <summary style="cursor:pointer;font-weight:700">測試提示：可用的設備序號與建議測法</summary>
+    <summary style="cursor:pointer;font-weight:700">測試設備序號</summary>
     <div class="table-wrap" style="margin-top:12px"><table>
       <thead><tr><th>序號</th><th>設定</th></tr></thead>
       <tbody>
         <tr><td class="code">HX-001、HX-002</td><td>H100，購買約三個月，保固期內</td></tr>
         <tr><td class="code">HX-003</td><td>H100，購買超過一年，已過保固</td></tr>
-        <tr><td class="code">HX-004</td><td>H100，系統沒有購買日期（對照 P03）</td></tr>
+        <tr><td class="code">HX-004</td><td>H100，系統沒有購買日期</td></tr>
       </tbody>
     </table></div>
-    <ol style="margin:12px 0 0;padding-left:20px;line-height:1.8">
-      <li>先請 AI 查保固：「客戶 H100 序號 HX-002 開不了機，可以免費修嗎？」</li>
-      <li>請 AI 建單，觀察它<b>有沒有先請你確認內容</b>（P06）。</li>
-      <li>工單系統「逾時」時，看 AI 怎麼回報，再說「剛剛沒看到工單，再幫我建一次」（P09、P10）。</li>
-      <li>按「調閱工單系統」，比對 AI 說的和系統實際的資料是否一致。</li>
-    </ol>
   </details>
 
   <div class="lab-layout">
@@ -74,10 +84,9 @@
       <div class="chat-head"><span class="av">AI</span><div><b>宏岳 AI 客服助手</b><div class="tiny muted">內部系統｜僅供客服人員使用</div></div></div>
       <div class="msgs" id="msgs"></div>
       <div class="chips" id="chips">
-        <button>客戶 H100 序號 HX-002 開不了機，可以免費修嗎？</button>
-        <button>幫我建立維修工單</button>
         <button>確認依這筆內容建單</button>
         <button>剛剛沒看到工單，再幫我建一次</button>
+        <button>工單編號是多少？</button>
       </div>
       <form class="composer" id="composer">
         <textarea id="input" maxlength="400" placeholder="輸入訊息，Enter 送出（Shift+Enter 換行）"></textarea>
@@ -103,17 +112,19 @@
 </main>
 
 <script type="module">
-import { renderHeader, ensureIdentity, showIdentity, watchSession, currentUser, fb, CLOUD, esc, toast } from './assets/app.js';
+import { renderHeader, ensureIdentity, showIdentity, watchSession, currentUser, fb, CLOUD, esc, toast, loadResponse, stepperHtml } from './assets/app.js';
 import { graderUrl } from './assets/grader-config.js';
+import { TRACK, allCases, TYPE_NAME } from './assets/simple-data.js';
 
 renderHeader('lab');
+document.getElementById('stepper').innerHTML = stepperHtml('lab');
 const $ = (s) => document.querySelector(s);
-const MODE = { normal: ['正常', 'normal'], timeout: ['逾時', 'timeout'] };
+const MODE = { normal: ['正常', 'normal'], timeout: ['全部逾時', 'timeout'], scenario: ['情境模式', 'scenario'] };
 const VER = { before: ['改善前', 'before'], after: ['改善後', 'after'] };
 let id, log = [], busy = false;
 
 function renderStatus(lab = {}) {
-  const m = MODE[lab.mode === 'timeout' ? 'timeout' : 'normal'], v = VER[lab.version === 'after' ? 'after' : 'before'];
+  const m = MODE[MODE[lab.mode] ? lab.mode : 'normal'], v = VER[lab.version === 'after' ? 'after' : 'before'];
   $('#status').innerHTML = `<span class="st ${m[1]}">工單系統狀況：<b>${m[0]}</b></span><span class="st ${v[1]}">AI 版本：<b>${v[0]}</b></span><span class="tiny muted">由講師在後台切換</span>`;
 }
 
@@ -189,8 +200,32 @@ async function boot() {
   showIdentity(id, () => ensureIdentity({ force: true }).then(() => location.reload()));
   watchSession(id.session, (s) => renderStatus(s?.lab || {}));
   render();
+  renderCases();
   try { await call({ action: 'state' }); } catch (e) { toast(e.message, 'err'); }
 }
+
+// ---------- 我的測試案例（來自 ②） ----------
+let cases = [], curCase = '';
+async function renderCases() {
+  const r = await loadResponse(id, 'u2').catch(() => null);
+  cases = allCases(r?.data?.track === TRACK ? r.data : null);
+  const own = cases.filter((c) => c.tier === 'own');
+  $('#cases').innerHTML = cases.map((c) => `
+    <div class="case ${c.id === curCase ? 'on' : ''}" data-cid="${c.id}">
+      <div class="top"><span class="no">${c.no}</span><b>${esc(c.title)}</b>${c.type && c.title !== TYPE_NAME[c.type] ? `<span class="pill">${TYPE_NAME[c.type] || ''}</span>` : ''}${c.serial ? `<span class="pill blue">${c.serial}</span>` : ''}</div>
+      <div class="say">「${esc(c.say || '（還沒寫客服說法）')}」</div>
+      <details><summary>預期與通過標準</summary><p style="margin:6px 0 0"><b>預期：</b>${esc(c.expect || '（未填）')}</p><p style="margin:4px 0 0"><b>通過：</b>${esc(c.pass || '（未填）')}</p></details>
+      <div class="acts"><button class="btn small" data-use ${c.say ? '' : 'disabled'}>帶入</button></div>
+    </div>`).join('') + (own.length ? '' : '<div class="note gray tiny">還沒有自己設計的案例。回到 <a href="unit2.html">② 設計驗證條件</a> 出題後，重新整理這頁就會出現。</div>');
+}
+$('#cases').onclick = (e) => {
+  const b = e.target.closest('[data-use]'); if (!b) return;
+  const c = cases.find((x) => x.id === b.closest('[data-cid]').dataset.cid);
+  curCase = c.id;
+  document.querySelectorAll('.case').forEach((el) => el.classList.toggle('on', el.dataset.cid === curCase));
+  $('#input').value = c.say; $('#input').focus();
+  toast(`${c.no} 開始前的最後一筆紀錄：${log.length ? log[log.length - 1].no : '（尚無）'}`);
+};
 boot();
 </script>
 </body>

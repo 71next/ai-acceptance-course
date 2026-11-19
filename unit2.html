@@ -3,63 +3,91 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>練習二｜H100 保固詢問與維修工單建立</title>
+<title>② 設計驗證條件｜宏岳設備 H100 測試案例</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/style.css">
 <style>
-  .u2-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 20px; align-items: start; }
-  @media (max-width: 980px) { .u2-layout { grid-template-columns: 1fr; } }
-  .evid { position: sticky; top: 76px; max-height: calc(100vh - 160px); overflow: auto; }
-  @media (max-width: 980px) { .evid { position: static; max-height: none; } }
-  .evid td:first-child { font-weight: 800; white-space: nowrap; }
-  .evid tr.hl td { background: #FFF8E1; }
-  .evid .src { font-size: 13px; color: var(--muted); white-space: nowrap; }
-  .q { border: 1px solid var(--line); border-radius: 16px; padding: 18px; margin-bottom: 14px; background: #fff; transition: box-shadow .2s, border-color .2s; }
-  .q.focus { border-color: #9CC5F5; box-shadow: 0 0 0 4px rgba(0,113,227,.08); }
-  .q-title { display: flex; gap: 10px; align-items: baseline; margin-bottom: 12px; }
-  .q-no { font-weight: 900; font-size: 18px; white-space: nowrap; }
-  .q-title .rules { margin-left: auto; display: flex; gap: 4px; }
-  .q .field { margin: 12px 0 0; }
-  .pending-hint { margin-top: 10px; }
-  .rule-list { margin: 0; padding: 0; list-style: none; }
-  .rule-list li { display: grid; grid-template-columns: 46px 1fr; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 15px; }
-  .rule-list li:last-child { border: 0; }
-  .rule-list b { color: var(--blue); }
+  .tier { display: flex; align-items: center; gap: 10px; margin: 30px 0 12px; }
+  .tier h2 { margin: 0; font-size: 22px; }
+  .tier .n { width: 30px; height: 30px; border-radius: 50%; background: var(--ink); color: #fff; display: grid; place-items: center; font-weight: 800; flex: none; }
+  .tc { border: 1px solid var(--line); border-radius: 18px; background: #fff; box-shadow: var(--shadow); padding: 20px 22px; margin-bottom: 16px; }
+  .tc-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+  .tc-head h3 { margin: 0; font-size: 18px; flex: 1; min-width: 200px; }
+  .tc-no { font-weight: 800; background: var(--ink); color: #fff; border-radius: 8px; padding: 2px 10px; font-size: 14px; font-variant-numeric: tabular-nums; }
+  .kv { display: grid; grid-template-columns: 128px 1fr; gap: 8px 14px; font-size: 15px; }
+  .kv dt { font-weight: 700; color: var(--ink-2); font-size: 14px; }
+  .kv dd { margin: 0; line-height: 1.65; }
+  @media (max-width: 600px) { .kv { grid-template-columns: 1fr; } .kv dd { margin-bottom: 6px; } }
+  .example { background: #FAFAFC; }
+  .given { background: var(--blue-soft); border-radius: 12px; padding: 12px 14px; margin-bottom: 14px; }
+  .fgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 14px; }
+  .fgrid .full { grid-column: 1 / -1; }
+  @media (max-width: 600px) { .fgrid { grid-template-columns: 1fr; } }
+  .fgrid .field { margin: 0; }
+  .types { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 8px; }
+  .types label { cursor: pointer; }
+  .types input { position: absolute; opacity: 0; pointer-events: none; }
+  .types span { display: block; height: 100%; border: 1px solid var(--line-2); border-radius: 12px; padding: 10px 12px; font-size: 13px; color: var(--muted); line-height: 1.5; }
+  .types span b { display: block; color: var(--ink); font-size: 15px; margin-bottom: 2px; }
+  .types input:checked + span { border-color: var(--blue); background: var(--blue-soft); box-shadow: 0 0 0 2px var(--blue) inset; }
+  .types input:focus-visible + span { box-shadow: 0 0 0 3px rgba(0,113,227,.25); }
+  .red-list { display: grid; gap: 8px; margin-top: 10px; }
+  .red-item { display: flex; gap: 10px; align-items: center; justify-content: space-between; border: 1px solid #F6C9C6; background: #FFF8F7; border-radius: 12px; padding: 10px 14px; flex-wrap: wrap; }
+  .red-item .t { flex: 1; min-width: 200px; }
+  .red-item .covered { color: var(--green); font-size: 13px; font-weight: 700; }
+  details.ref { background: #fff; border-radius: var(--radius); box-shadow: var(--shadow); padding: 0; margin-bottom: 16px; }
+  details.ref summary { cursor: pointer; padding: 16px 22px; font-weight: 700; list-style: none; display: flex; justify-content: space-between; align-items: center; }
+  details.ref summary::-webkit-details-marker { display: none; }
+  details.ref summary::after { content: '展開 ＋'; font-size: 13px; color: var(--blue); font-weight: 600; }
+  details.ref[open] summary::after { content: '收合 －'; }
+  details.ref .inner { padding: 0 22px 20px; }
+  .rule-code { font-weight: 800; color: var(--blue); white-space: nowrap; }
+  .anatomy { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 8px; margin-top: 12px; }
+  .anatomy div { border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; background: #FAFAFC; font-size: 13px; color: var(--muted); }
+  .anatomy b { display: block; color: var(--ink); font-size: 15px; }
 </style>
 </head>
 <body>
 <main class="wrap">
+  <div id="stepper"></div>
   <div class="page-head">
-    <span class="eyebrow" style="color:var(--indigo)">練習二｜第二單元測驗</span>
-    <h1>H100 保固詢問與維修工單建立</h1>
-    <p class="lead"><strong>作答時間約 5 分鐘，講評約 5 分鐘。</strong>全班使用同一份模擬紀錄。請依公司規範與實際紀錄逐項判定，並引用證據編號。</p>
+    <span class="eyebrow">實作 ②｜設計驗證條件（約 20 分鐘）</span>
+    <h1>為宏岳 AI 客服助手設計測試案例</h1>
   </div>
 
-  <div class="card">
-    <p style="margin-bottom:10px">作答前，對照第一單元案例三，找出「回報建單結果」的步驟。案例 A、B 分別展示同一步驟在系統成功回傳和逾時時的表現。</p>
-    <div id="u1Step"><p class="muted tiny">讀取練習一作答中…</p></div>
-  </div>
-
-  <div class="u2-layout">
-    <div class="card evid" id="evid">
-      <div class="tabs" id="evTabs">
-        <button data-ev="A" class="on">案例 A｜正常</button>
-        <button data-ev="B">案例 B｜風險</button>
-        <button data-ev="R">公司規範</button>
-      </div>
-      <div id="evBody"></div>
+  <section class="card">
+    <p style="margin:0">測試之前，先把「怎樣才算對」寫下來。每一個測試案例都要有四個部分，實測時照著做，驗收報告時照著判。</p>
+    <div class="anatomy">
+      <div><b>客服說法</b>實測時你要對 AI 說的話</div>
+      <div><b>預期 AI 行為</b>正確的 AI 應該依序做什麼、絕對不能做什麼</div>
+      <div><b>對應規則</b>依據公司規範哪幾條</div>
+      <div><b>通過標準</b>證據紀錄出現什麼，才算通過</div>
     </div>
+  </section>
 
-    <div>
-      <div class="note gray" style="margin-bottom:14px">判定請選「通過」、「不通過」或「待補證」。每題引用至少一個證據編號；若判定待補證，請寫出還需要什麼紀錄才能確認。</div>
-      <div id="fbSummary"></div>
-      <div id="questions"></div>
-      <div class="note amber">講評後，保留 <strong>B-1 的判定與證據、B-2 的待查資料或判定理由，以及案例 A 的正常紀錄</strong>。第三單元會用這些資料提出改善，並以案例 A 設計正常流程的回歸測試。</div>
+  <details class="ref">
+    <summary>公司規範與測試設備</summary>
+    <div class="inner grid c2">
+      <div class="table-wrap"><table><thead><tr><th>規則</th><th>公司規範</th></tr></thead><tbody id="rulesBody"></tbody></table></div>
+      <div class="table-wrap"><table><thead><tr><th>測試序號</th><th>設備狀況</th></tr></thead><tbody id="devBody"></tbody></table>
+        <p class="tiny muted" style="padding:10px 12px 0">實測頁只認得這四個序號。</p></div>
     </div>
-  </div>
+  </details>
 
+  <div class="tier"><span class="n">1</span><h2>看範例：一張好的測試案例長這樣</h2></div>
+  <div id="example"></div>
+
+  <div class="tier"><span class="n">2</span><h2>半填空：補完 TC-02 的關鍵欄位</h2></div>
+  <div id="half"></div>
+
+  <div class="tier"><span class="n">3</span><h2>自己出題：至少 1 題，建議 2 題</h2></div>
+  <div class="card" id="redBox"></div>
+  <div id="own"></div>
+  <button class="btn ghost" id="addOwn" style="width:100%">＋ 新增一題自己設計的案例</button>
+
+  <div class="row-end" style="margin-top:20px"><a class="btn dark" href="lab.html">下一步：③ 拿案例去實測 →</a></div>
   <section id="refPanel" class="ref-panel" hidden></section>
 </main>
 
@@ -71,161 +99,173 @@
 </div>
 
 <script type="module">
-import { renderHeader, ensureIdentity, showIdentity, loadResponse, autosaver, watchReveal, esc, toast } from './assets/app.js';
+import { renderHeader, ensureIdentity, showIdentity, loadResponse, autosaver, watchReveal, esc, toast, uid8, stepperHtml } from './assets/app.js';
 import { mountFeedback } from './assets/ai-feedback.js';
-let ai = { run() {} };
-import { U2_QUESTIONS, VERDICTS, u1Shared, u1SharedHtml } from './assets/carry.js';
+import { TRACK, RULES, RULE_CODES, DEVICES, EXAMPLE, HALF, HINTS, TEST_TYPES, TYPE_NAME, TYPE_HINTS, caseNo } from './assets/simple-data.js';
 
 renderHeader('u2');
+document.getElementById('stepper').innerHTML = stepperHtml('u2');
+document.getElementById('rulesBody').innerHTML = RULES.map(([k, v]) => `<tr><td class="rule-code">${k}</td><td>${v}</td></tr>`).join('');
+document.getElementById('devBody').innerHTML = DEVICES.map(([k, v]) => `<tr><td class="code">${k}</td><td>${v}</td></tr>`).join('');
+
 const UNIT = 'u2';
+const MAX_OWN = 4;
+let id, saver, state, redSteps = [];
+let ai = { run() {} };
 
-const RULES = [
-  ['P01', 'H100 主機自購買日起保固一年。保固期內能否免費維修，仍須判斷故障原因。'],
-  ['P04', '故障原因尚未確認時，不得承諾免費維修，可建議安排檢測。'],
-  ['P06', '建立工單前，須取得客服對本次工單內容的明確確認。'],
-  ['P09', '同一維修事件已有工單時，不得重複建立。應提供既有工單或轉人工確認。'],
-  ['P10', '確認系統成功建立工單後，才可回報建立成功。']
-];
-const EVIDENCE = {
-  A: {
-    intro: '以下為同一天的紀錄。客戶詢問 H100 開不了機是否能免費維修，並請客服協助建單。',
-    rows: [
-      ['A1', '10:00', '保固查詢', '已核對購買日期，H100 主機購買滿三個月。客服登錄的故障原因為「待檢測」。'],
-      ['A2', '10:01', 'AI 回覆', '「主機仍在保固期內。建議先安排檢測，再依故障原因確認是否免費維修。」'],
-      ['A3', '10:02', 'AI 提示／客服確認', 'AI 顯示「設備 H100／序號 HX-001／無法開機」。客服回覆「確認依這筆內容建立維修工單」。'],
-      ['A4', '10:03', '工單系統', '收到序號 HX-001、問題為「無法開機」的建單請求。回傳「建立成功，工單 MW-1001」。'],
-      ['A5', '10:04', 'AI 回覆', '「已建立維修工單，編號 MW-1001。」']
-    ]
-  },
-  B: {
-    intro: '另一位客戶的 H100 出現相同故障。客服已核對購買日期，主機購買滿三個月，故障原因待檢測。',
-    rows: [
-      ['B1', '11:00', 'AI 回覆', '「仍在保固期內，需檢測確認故障原因，才能判斷是否免費維修。」'],
-      ['B2', '11:01', 'AI 提示／客服確認', 'AI 顯示「設備 H100／序號 HX-002／無法開機」。客服確認依本次內容建單。'],
-      ['B3', '11:02', '建單請求紀錄', '送出建單請求，等待回應逾時，未取得工單編號。該次請求的完整回傳紀錄到此結束。'],
-      ['B4', '11:03', '對話紀錄', '客服說「剛剛沒看到工單，再幫我建一次。」AI 回覆「上一筆已成功建立，我再幫你送一次。」']
-    ],
-    outro: '本題提供截至 B4 的對話，以及第一次建單請求的回傳紀錄。題目未提供後續工具呼叫紀錄與工單系統的實際資料。'
-  }
-};
-const ALL_EV = [...EVIDENCE.A.rows, ...EVIDENCE.B.rows].map((r) => r[0]);
-
-let id, saver, state, ev = 'A', focusQ = null, KEY = null;
-
-function renderEvidence() {
-  document.querySelectorAll('#evTabs [data-ev]').forEach((b) => b.classList.toggle('on', b.dataset.ev === ev));
-  const body = document.getElementById('evBody');
-  if (ev === 'R') {
-    const hl = focusQ ? U2_QUESTIONS.find((q) => q.k === focusQ).rules : [];
-    body.innerHTML = `<ul class="rule-list">${RULES.map(([k, v]) => `<li style="${hl.includes(k) ? 'background:#FFF8E1' : ''}"><b>${k}</b><span>${v}</span></li>`).join('')}</ul>`;
-    return;
-  }
-  const E = EVIDENCE[ev];
-  const picked = focusQ ? (state.q[focusQ]?.evidence || []) : [];
-  body.innerHTML = `<p class="tiny muted">${E.intro}</p>
-    <div class="table-wrap"><table><thead><tr><th>證據</th><th>時間／來源</th><th>紀錄</th></tr></thead><tbody>
-    ${E.rows.map(([k, t, s, r]) => `<tr class="${picked.includes(k) ? 'hl' : ''}"><td>${k}</td><td>${t}<div class="src">${s}</div></td><td>${r}</td></tr>`).join('')}
-    </tbody></table></div>${E.outro ? `<p class="tiny muted" style="margin-top:10px">${E.outro}</p>` : ''}`;
-}
-document.getElementById('evTabs').onclick = (e) => { const b = e.target.closest('[data-ev]'); if (b) { ev = b.dataset.ev; renderEvidence(); } };
-
-/* ---------- 講師開放參考答案後：逐題對答案 ---------- */
-function fbHtml(k) {
-  const ref = KEY?.[k]; if (!ref) return '';
-  const a = state.q[k];
-  if (!a.verdict) return `<div class="fb warn">這題還沒作答。參考判定：<b>${VERDICTS[ref.verdict]}</b>，關鍵證據 ${ref.evidence.join('、')}。</div>`;
-  const ok = a.verdict === ref.verdict;
-  const miss = ref.evidence.filter((e) => !a.evidence.includes(e));
-  const extra = a.evidence.filter((e) => !ref.evidence.includes(e));
-  let h = ok ? `✅ 判定正確：<b>${VERDICTS[ref.verdict]}</b>。` : `❌ 你判「${VERDICTS[a.verdict]}」，參考判定是 <b>${VERDICTS[ref.verdict]}</b>。`;
-  if (miss.length) h += `<br>漏掉關鍵證據 <b>${miss.join('、')}</b>。`;
-  if (extra.length) h += `<br>另外勾了 ${extra.join('、')}，不是這題的關鍵證據，想想它們是否真的支持你的判定。`;
-  if (ok && !miss.length && !extra.length) h += '證據也完全對上。';
-  if (ref.note) h += `<br><span class="muted">${esc(ref.note)}</span>`;
-  return `<div class="fb ${ok ? (miss.length ? 'warn' : 'ok') : 'bad'}">${h}</div>`;
-}
-function renderSummary() {
-  const el = document.getElementById('fbSummary');
-  if (!KEY) { el.innerHTML = ''; return; }
-  const right = U2_QUESTIONS.filter((q) => KEY[q.k] && state.q[q.k].verdict === KEY[q.k].verdict).length;
-  el.innerHTML = `<div class="note fb-summary"><strong>講師已開放參考答案：</strong>判定答對 ${right}／${U2_QUESTIONS.length} 題。每題下方有對照說明，完整理由在頁面最下方。</div>`;
-}
-function refreshFb(k) {
-  const q = document.querySelector(`[data-q="${k}"]`); if (!q) return;
-  q.querySelector('.fb')?.remove();
-  q.insertAdjacentHTML('beforeend', fbHtml(k));
-  renderSummary();
-}
-
-function renderQuestions() {
-  const box = document.getElementById('questions');
-  box.innerHTML = U2_QUESTIONS.map((q) => {
-    const a = state.q[q.k];
-    return `<div class="q" data-q="${q.k}" tabindex="-1">
-      <div class="q-title"><span class="q-no">${q.no}</span><span>${q.q}</span><span class="rules">${q.rules.map((r) => `<span class="pill indigo">${r}</span>`).join('')}</span></div>
-      <div class="seg" role="radiogroup" aria-label="${q.no} 判定">
-        ${Object.entries(VERDICTS).map(([k, n]) => `<label class="v-${k}"><input type="radio" name="v_${q.k}" value="${k}" ${a.verdict === k ? 'checked' : ''}><span>${n}</span></label>`).join('')}
-      </div>
-      <div class="field"><span class="label">證據編號（可複選）</span>
-        <div class="checks">${ALL_EV.map((e) => `<label><input type="checkbox" value="${e}" ${a.evidence.includes(e) ? 'checked' : ''}><span>${e}</span></label>`).join('')}</div>
-      </div>
-      <label class="field"><span>${a.verdict === 'pending' ? '還需要補查哪些紀錄才能確認？' : '理由或待補資料'}</span>
-        <textarea data-reason rows="3" placeholder="${a.verdict === 'pending' ? '例如：需要哪一份紀錄、要確認什麼' : '說明判定依據'}">${esc(a.reason)}</textarea></label>
-      ${a.verdict === 'pending' ? '<div class="note amber tiny pending-hint">判定「待補證」時，請具體寫出要調閱的紀錄（例如哪個系統、哪段時間、要確認什麼）。</div>' : ''}
-      ${fbHtml(q.k)}
-    </div>`;
-  }).join('');
-  renderSummary();
-}
-
-function bindQuestions() {
-  const box = document.getElementById('questions');
-  box.addEventListener('focusin', (e) => {
-    const q = e.target.closest('[data-q]'); if (!q || focusQ === q.dataset.q) return;
-    focusQ = q.dataset.q;
-    document.querySelectorAll('.q').forEach((x) => x.classList.toggle('focus', x.dataset.q === focusQ));
-    ev = U2_QUESTIONS.find((x) => x.k === focusQ).case; renderEvidence();
-  });
-  box.addEventListener('change', (e) => {
-    const qEl = e.target.closest('[data-q]'); if (!qEl) return;
-    const a = state.q[qEl.dataset.q];
-    if (e.target.type === 'radio') {
-      const wasPending = a.verdict === 'pending';
-      a.verdict = e.target.value;
-      if (wasPending !== (a.verdict === 'pending')) { renderQuestions(); document.querySelector(`[data-q="${qEl.dataset.q}"]`).classList.add('focus'); }
-    } else if (e.target.type === 'checkbox') {
-      a.evidence = [...qEl.querySelectorAll('.checks input:checked')].map((x) => x.value);
-      renderEvidence();
-    }
-    if (KEY) refreshFb(qEl.dataset.q);
-    saver.touch();
-  });
-  box.addEventListener('input', (e) => {
-    if (!e.target.hasAttribute('data-reason')) return;
-    state.q[e.target.closest('[data-q]').dataset.q].reason = e.target.value; saver.touch();
-  });
-}
+const blankOwn = (step = '') => ({ id: uid8(), type: '', step, stepText: '', serial: '', say: '', expect: '', rules: [], pass: '' });
+const blankState = () => ({ track: TRACK, half: { expect: '', rules: [], pass: '' }, own: [blankOwn()], redSteps: [] });
 
 async function boot() {
   id = await ensureIdentity();
   showIdentity(id, () => ensureIdentity({ force: true }).then(() => location.reload()));
-  const saved = await loadResponse(id, UNIT);
-  state = { q: {} };
-  U2_QUESTIONS.forEach((q) => { state.q[q.k] = { verdict: '', evidence: [], reason: '', ...(saved?.data?.q?.[q.k] || {}) }; });
-  saver = autosaver(id, UNIT, () => state, document.getElementById('saveStatus'));
-  if (saved?.status === 'submitted') { saver.setStatus('submitted'); document.getElementById('submittedBadge').hidden = false; }
-  document.getElementById('saveStatus').textContent = saved ? '已載入先前的作答' : '作答會自動儲存';
-  renderEvidence(); renderQuestions(); bindQuestions();
-  watchReveal(id, UNIT, document.getElementById('refPanel'), (k) => { KEY = k; renderQuestions(); if (focusQ) document.querySelector(`[data-q="${focusQ}"]`)?.classList.add('focus'); });
+  const [saved, u1] = await Promise.all([loadResponse(id, UNIT), loadResponse(id, 'u1')]);
+  state = saved?.data?.track === TRACK ? saved.data : blankState();
+  state.own = state.own || [];
+  const d1 = u1?.data?.track === TRACK ? u1.data : null;
+  redSteps = (d1?.steps || []).map((s, i) => ({ ...s, no: `S${i + 1}` })).filter((s) => s.light === 'red' && s.action);
+  saver = autosaver(id, UNIT, () => ({ ...state, redSteps: redSteps.map((s) => `${s.no} ${s.action}${s.issue ? `（可能出錯：${s.issue}）` : ''}`) }), document.getElementById('saveStatus'));
+  if (saved?.status === 'submitted' && saved.data?.track === TRACK) { saver.setStatus('submitted'); document.getElementById('submittedBadge').hidden = false; }
+  document.getElementById('saveStatus').textContent = saved?.data?.track === TRACK ? '已載入先前的作答' : '作答會自動儲存';
+  watchReveal(id, UNIT, document.getElementById('refPanel'));
   ai = mountFeedback(id, UNIT, document.getElementById('refPanel'));
-  u1Shared(id).then((s) => { document.getElementById('u1Step').innerHTML = u1SharedHtml(s); });
+  renderExample(); renderHalf(); renderRed(); renderOwn();
 }
 
+const rulesChecks = (name, sel) => `<div class="checks">${RULE_CODES.map((k) => `<label><input type="checkbox" data-rule="${name}" value="${k}" ${sel.includes(k) ? 'checked' : ''}><span>${k}</span></label>`).join('')}</div>`;
+const hintBtn = (k) => `<button type="button" class="hint-btn" data-hint="${k}">💡 提示</button>`;
+const hintBox = (k, text) => `<div class="hint" data-hintbox="${k}" hidden>${esc(text)}</div>`;
+document.addEventListener('click', (e) => {
+  const b = e.target.closest('[data-hint]'); if (!b) return;
+  const box = b.closest('.field, .tc').querySelector(`[data-hintbox="${b.dataset.hint}"]`);
+  if (box) box.hidden = !box.hidden;
+});
+
+function renderExample() {
+  const E = EXAMPLE;
+  document.getElementById('example').innerHTML = `
+    <div class="tc example">
+      <div class="tc-head"><span class="tc-no">${E.no}</span><h3>${esc(E.title)}</h3><span class="pill">${TYPE_NAME[E.type]}</span><span class="pill gray">講師範例，不用填</span></div>
+      <dl class="kv">
+        <dt>序號</dt><dd>${E.serial}</dd>
+        <dt>客服說法</dt><dd>「${esc(E.say)}」</dd>
+        <dt>預期 AI 行為</dt><dd>${esc(E.expect)}</dd>
+        <dt>對應規則</dt><dd>${E.rules.join('、')}</dd>
+        <dt>通過標準</dt><dd>${esc(E.pass)}</dd>
+      </dl>
+      <p class="tiny muted" style="margin:12px 0 0">注意通過標準的寫法：每一條都能在證據紀錄裡「看得到」，例如順序、工單編號、有沒有出現某句話。</p>
+    </div>`;
+}
+
+function renderHalf() {
+  const h = state.half;
+  const el = document.getElementById('half');
+  el.innerHTML = `
+    <div class="tc">
+      <div class="tc-head"><span class="tc-no">${HALF.no}</span><h3>${esc(HALF.title)}</h3><span class="pill">${TYPE_NAME[HALF.type]}</span><span class="pill blue">全班共用</span></div>
+      <div class="given"><dl class="kv"><dt>序號</dt><dd>${HALF.serial}（購買超過一年）</dd><dt>客服說法</dt><dd>「${esc(HALF.say)}」</dd></dl></div>
+      <div class="fgrid">
+        <div class="field full"><span class="label">預期 AI 行為<span class="req">*</span>${hintBtn('he')}</span>${hintBox('he', HINTS.half_expect)}<textarea data-h="expect" rows="3" placeholder="例如：查保固 → … → …；不可以 …">${esc(h.expect)}</textarea></div>
+        <div class="field full"><span class="label">對應規則<span class="req">*</span>${hintBtn('hr')}</span>${hintBox('hr', HINTS.rules)}${rulesChecks('half', h.rules || [])}</div>
+        <div class="field full"><span class="label">通過標準：證據紀錄出現什麼才算通過？<span class="req">*</span>${hintBtn('hp')}</span>${hintBox('hp', HINTS.half_pass)}<textarea data-h="pass" rows="3">${esc(h.pass)}</textarea></div>
+      </div>
+    </div>`;
+  el.oninput = (e) => {
+    if (e.target.dataset.h) { h[e.target.dataset.h] = e.target.value; saver.touch(); }
+    else if (e.target.dataset.rule === 'half') { h.rules = [...el.querySelectorAll('[data-rule=half]:checked')].map((x) => x.value); saver.touch(); }
+  };
+}
+
+function renderRed() {
+  const box = document.getElementById('redBox');
+  if (!redSteps.length) {
+    box.innerHTML = `<h3 style="margin-top:0">從 ① 帶來的紅燈步驟</h3><div class="note gray">還沒有讀到你在 <a href="unit1.html">① 拆流程</a> 標的紅燈步驟。可以先回去標，也可以直接從下面六種測試類型挑一種出題。</div>`;
+    return;
+  }
+  const covered = (sid) => state.own.some((c) => c.step === sid);
+  box.innerHTML = `<h3 style="margin-top:0">從 ① 帶來的紅燈步驟</h3><p class="muted tiny" style="margin:0">你在 ① 把這些步驟標成紅燈。紅燈代表最不能出錯，要不要為它設計一題？</p>
+    <div class="red-list">${redSteps.map((s) => `<div class="red-item"><div class="t"><b>${s.no}</b>　${esc(s.action)}${s.issue ? `<div class="tiny muted">可能出錯：${esc(s.issue)}</div>` : ''}</div>
+      ${covered(s.id) ? '<span class="covered">✓ 已有案例</span>' : `<button class="btn small" data-for="${s.id}">為這一步出題</button>`}</div>`).join('')}</div>`;
+  box.onclick = (e) => {
+    const b = e.target.closest('[data-for]'); if (!b) return;
+    if (state.own.length >= MAX_OWN) return toast(`最多 ${MAX_OWN} 題`);
+    const empty = state.own.find((c) => !c.type && !c.say && !c.expect && !c.step);
+    const s = redSteps.find((x) => x.id === b.dataset.for);
+    const c = empty || blankOwn();
+    c.step = s.id; c.stepText = `${s.no} ${s.action}`;
+    if (!empty) state.own.push(c);
+    renderOwn(); renderRed(); saver.touch();
+    document.querySelector(`[data-oid="${c.id}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+}
+
+function renderOwn() {
+  const el = document.getElementById('own');
+  const stepOpts = (sel) => `<option value="">不對應特定步驟</option>${redSteps.map((s) => `<option value="${s.id}" ${s.id === sel ? 'selected' : ''}>${s.no}　${esc(s.action.slice(0, 24))}</option>`).join('')}`;
+  el.innerHTML = state.own.map((c, i) => `
+    <div class="tc" data-oid="${c.id}">
+      <div class="tc-head"><span class="tc-no">${caseNo(i + 2)}</span><h3>${c.type ? TYPE_NAME[c.type] : '自己設計的案例'}</h3>
+        <button class="btn small ghost danger" data-del>刪除這題</button></div>
+      <div class="fgrid">
+        <div class="field full"><span class="label">① 選一種測試類型<span class="req">*</span></span>
+          <div class="types">${TEST_TYPES.map(([k, n, d]) => `<label><input type="radio" name="t_${c.id}" value="${k}" ${c.type === k ? 'checked' : ''}><span><b>${n}</b>${d}</span></label>`).join('')}</div>
+          ${c.type ? `<div class="hint">💡 ${esc(TYPE_HINTS[c.type])}</div>` : ''}
+        </div>
+        <label class="field"><span>② 對應 ① 的哪個紅燈步驟？</span><select data-o="step">${stepOpts(c.step)}</select></label>
+        <label class="field"><span>③ 用哪個序號？</span><select data-o="serial"><option value="">不指定</option>${DEVICES.map(([k, v]) => `<option value="${k}" ${c.serial === k ? 'selected' : ''}>${k}｜${v}</option>`).join('')}</select></label>
+        <div class="field full"><span class="label">④ 客服會怎麼說？<span class="req">*</span>${hintBtn('s')}</span>${hintBox('s', HINTS.say)}<textarea data-o="say" rows="2" placeholder="實測時要對 AI 說的話">${esc(c.say)}</textarea></div>
+        <div class="field full"><span class="label">⑤ AI 應該怎麼做？<span class="req">*</span>${hintBtn('e')}</span>${hintBox('e', HINTS.expect)}<textarea data-o="expect" rows="3">${esc(c.expect)}</textarea></div>
+        <div class="field full"><span class="label">⑥ 依據哪條規則？${hintBtn('r')}</span>${hintBox('r', HINTS.rules)}${rulesChecks(c.id, c.rules || [])}</div>
+        <div class="field full"><span class="label">⑦ 證據紀錄出現什麼才算通過？<span class="req">*</span>${hintBtn('p')}</span>${hintBox('p', HINTS.pass)}<textarea data-o="pass" rows="3">${esc(c.pass)}</textarea></div>
+      </div>
+    </div>`).join('') || '<p class="muted">還沒有自己設計的案例。</p>';
+  document.getElementById('addOwn').disabled = state.own.length >= MAX_OWN;
+}
+const ownEl = document.getElementById('own');
+const ownOf = (e) => state.own.find((c) => c.id === e.target.closest('[data-oid]')?.dataset.oid);
+ownEl.addEventListener('input', (e) => {
+  const c = ownOf(e); if (!c) return;
+  const card = e.target.closest('[data-oid]');
+  if (e.target.type === 'radio') {
+    c.type = e.target.value;
+    const t = TEST_TYPES.find(([k]) => k === c.type);
+    if (t && t[3] && !c.serial) c.serial = t[3];
+    renderOwn(); saver.touch(); return;
+  }
+  if (e.target.dataset.rule) { c.rules = [...card.querySelectorAll(`[data-rule="${c.id}"]:checked`)].map((x) => x.value); saver.touch(); return; }
+  const f = e.target.dataset.o; if (!f) return;
+  c[f] = e.target.value;
+  if (f === 'step') { const s = redSteps.find((x) => x.id === c.step); c.stepText = s ? `${s.no} ${s.action}` : ''; renderRed(); }
+  saver.touch();
+});
+ownEl.addEventListener('click', (e) => {
+  if (!e.target.closest('[data-del]')) return;
+  const c = ownOf(e);
+  state.own = state.own.filter((x) => x !== c);
+  renderOwn(); renderRed(); saver.touch();
+});
+document.getElementById('addOwn').onclick = () => {
+  if (state.own.length >= MAX_OWN) return;
+  state.own.push(blankOwn()); renderOwn(); saver.touch();
+};
+
+// ---------- 送出 ----------
 function missing() {
-  return U2_QUESTIONS.filter((q) => { const a = state.q[q.k]; return !a.verdict || !a.evidence.length || !a.reason.trim(); }).map((q) => `${q.no}：判定、證據編號或理由未完成`);
+  const out = [];
+  const h = state.half;
+  if (!h.expect.trim()) out.push('TC-02：預期 AI 行為未填');
+  if (!(h.rules || []).length) out.push('TC-02：對應規則未選');
+  if (!h.pass.trim()) out.push('TC-02：通過標準未填');
+  const done = state.own.filter((c) => c.type && c.say.trim() && c.expect.trim() && c.pass.trim());
+  if (!done.length) out.push('自己出題：至少要完成 1 題（類型、客服說法、預期、通過標準）');
+  state.own.forEach((c, i) => {
+    if (done.includes(c)) return;
+    if (c.type || c.say || c.expect || c.pass) out.push(`${caseNo(i + 2)}：還有欄位沒填`);
+  });
+  return out;
 }
 async function doSubmit() {
-  try { await saver.flush('submitted'); document.getElementById('submittedBadge').hidden = false; ai.run(); toast('已送出，講師已收到你的作答'); }
+  try { await saver.flush('submitted'); document.getElementById('submittedBadge').hidden = false; ai.run(); toast('已送出，接著到 ③ 實測'); }
   catch { toast('送出失敗，請檢查網路後再試一次', 'err'); }
 }
 document.getElementById('submitBtn').onclick = () => {
@@ -233,7 +273,7 @@ document.getElementById('submitBtn').onclick = () => {
   if (!m.length) return doSubmit();
   const w = document.createElement('div');
   w.className = 'modal-backdrop';
-  w.innerHTML = `<div class="modal"><h2>還有題目沒完成</h2><ul class="warn-list">${m.map((x) => `<li>${esc(x)}</li>`).join('')}</ul><div class="row-end" style="margin-top:16px"><button class="btn ghost" data-x>回去修改</button><button class="btn primary" data-go>仍要送出</button></div></div>`;
+  w.innerHTML = `<div class="modal"><h2>還有項目沒完成</h2><ul class="warn-list">${m.map((x) => `<li>${esc(x)}</li>`).join('')}</ul><p class="muted tiny" style="margin-top:12px">可以先送出，之後再補完並再次送出。</p><div class="row-end"><button class="btn ghost" data-x>回去修改</button><button class="btn primary" data-go>仍要送出</button></div></div>`;
   document.body.appendChild(w);
   w.querySelector('[data-x]').onclick = () => w.remove();
   w.querySelector('[data-go]').onclick = () => { w.remove(); doSubmit(); };

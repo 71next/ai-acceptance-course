@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AI 應用驗收評估與改善策略｜課程網站</title>
-<meta name="description" content="AI 顧問實戰工作坊：網頁簡報、三單元線上練習與講義下載。">
+<meta name="description" content="AI 顧問實戰工作坊：拆流程、設計驗證條件、實際實測、驗收報告。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -47,6 +47,13 @@
   .dl .arrow { margin-left: auto; color: var(--blue); font-weight: 700; white-space: nowrap; font-size: 14px; }
   .flow { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 14px; color: var(--ink-2); margin-top: 6px; }
   .flow b { color: var(--ink); }
+  .stages { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; }
+  @media (max-width: 860px) { .stages { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 480px) { .stages { grid-template-columns: 1fr; } }
+  .stage { background: #fff; border-radius: 16px; box-shadow: var(--shadow); padding: 16px; border-top: 4px solid var(--c); display: flex; flex-direction: column; gap: 4px; }
+  .stage .k { font-size: 12px; font-weight: 800; color: var(--c); letter-spacing: .05em; }
+  .stage b { font-size: 17px; }
+  .stage .d { font-size: 13px; color: var(--muted); }
   footer { text-align: center; color: var(--muted); font-size: 13px; padding: 40px 16px; }
   footer a { color: var(--muted); }
 </style>
@@ -54,77 +61,64 @@
 <body>
 <main class="wrap">
   <section class="hero">
-    <span class="eyebrow">AI 顧問實戰工作坊｜2 小時精華課程</span>
+    <span class="eyebrow">AI 顧問實戰工作坊｜2 小時實作課程</span>
     <h1>AI 應用驗收評估<br>與改善策略</h1>
-    <p class="lead">從任務風險定義、情境證據判讀到結構化回歸改善，建立企業級 AI 上線把關標準。全場貫穿「宏岳設備 H100 客服助手」案例演練。</p>
+    <p class="lead">用一個真實案例走完驗收流程：拆流程、設計驗證條件、實際實測、寫驗收報告。全場以「宏岳設備 H100 AI 客服助手」為對象，親手驗一次 AI 能不能上線。</p>
     <div class="actions">
       <a class="btn dark" href="slides.html" target="_blank" rel="noopener">▶ 觀看網頁簡報</a>
-      <a class="btn" href="downloads/AI應用驗收評估與改善策略_簡報.pptx" download>⬇ 下載簡報 PPT</a>
-      <a class="btn" href="unit1.html" target="_blank" rel="noopener">開始練習一</a>
-      <a class="btn ghost" href="#downloads">講義與評估表</a>
+      <a class="btn" href="unit1.html" target="_blank" rel="noopener">開始實作 ①</a>
+      <a class="btn ghost" href="#downloads">簡報與對照表下載</a>
     </div>
     <p class="meta">講師：黃庭豪（bryant）｜秦毅數位科技有限公司</p>
   </section>
 
-  <div class="section-title"><h2>線上練習</h2><span class="muted">輸入梯次代碼即可作答，自動儲存</span></div>
-  <div class="grid c3">
+  <div class="section-title"><h2>驗證五流程</h2><span class="muted">講師導讀 → 四個實作步驟</span></div>
+  <div class="stages">
+    <div class="stage" style="--c:var(--ink-2)"><span class="k">導讀</span><b>任務分類簡介</b><span class="d">五種 AI 任務，各要驗什麼</span></div>
+    <div class="stage" style="--c:var(--blue)"><span class="k">實作 ①</span><b>拆流程</b><span class="d">找出最不能錯的紅燈步驟</span></div>
+    <div class="stage" style="--c:var(--indigo)"><span class="k">實作 ②</span><b>假設驗證設計</b><span class="d">先寫下怎樣才算對</span></div>
+    <div class="stage" style="--c:var(--teal)"><span class="k">實作 ③</span><b>執行驗收</b><span class="d">實際測，留下證據</span></div>
+    <div class="stage" style="--c:var(--red)"><span class="k">實作 ④</span><b>判讀結果</b><span class="d">用證據判定、給上線建議</span></div>
+  </div>
+
+  <div class="section-title"><h2>實作練習</h2><span class="muted">輸入梯次代碼即可作答，自動儲存；四步驟的內容會互相帶入</span></div>
+  <div class="grid c2">
     <a class="unit-card" href="unit1.html" target="_blank" rel="noopener" style="--c: var(--blue)">
-      <span class="num">練習一｜單元一</span>
-      <h3>拆解流程與紅線</h3>
-      <p>畫出保固查詢、回覆草稿、建立工單三條流程，標出每一步的負責角色與交接，並用紅黃綠燈評估風險。</p>
-      <div class="foot"><span>流程圖・任務拆解・風險評估</span><span class="go">前往 →</span></div>
+      <span class="num">實作 ①｜約 15 分鐘</span>
+      <h3>拆流程</h3>
+      <p>把「H100 報修：查保固並建立維修工單」拆成步驟，標出每一步誰負責，並用紅黃綠燈評估風險。</p>
+      <div class="foot"><span>紅燈步驟 → 帶到 ②</span><span class="go">前往 →</span></div>
     </a>
     <a class="unit-card" href="unit2.html" target="_blank" rel="noopener" style="--c: var(--indigo)">
-      <span class="num">練習二｜單元二</span>
-      <h3>日誌證據判讀</h3>
-      <p>比對正常與逾時兩份紀錄，依公司規範為五個查核點判定「通過／不通過／待補證」，並引用證據編號。</p>
-      <div class="foot"><span>作答 5 分鐘・講評 5 分鐘</span><span class="go">前往 →</span></div>
+      <span class="num">實作 ②｜約 20 分鐘</span>
+      <h3>設計驗證條件</h3>
+      <p>看範例 → 補完半填題 → 自己出題。每題寫下客服說法、預期 AI 行為、對應規則與通過標準。</p>
+      <div class="foot"><span>測試案例 → 帶到 ③、④</span><span class="go">前往 →</span></div>
     </a>
-    <a class="unit-card" href="unit3.html" target="_blank" rel="noopener" style="--c: var(--teal)">
-      <span class="num">練習三｜單元三</span>
-      <h3>改善與再驗證</h3>
-      <p>針對工單誤報提出根因假設、優先改善措施，並設計重測、邊界與回歸三種再驗證的通過條件。</p>
-      <div class="foot"><span>作答 6 分鐘・講評 4 分鐘</span><span class="go">前往 →</span></div>
+    <a class="unit-card" href="lab.html" target="_blank" rel="noopener" style="--c: var(--teal)">
+      <span class="num">實作 ③｜約 20 分鐘</span>
+      <h3>實際實測</h3>
+      <p>扮演客服，拿自己的測試案例跟 AI 客服助手對話。系統自動留下證據紀錄，AI 說的和系統做的分開記錄。</p>
+      <div class="foot"><span>證據紀錄 → 帶到 ④</span><span class="go">前往 →</span></div>
+    </a>
+    <a class="unit-card" href="unit3.html" target="_blank" rel="noopener" style="--c: var(--red)">
+      <span class="num">實作 ④｜約 15 分鐘</span>
+      <h3>驗收報告</h3>
+      <p>每個案例引用證據判定「通過／不通過／待補證」，不通過的歸 P0／P1／P2，最後給出上線建議與改善優先順序。</p>
+      <div class="foot"><span>完成一份驗收案</span><span class="go">前往 →</span></div>
     </a>
   </div>
-  <a class="unit-card lab-card" href="lab.html" target="_blank" rel="noopener" style="--c: var(--blue); margin-top:18px; display:block">
-    <span class="num">實測｜宏岳 AI 客服助手</span>
-    <h3>親手測一次 AI 客服助手</h3>
-    <p>扮演客服跟 AI 助手對話：查保固、建工單。系統自動留下證據紀錄，親眼看到 AI 在工單逾時時怎麼回報，再比較改善前後的版本。</p>
-    <div class="foot"><span>搭配練習二、練習三使用</span><span class="go">前往 →</span></div>
-  </a>
-  <p class="flow"><b>作答會串接：</b>練習一標出的「回報建單結果」步驟 → 帶入練習二 → 練習二的 B-1／B-2 判定 → 帶入練習三</p>
 
-  <div class="section-title" id="downloads"><h2>下載簡報、講義與評估表</h2><span class="muted">簡報為 PowerPoint（每頁為圖片）、對照表為 PDF，講義與評估表為 Word，可直接編輯</span></div>
+  <div class="section-title" id="downloads"><h2>下載</h2><span class="muted">簡報為 PowerPoint（每頁為圖片），對照表為 PDF，可列印</span></div>
   <div class="grid c2">
-    <a class="dl" href="downloads/AI應用驗收評估與改善策略_簡報.pptx" download>
+    <a class="dl" href="downloads/AI應用驗收評估_實作版簡報.pptx" download>
       <span class="ico ppt">PPT</span>
-      <span><span class="t">課程簡報</span><br><span class="d">網頁簡報的 PowerPoint 版，共 37 頁（約 8 MB）</span></span>
+      <span><span class="t">課程簡報</span><br><span class="d">網頁簡報的 PowerPoint 版</span></span>
       <span class="arrow">下載</span>
     </a>
-    <a class="dl" href="downloads/宏岳設備案例對照表.pdf" download>
+    <a class="dl" href="downloads/宏岳設備驗收對照表.pdf" download>
       <span class="ico pdf">PDF</span>
-      <span><span class="t">宏岳設備案例對照表</span><br><span class="d">公司背景、規範 P01～P10、紅黃綠燈、P0～P2、三個案例與證據紀錄（A4 兩頁，可列印）</span></span>
-      <span class="arrow">下載</span>
-    </a>
-    <a class="dl" href="downloads/AI應用驗收評估與改善策略_學員精華講義.docx" download>
-      <span class="ico">DOC</span>
-      <span><span class="t">學員精華講義</span><br><span class="d">全課程重點整理</span></span>
-      <span class="arrow">下載</span>
-    </a>
-    <a class="dl" href="downloads/01_AI應用任務與風險辨識表.docx" download>
-      <span class="ico">DOC</span>
-      <span><span class="t">01｜AI 應用任務與風險辨識表</span><br><span class="d">對應單元一：任務拆解與紅黃綠燈分級</span></span>
-      <span class="arrow">下載</span>
-    </a>
-    <a class="dl" href="downloads/02_情境測試與證據判讀表.docx" download>
-      <span class="ico">DOC</span>
-      <span><span class="t">02｜情境測試與證據判讀表</span><br><span class="d">對應單元二：六類考題與證據判定</span></span>
-      <span class="arrow">下載</span>
-    </a>
-    <a class="dl" href="downloads/03_改善與再驗證計畫表.docx" download>
-      <span class="ico">DOC</span>
-      <span><span class="t">03｜改善與再驗證計畫表</span><br><span class="d">對應單元三：改善優先序與回歸測試</span></span>
+      <span><span class="t">宏岳設備驗收對照表</span><br><span class="d">公司背景、規範、紅黃綠燈、測試設備、測試案例寫法、判定與 P0～P2（A4 兩頁）</span></span>
       <span class="arrow">下載</span>
     </a>
   </div>

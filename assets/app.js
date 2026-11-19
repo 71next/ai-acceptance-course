@@ -8,7 +8,7 @@ import { firebaseConfig } from './firebase-config.js';
 const FB_VER = '10.12.2';
 const FB_BASE = `https://www.gstatic.com/firebasejs/${FB_VER}/`;
 export const CLOUD = !!(firebaseConfig && firebaseConfig.apiKey);
-export const UNITS = { u1: '練習一', u2: '練習二', u3: '練習三' };
+export const UNITS = { u1: '① 拆流程', u2: '② 驗證條件', u3: '④ 驗收報告' };
 
 // ---------- localStorage 安全包裝 ----------
 export const LS = {
@@ -260,7 +260,7 @@ export function watchReveal(id, unit, el, onKey = () => {}) {
 export function renderHeader(active) {
   const links = [
     ['index.html', '首頁', 'home'], ['slides.html', '簡報', 'slides'],
-    ['unit1.html', '練習一', 'u1'], ['unit2.html', '練習二', 'u2'], ['unit3.html', '練習三', 'u3'], ['lab.html', '實測', 'lab'],
+    ['unit1.html', '① 拆流程', 'u1'], ['unit2.html', '② 驗證條件', 'u2'], ['lab.html', '③ 實測', 'lab'], ['unit3.html', '④ 驗收報告', 'u3'],
     ['index.html#downloads', '下載', 'dl']
   ];
   const h = document.createElement('header');
@@ -290,3 +290,9 @@ export function toast(msg, kind = '') {
 }
 
 export const uid8 = () => Math.random().toString(36).slice(2, 10);
+
+/** 四個實作步驟的進度列（各練習頁上方） */
+export function stepperHtml(active) {
+  const S = [['u1', '①', '拆流程', 'unit1.html'], ['u2', '②', '設計驗證條件', 'unit2.html'], ['lab', '③', '實際實測', 'lab.html'], ['u3', '④', '驗收報告', 'unit3.html']];
+  return `<nav class="stepper" aria-label="實作步驟">${S.map(([k, n, t, h]) => `<a href="${h}" class="${k === active ? 'on' : ''}"><b>${n}</b>${t}</a>`).join('<span class="sep">›</span>')}</nav>`;
+}

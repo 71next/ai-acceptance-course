@@ -69,9 +69,8 @@
 
 <script type="module">
 import { CLOUD, fb, currentUser, LS, esc, normCode, localSessions, saveLocalSessions, UNITS, toast } from './assets/app.js';
-import { CASES } from './assets/unit1-data.js';
-import { renderFlow, stepNo } from './assets/flow.js';
-import { U2_QUESTIONS, VERDICTS } from './assets/carry.js';
+import { renderFlow } from './assets/flow.js';
+import { TRACK, VERDICTS, TYPE_NAME, GO_LIVE, allCases } from './assets/simple-data.js';
 import { AI_ON, feedbackHtml, loadFeedbackFor } from './assets/ai-feedback.js';
 
 const app = document.getElementById('app');
@@ -239,7 +238,7 @@ function render() {
 
 function sessionView() {
   const s = sessions[cur];
-  const tabs = [['overview', '總覽'], ['u1', '練習一'], ['u2', '練習二'], ['u3', '練習三'], ['lab', '實測'], ['refs', '參考答案']];
+  const tabs = [['overview', '總覽'], ['u1', '① 拆流程'], ['u2', '② 驗證條件'], ['lab', '③ 實測'], ['u3', '④ 驗收報告'], ['refs', '參考答案']];
   const cnt = (u) => responses.filter((r) => r.unit === u).length;
   return `
     <div class="card">
@@ -270,14 +269,14 @@ function bindSession() {
 // ---------- 實測（模擬 AI 客服助手） ----------
 function labView() {
   const lab = sessions[cur]?.lab || {};
-  const mode = lab.mode === 'timeout' ? 'timeout' : 'normal', ver = lab.version === 'after' ? 'after' : 'before';
+  const mode = ['timeout', 'scenario'].includes(lab.mode) ? lab.mode : 'normal', ver = lab.version === 'after' ? 'after' : 'before';
   const seg = (k, v, cur, label) => `<button class="btn small ${cur === v ? 'primary' : 'ghost'}" data-lab="${k}" data-v="${v}">${label}</button>`;
   return `<div class="card">
     <h3 style="margin-top:0">測試設定</h3>
     <p class="muted tiny">切換後立即對全班生效（學員下一則訊息開始）。學員頁面上會顯示目前設定。</p>
-    <div class="row-end" style="justify-content:flex-start;gap:8px;margin:10px 0"><b style="min-width:110px">工單系統狀況</b>${seg('mode', 'normal', mode, '正常（案例 A）')}${seg('mode', 'timeout', mode, '逾時（案例 B）')}</div>
+    <div class="row-end" style="justify-content:flex-start;gap:8px;margin:10px 0"><b style="min-width:110px">工單系統狀況</b>${seg('mode', 'scenario', mode, '情境模式（HX-002 建單逾時）')}${seg('mode', 'normal', mode, '全部正常')}${seg('mode', 'timeout', mode, '全部逾時')}</div>
     <div class="row-end" style="justify-content:flex-start;gap:8px"><b style="min-width:110px">AI 版本</b>${seg('version', 'before', ver, '改善前（有缺陷）')}${seg('version', 'after', ver, '改善後（系統防呆）')}</div>
-    <p class="tiny muted" style="margin-top:12px">建議：練習二前用「逾時＋改善前」讓學員重現誤報與重複建單；練習三再切到「改善後」做重測，切回「正常」做回歸測試。</p>
+    <p class="tiny muted" style="margin-top:12px">建議：上課全程用「情境模式＋改善前」。這個設定下會出現四個缺陷：未經確認就建單、承諾免費維修、HX-004 沒有購買日期卻被當成保固期內、HX-002 逾時卻誤報成功（再要求建單會重複建立）。有時間的話，講評後切到「改善後」，讓學員用同一批案例重測。</p>
   </div>
   <div class="card"><h3 style="margin-top:0">學員實測紀錄</h3><div id="labList"><p class="muted">讀取中…</p></div></div>`;
 }
@@ -341,74 +340,70 @@ function overview() {
       <div class="stat"><div class="v">${ps.length}</div><div class="l">參與人數／組數</div></div>
       ${['u1', 'u2', 'u3'].map((u) => `<div class="stat"><div class="v">${sub(u)}<span class="muted" style="font-size:16px"> / ${byUnit(u).length}</span></div><div class="l">${UNITS[u]} 已送出／作答中</div></div>`).join('')}
     </div>
-    <div class="table-wrap"><table><thead><tr><th>姓名／組別</th><th>練習一</th><th>練習二</th><th>練習三</th><th>最後更新</th><th></th></tr></thead><tbody>
+    <div class="table-wrap"><table><thead><tr><th>姓名／組別</th><th>① 拆流程</th><th>② 驗證條件</th><th>④ 驗收報告</th><th>最後更新</th><th></th></tr></thead><tbody>
     ${ps.map((p) => `<tr><td><strong>${esc(p.name)}</strong></td>${['u1', 'u2', 'u3'].map((u) => `<td>${stDot(p.u[u])}</td>`).join('')}<td class="muted">${fmtT(Math.max(...Object.values(p.u).map((r) => r.clientUpdatedAt || 0)))}</td><td><button class="btn small ghost" data-detail="${esc(p.key)}">查看</button></td></tr>`).join('') || '<tr><td colspan="6" class="muted">還沒有人作答。</td></tr>'}
     </tbody></table></div></div>`;
 }
 
-// ---------- 練習一 ----------
+// ---------- ① 拆流程 ----------
 const LNAME = { red: '紅燈', yellow: '黃燈', green: '綠燈' };
 // 學員資料不可信：燈號、判定、優先序一律用白名單轉換後才放進 HTML
 const okLight = (v) => (['red', 'yellow', 'green'].includes(v) ? v : '');
 const okVerdict = (v) => (['pass', 'fail', 'pending'].includes(v) ? v : '');
 const okPrio = (v) => (['P0', 'P1', 'P2'].includes(v) ? v : '');
-function stepLabel(d, ck, sid) {
-  const c = d?.cases?.[ck]; if (!c || !sid) return '';
-  const i = c.steps.findIndex((s) => s.id === sid);
-  return i < 0 ? '' : `${stepNo(ck, i)} ${c.steps[i].action || ''}`;
-}
+const okGo = (v) => (Object.keys(GO_LIVE).includes(v) ? v : '');
+const VCLS = { pass: 'green', fail: 'red', pending: 'yellow' };
+const simpleOf = (r) => (r?.data?.track === TRACK ? r.data : null);
 function distBar(counts, order, names) {
   const tot = order.reduce((a, k) => a + (counts[k] || 0), 0);
   if (!tot) return '<div class="bar"><span class="none" style="width:100%">尚無資料</span></div>';
   return `<div class="bar">${order.map((k) => counts[k] ? `<span class="${k}" style="width:${(counts[k] / tot) * 100}%">${names[k]} ${counts[k]}</span>` : '').join('')}</div>`;
 }
+const oldNote = (rs) => { const n = rs.filter((r) => !simpleOf(r)).length; return n ? `<p class="tiny muted">另有 ${n} 筆舊版練習的作答，這裡不顯示。</p>` : ''; };
 function u1View() {
-  const rs = byUnit('u1');
-  if (!rs.length) return '<div class="card muted">還沒有人作答練習一。</div>';
-  let out = '';
-  for (const [ck, C] of Object.entries(CASES)) {
-    const all = rs.flatMap((r) => (r.data?.cases?.[ck]?.risks || []).filter((x) => x.light || x.issue).map((x) => ({ r, x })));
-    const cnt = {}; all.forEach(({ x }) => { const l = okLight(x.light); if (l) cnt[l] = (cnt[l] || 0) + 1; });
-    out += `<div class="aq"><h3>${C.no}｜${C.title}</h3>${distBar(cnt, ['red', 'yellow', 'green'], LNAME)}
-      <ul class="ans-list">${all.map(({ r, x }) => `<li><span class="who">${esc(r.name)}</span>${okLight(x.light) ? `<span class="pill ${okLight(x.light)}">${LNAME[okLight(x.light)]}</span> ` : ''}<span class="muted">${esc(stepLabel(r.data, ck, x.step))}</span><br>${esc(x.issue)}${x.impact ? `<div class="tiny muted">影響：${esc(x.impact)}</div>` : ''}</li>`).join('') || '<li class="muted">尚無風險</li>'}</ul></div>`;
-  }
-  out += `<div class="aq"><h3>全班共用案例：工單逾時後回報結果（案例三步驟）</h3><ul class="ans-list">${rs.map((r) => { const h = r.data?.handoff?.shared; return h?.step || h?.reason ? `<li><span class="who">${esc(r.name)}</span><span class="pill blue">${esc(stepLabel(r.data, 'C', h.step) || '未選步驟')}</span><br>${esc(h.reason || '')}</li>` : ''; }).join('') || '<li class="muted">尚無</li>'}</ul></div>`;
-  out += `<div class="aq"><h3>自選優先風險</h3><ul class="ans-list">${rs.map((r) => { const h = r.data?.handoff?.priority; return h?.case ? `<li><span class="who">${esc(r.name)}</span><span class="pill">${esc(CASES[h.case]?.no || '')} ${esc(stepLabel(r.data, h.case, h.step))}</span><br>${esc(h.reason || '')}</li>` : ''; }).join('') || '<li class="muted">尚無</li>'}</ul></div>`;
-  out += `<p class="muted tiny">要看某位學員的流程圖，請到「總覽」按「查看」。</p>`;
-  return `<div class="card">${out}</div>`;
+  const all = byUnit('u1'); const rs = all.filter(simpleOf);
+  if (!rs.length) return `<div class="card muted">還沒有人作答 ① 拆流程。${oldNote(all)}</div>`;
+  // 依「可能出錯的情況」統計燈號
+  const by = new Map();
+  rs.forEach((r) => (r.data.steps || []).forEach((s, i) => {
+    if (!s.issue && !s.light) return;
+    const k = s.issue || '（未寫可能出錯）';
+    if (!by.has(k)) by.set(k, { cnt: {}, list: [] });
+    const g = by.get(k); const l = okLight(s.light); if (l) g.cnt[l] = (g.cnt[l] || 0) + 1;
+    g.list.push({ r, s, no: `S${i + 1}` });
+  }));
+  const groups = [...by.entries()].sort((a, b) => b[1].list.length - a[1].list.length);
+  return `<div class="card">${oldNote(all)}<p class="muted tiny">依學員選的「可能出錯的情況」分組，看全班給的燈號是否一致。要看某位學員的流程圖，請到「總覽」按「查看」。</p>
+    ${groups.map(([k, g]) => `<div class="aq"><h3>${esc(k)}　<span class="muted tiny">${g.list.length} 人次</span></h3>${distBar(g.cnt, ['red', 'yellow', 'green'], LNAME)}
+      <ul class="ans-list">${g.list.map(({ r, s, no }) => `<li><span class="who">${esc(r.name)}</span>${okLight(s.light) ? `<span class="pill ${okLight(s.light)}">${LNAME[okLight(s.light)]}</span> ` : ''}<span class="muted">${no}</span> ${esc(s.action)}</li>`).join('')}</ul></div>`).join('')}</div>`;
 }
 
-// ---------- 練習二 ----------
+// ---------- ② 驗證條件 ----------
 function u2View() {
-  const rs = byUnit('u2');
-  if (!rs.length) return '<div class="card muted">還沒有人作答練習二。</div>';
-  const EV = ['A1', 'A2', 'A3', 'A4', 'A5', 'B1', 'B2', 'B3', 'B4'];
-  return `<div class="card"><div class="legend-row" style="margin-bottom:10px"><span><i class="dot green"></i> 通過</span><span><i class="dot red"></i> 不通過</span><span><i class="dot yellow"></i> 待補證</span></div>` + U2_QUESTIONS.map((q) => {
-    const cnt = {}; const evc = {};
-    rs.forEach((r) => { const a = r.data?.q?.[q.k]; const v = okVerdict(a?.verdict); if (v) cnt[v] = (cnt[v] || 0) + 1; (Array.isArray(a?.evidence) ? a.evidence : []).forEach((e) => { if (EV.includes(e)) evc[e] = (evc[e] || 0) + 1; }); });
-    return `<div class="aq"><h3>${q.no}　${q.q}</h3>${distBar(cnt, ['pass', 'fail', 'pending'], VERDICTS)}
-      <div class="ev-chips"><span class="muted" style="background:none;padding-left:0">引用證據</span>${EV.map((e) => `<span class="${evc[e] ? '' : 'zero'}">${e} ${evc[e] || 0}</span>`).join('')}</div>
-      <ul class="ans-list">${rs.map((r) => { const a = r.data?.q?.[q.k]; return a?.verdict || a?.reason ? `<li><span class="who">${esc(r.name)}</span>${okVerdict(a.verdict) ? `<span class="pill ${{ pass: 'green', fail: 'red', pending: 'yellow' }[okVerdict(a.verdict)]}">${VERDICTS[okVerdict(a.verdict)]}</span>` : ''} <span class="tiny muted">${esc([].concat(a.evidence || []).join('、'))}</span><br>${esc(a.reason || '')}</li>` : ''; }).join('')}</ul></div>`;
-  }).join('') + '</div>';
+  const all = byUnit('u2'); const rs = all.filter(simpleOf);
+  if (!rs.length) return `<div class="card muted">還沒有人作答 ② 設計驗證條件。${oldNote(all)}</div>`;
+  const tc = {};
+  rs.forEach((r) => (r.data.own || []).forEach((c) => { if (c.type) tc[c.type] = (tc[c.type] || 0) + 1; }));
+  const half = rs.map((r) => { const h = r.data.half || {}; return h.expect || h.pass ? `<li><span class="who">${esc(r.name)}</span><span class="tiny muted">${esc((h.rules || []).join('、'))}</span><br><b>預期：</b>${esc(h.expect)}<br><b>通過：</b>${esc(h.pass)}</li>` : ''; }).join('');
+  const own = rs.flatMap((r) => (r.data.own || []).filter((c) => c.say || c.expect).map((c, i) => `<li><span class="who">${esc(r.name)}</span><span class="pill">TC-${String(i + 3).padStart(2, '0')} ${esc(TYPE_NAME[c.type] || '未選類型')}</span> ${c.serial ? `<span class="pill blue">${esc(c.serial)}</span>` : ''} <span class="tiny muted">${esc((c.rules || []).join('、'))}</span><br>「${esc(c.say)}」<br><b>預期：</b>${esc(c.expect)}<br><b>通過：</b>${esc(c.pass)}</li>`)).join('');
+  return `<div class="card">${oldNote(all)}
+    <div class="aq"><h3>自己出題的測試類型分布</h3><div class="ev-chips">${Object.entries(TYPE_NAME).map(([k, n]) => `<span class="${tc[k] ? '' : 'zero'}">${n} ${tc[k] || 0}</span>`).join('')}</div></div>
+    <div class="aq"><h3>TC-02｜已過保固（半填題）</h3><ul class="ans-list">${half || '<li class="muted">尚無</li>'}</ul></div>
+    <div class="aq"><h3>自己設計的案例</h3><ul class="ans-list">${own || '<li class="muted">尚無</li>'}</ul></div></div>`;
 }
 
-// ---------- 練習三 ----------
-const U3F = [
-  ['第 1 題｜整理問題與根因假設', [['q1.problem', '已證實的問題與證據編號'], ['q1.impact', '可能造成的影響'], ['q1.hypothesis', '根因假設'], ['q1.verify', '查證資料'], ['q1.missing', '確認重複建單需補的紀錄']]],
-  ['第 2 題｜優先改善措施', [['q2.measure', '要改的流程步驟與措施'], ['q2.reason', '優先序理由'], ['q2.owner', '負責角色'], ['q2.interim', '修正前的使用建議']]],
-  ['第 3 題｜再驗證', [['q3.retest.pass', '① 重測原案例：通過條件'], ['q3.retest.evidence', '① 重測原案例：查核證據'], ['q3.edge.pass', '② 補測邊界：通過條件'], ['q3.edge.evidence', '② 補測邊界：查核證據'], ['q3.regress.pass', '③ 回歸測試：通過條件'], ['q3.regress.evidence', '③ 回歸測試：查核證據']]]
-];
-const gp = (o, p) => p.split('.').reduce((x, k) => (x ? x[k] : undefined), o);
+// ---------- ④ 驗收報告 ----------
 function u3View() {
-  const rs = byUnit('u3');
-  if (!rs.length) return '<div class="card muted">還沒有人作答練習三。</div>';
-  const pc = {}; rs.forEach((r) => { const p = okPrio(r.data?.q2?.priority); if (p) pc[p] = (pc[p] || 0) + 1; });
-  let out = `<div class="aq"><h3>優先序分布</h3>${distBar({ red: pc.P0, yellow: pc.P1, green: pc.P2 }, ['red', 'yellow', 'green'], { red: 'P0 立即', yellow: 'P1 試行前', green: 'P2 持續' })}</div>`;
-  for (const [title, fields] of U3F) {
-    out += `<h3 style="margin:22px 0 10px">${title}</h3>`;
-    out += fields.map(([p, n]) => `<div class="aq"><h3>${n}</h3><ul class="ans-list">${rs.map((r) => { const v = gp(r.data, p); return v ? `<li><span class="who">${esc(r.name)}</span>${p === 'q2.reason' && r.data?.q2?.priority ? `<span class="pill">${esc(r.data.q2.priority)}</span> ` : ''}${esc(v)}</li>` : ''; }).join('') || '<li class="muted">尚無</li>'}</ul></div>`).join('');
-  }
-  return `<div class="card">${out}</div>`;
+  const all = byUnit('u3'); const rs = all.filter(simpleOf);
+  if (!rs.length) return `<div class="card muted">還沒有人作答 ④ 驗收報告。${oldNote(all)}</div>`;
+  const gc = {}; rs.forEach((r) => { const g = okGo(r.data.summary?.golive); if (g) gc[g] = (gc[g] || 0) + 1; });
+  const half = {}; rs.forEach((r) => { const x = (r.data.results || []).find((y) => y.cid === 'half'); const v = okVerdict(x?.verdict); if (v) half[v] = (half[v] || 0) + 1; });
+  const fails = rs.flatMap((r) => (r.data.results || []).filter((x) => okVerdict(x.verdict) === 'fail').map((x) => ({ r, x })));
+  return `<div class="card">${oldNote(all)}
+    <div class="aq"><h3>上線建議</h3>${distBar({ green: gc.go, yellow: gc.conditional, red: gc.nogo }, ['green', 'yellow', 'red'], { green: '可以上線', yellow: '有條件上線', red: '暫不可上線' })}</div>
+    <div class="aq"><h3>TC-02（已過保固）判定</h3>${distBar(half, ['pass', 'fail', 'pending'], VERDICTS)}</div>
+    <div class="aq"><h3>學員找到的不通過項目　<span class="muted tiny">${fails.length} 筆</span></h3><ul class="ans-list">${fails.map(({ r, x }) => `<li><span class="who">${esc(r.name)}</span><span class="pill">${esc(x.no)}</span> ${okPrio(x.severity) ? `<span class="pill ${{ P0: 'red', P1: 'yellow', P2: 'green' }[okPrio(x.severity)]}">${okPrio(x.severity)}</span>` : ''} <span class="tiny muted">${esc((x.rules || []).join('、'))}｜${esc((x.evidence || []).join('、'))}</span><br>${esc(x.actual)}</li>`).join('') || '<li class="muted">尚無</li>'}</ul></div>
+    <div class="aq"><h3>最優先改善</h3><ul class="ans-list">${rs.map((r) => { const s = r.data.summary || {}; return s.fix ? `<li><span class="who">${esc(r.name)}</span>${s.layer ? `<span class="pill">${esc(s.layer)}</span>` : ''}<br>${esc(s.fix)}${s.control ? `<div class="tiny muted">暫時控制：${esc(s.control)}</div>` : ''}</li>` : ''; }).join('') || '<li class="muted">尚無</li>'}</ul></div></div>`;
 }
 
 // ---------- 參考答案 ----------
@@ -449,21 +444,18 @@ async function showDetail(key) {
   const p = people().find((x) => x.key === key); if (!p) return;
   const w = document.createElement('div');
   w.className = 'modal-backdrop';
-  const u1 = p.u.u1?.data, u2 = p.u.u2?.data, u3 = p.u.u3?.data;
+  const u1 = simpleOf(p.u.u1), u2 = simpleOf(p.u.u2), u3 = simpleOf(p.u.u3);
   let h = `<div class="modal wide"><div class="row-end" style="justify-content:space-between"><h2>${esc(p.name)}</h2><button class="btn small ghost" data-x>關閉</button></div>`;
-  h += `<div class="detail-sec"><h3>練習一 ${stDot(p.u.u1)}</h3>`;
-  if (u1?.cases) {
-    for (const [ck, C] of Object.entries(CASES)) {
-      const c = u1.cases[ck];
-      h += `<h4>${C.no}｜${C.title}</h4><div class="flow-mini" data-flow="${ck}"></div>`;
-      h += `<div class="table-wrap"><table><thead><tr><th>步驟</th><th>動作</th><th>角色</th><th>輸入</th><th>輸出／交給誰</th><th>尚待確認</th></tr></thead><tbody>${c.steps.map((s, i) => `<tr><td class="code">${stepNo(ck, i)}</td><td>${esc(s.action)}</td><td>${esc(s.role)}</td><td>${esc(s.input)}</td><td>${esc(s.output)}</td><td>${esc(s.pending)}</td></tr>`).join('')}</tbody></table></div>`;
-      h += `<ul class="ans-list">${(c.risks || []).filter((x) => x.issue || x.light).map((x) => `<li>${okLight(x.light) ? `<span class="pill ${okLight(x.light)}">${LNAME[okLight(x.light)]}</span> ` : ''}<span class="muted">${esc(stepLabel(u1, ck, x.step))}</span><br>${esc(x.issue)}<div class="tiny muted">影響：${esc(x.impact)}｜理由：${esc(x.reason)}｜把關：${esc(x.control)}</div></li>`).join('')}</ul>`;
-    }
+  h += `<div class="detail-sec"><h3>① 拆流程 ${stDot(p.u.u1)}</h3>`;
+  h += u1 ? `<div class="flow-mini" data-flow></div><div class="table-wrap"><table><thead><tr><th>步驟</th><th>角色</th><th>動作</th><th>燈號</th><th>可能出錯</th></tr></thead><tbody>${(u1.steps || []).map((s, i) => `<tr><td class="code">S${i + 1}</td><td>${esc(s.role)}</td><td>${esc(s.action)}</td><td>${okLight(s.light) ? `<span class="pill ${okLight(s.light)}">${LNAME[okLight(s.light)]}</span>` : ''}</td><td>${esc(s.issue)}</td></tr>`).join('')}</tbody></table></div>` : '<p class="muted">未作答</p>';
+  h += `<div data-ai="u1"></div></div><div class="detail-sec"><h3>② 驗證條件 ${stDot(p.u.u2)}</h3>`;
+  h += u2 ? `<div class="table-wrap"><table><thead><tr><th>編號</th><th>類型／序號</th><th>客服說法</th><th>預期</th><th>規則</th><th>通過標準</th></tr></thead><tbody>${allCases(u2).filter((c) => c.tier !== 'example').map((c) => `<tr><td class="code">${esc(c.no)}</td><td>${esc(TYPE_NAME[c.type] || '')}<br>${esc(c.serial || '')}</td><td>${esc(c.say)}</td><td>${esc(c.expect)}</td><td>${esc((c.rules || []).join('、'))}</td><td>${esc(c.pass)}</td></tr>`).join('')}</tbody></table></div>` : '<p class="muted">未作答</p>';
+  h += `<div data-ai="u2"></div></div><div class="detail-sec"><h3>④ 驗收報告 ${stDot(p.u.u3)}</h3>`;
+  if (u3) {
+    h += `<div class="table-wrap"><table><thead><tr><th>編號</th><th>判定</th><th>證據</th><th>實際結果</th><th>規則／嚴重度／補查</th></tr></thead><tbody>${(u3.results || []).map((x) => { const v = okVerdict(x.verdict); return `<tr><td class="code">${esc(x.no)}</td><td>${v ? `<span class="pill ${VCLS[v]}">${VERDICTS[v]}</span>` : ''}</td><td>${esc((x.evidence || []).join('、'))}</td><td>${esc(x.actual)}</td><td>${v === 'fail' ? `${esc((x.rules || []).join('、'))} ${okPrio(x.severity)}` : v === 'pending' ? esc(x.todo) : ''}</td></tr>`; }).join('')}</tbody></table></div>`;
+    const s = u3.summary || {};
+    h += `<div class="table-wrap" style="margin-top:10px"><table><tbody><tr><th>上線建議</th><td>${GO_LIVE[okGo(s.golive)] || ''}</td></tr><tr><th>理由</th><td>${esc(s.reason)}</td></tr><tr><th>最優先改善</th><td>${esc(s.fix)}${s.layer ? `（${esc(s.layer)}）` : ''}</td></tr><tr><th>暫時控制</th><td>${esc(s.control)}</td></tr></tbody></table></div>`;
   } else h += '<p class="muted">未作答</p>';
-  h += `<div data-ai="u1"></div></div><div class="detail-sec"><h3>練習二 ${stDot(p.u.u2)}</h3>`;
-  h += u2?.q ? `<div class="table-wrap"><table><thead><tr><th>題號</th><th>判定</th><th>證據</th><th>理由</th></tr></thead><tbody>${U2_QUESTIONS.map((q) => { const a = u2.q[q.k] || {}; return `<tr><td class="code">${q.no}</td><td>${VERDICTS[okVerdict(a.verdict)] || ''}</td><td>${esc([].concat(a.evidence || []).join('、'))}</td><td>${esc(a.reason)}</td></tr>`; }).join('')}</tbody></table></div>` : '<p class="muted">未作答</p>';
-  h += `<div data-ai="u2"></div></div><div class="detail-sec"><h3>練習三 ${stDot(p.u.u3)}</h3>`;
-  h += u3 ? `<div class="table-wrap"><table><tbody>${U3F.flatMap(([, fs]) => fs).map(([pth, n]) => `<tr><th style="white-space:normal;width:34%">${n}</th><td>${esc(gp(u3, pth) || '')}</td></tr>`).join('')}<tr><th>優先序</th><td>${esc(u3.q2?.priority || '')}</td></tr></tbody></table></div>` : '<p class="muted">未作答</p>';
   h += '<div data-ai="u3"></div></div></div>';
   w.innerHTML = h;
   if (AI_ON) for (const el of w.querySelectorAll('[data-ai]')) {
@@ -473,26 +465,19 @@ async function showDetail(key) {
   document.body.appendChild(w);
   w.querySelector('[data-x]').onclick = () => w.remove();
   w.onclick = (e) => { if (e.target === w) w.remove(); };
-  if (u1?.cases) for (const el of w.querySelectorAll('[data-flow]')) await renderFlow(el, el.dataset.flow, u1.cases[el.dataset.flow]);
+  const fl = w.querySelector('[data-flow]');
+  if (fl && u1) await renderFlow(fl, 'S', u1);
 }
 
 // ---------- CSV ----------
 function exportCsv() {
-  const rows = [['單元', '姓名/組別', '狀態', '項目', '步驟', '燈號/判定', '證據', '內容', '補充']];
-  byUnit('u1').forEach((r) => {
-    const d = r.data || {};
-    Object.entries(CASES).forEach(([ck, C]) => {
-      (d.cases?.[ck]?.steps || []).forEach((s, i) => rows.push(['練習一', r.name, r.status, `${C.no} 步驟`, stepNo(ck, i), s.role, '', s.action, `輸入：${s.input}｜輸出：${s.output}｜待確認：${s.pending}`]));
-      (d.cases?.[ck]?.risks || []).forEach((x) => rows.push(['練習一', r.name, r.status, `${C.no} 風險`, stepLabel(d, ck, x.step), LNAME[okLight(x.light)] || '', '', x.issue, `影響：${x.impact}｜理由：${x.reason}｜把關：${x.control}`]));
-    });
-    const h = d.handoff || {};
-    rows.push(['練習一', r.name, r.status, '自選優先風險', h.priority?.case ? stepLabel(d, h.priority.case, h.priority.step) : '', '', '', h.priority?.reason || '', '']);
-    rows.push(['練習一', r.name, r.status, '共用案例步驟', stepLabel(d, 'C', h.shared?.step), '', '', h.shared?.reason || '', '']);
-  });
-  byUnit('u2').forEach((r) => U2_QUESTIONS.forEach((q) => { const a = r.data?.q?.[q.k] || {}; rows.push(['練習二', r.name, r.status, q.no, '', VERDICTS[okVerdict(a.verdict)] || '', [].concat(a.evidence || []).join(' '), a.reason || '', '']); }));
-  byUnit('u3').forEach((r) => {
-    U3F.flatMap(([, fs]) => fs).forEach(([p, n]) => rows.push(['練習三', r.name, r.status, n, '', '', '', gp(r.data, p) || '', '']));
-    rows.push(['練習三', r.name, r.status, '優先序', '', r.data?.q2?.priority || '', '', '', '']);
+  const rows = [['步驟', '姓名/組別', '狀態', '項目', '類型/燈號/判定', '證據/規則', '內容', '補充']];
+  byUnit('u1').filter(simpleOf).forEach((r) => (r.data.steps || []).forEach((s, i) => rows.push(['① 拆流程', r.name, r.status, `S${i + 1}`, LNAME[okLight(s.light)] || '', s.role, s.action, s.issue])));
+  byUnit('u2').filter(simpleOf).forEach((r) => allCases(r.data).filter((c) => c.tier !== 'example').forEach((c) => rows.push(['② 驗證條件', r.name, r.status, c.no, `${TYPE_NAME[c.type] || ''} ${c.serial || ''}`, (c.rules || []).join(' '), `客服說法：${c.say}｜預期：${c.expect}`, `通過標準：${c.pass}`])));
+  byUnit('u3').filter(simpleOf).forEach((r) => {
+    (r.data.results || []).forEach((x) => rows.push(['④ 驗收報告', r.name, r.status, x.no, VERDICTS[okVerdict(x.verdict)] || '', `${(x.evidence || []).join(' ')}｜${(x.rules || []).join(' ')} ${okPrio(x.severity)}`, x.actual, x.todo || '']));
+    const s = r.data.summary || {};
+    rows.push(['④ 驗收報告', r.name, r.status, '總結', GO_LIVE[okGo(s.golive)] || '', s.layer || '', s.reason || '', `最優先改善：${s.fix || ''}｜暫時控制：${s.control || ''}`]);
   });
   const csv = '﻿' + rows.map((r) => r.map((v) => `"${String(v ?? '').replace(/"/g, '""')}"`).join(',')).join('\r\n');
   const a = document.createElement('a');
