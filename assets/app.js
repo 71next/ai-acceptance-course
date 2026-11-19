@@ -260,7 +260,7 @@ export function watchReveal(id, unit, el, onKey = () => {}) {
 export function renderHeader(active) {
   const links = [
     ['index.html', '首頁', 'home'], ['slides.html', '簡報', 'slides'],
-    ['unit1.html', '練習一', 'u1'], ['unit2.html', '練習二', 'u2'], ['unit3.html', '練習三', 'u3'],
+    ['unit1.html', '練習一', 'u1'], ['unit2.html', '練習二', 'u2'], ['unit3.html', '練習三', 'u3'], ['lab.html', '實測', 'lab'],
     ['index.html#downloads', '下載', 'dl']
   ];
   const h = document.createElement('header');

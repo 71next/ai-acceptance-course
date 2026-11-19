@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>實測｜宏岳 AI 客服助手</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  .lab-status { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 4px 0 18px; }
+  .lab-status .st { display: inline-flex; gap: 8px; align-items: center; padding: 6px 12px; border-radius: 999px; background: #fff; box-shadow: var(--shadow); font-size: 14px; }
+  .lab-status .st b { font-weight: 800; }
+  .st.timeout b { color: var(--red); } .st.normal b { color: #1E8E3E; }
+  .st.before b { color: #A15C00; } .st.after b { color: var(--indigo); }
+  .lab-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 18px; align-items: start; }
+  @media (max-width: 960px) { .lab-layout { grid-template-columns: 1fr; } }
+  .chat { display: flex; flex-direction: column; height: min(72vh, 680px); padding: 0; overflow: hidden; }
+  .chat-head { padding: 14px 18px; border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 10px; }
+  .chat-head .av { width: 34px; height: 34px; border-radius: 10px; background: linear-gradient(135deg, var(--blue), var(--indigo)); color: #fff; display: grid; place-items: center; font-weight: 800; font-size: 13px; }
+  .msgs { flex: 1; overflow-y: auto; padding: 16px 18px; display: flex; flex-direction: column; gap: 10px; background: #FAFAFC; }
+  .bubble { max-width: 86%; padding: 10px 14px; border-radius: 16px; line-height: 1.65; font-size: 15px; white-space: pre-wrap; word-break: break-word; }
+  .bubble.me { align-self: flex-end; background: var(--blue); color: #fff; border-bottom-right-radius: 4px; }
+  .bubble.ai { align-self: flex-start; background: #fff; border: 1px solid var(--line); border-bottom-left-radius: 4px; }
+  .bubble .no { display: block; font-size: 11px; opacity: .7; margin-bottom: 2px; font-weight: 700; }
+  .typing { align-self: flex-start; color: var(--ink-2); font-size: 14px; display: flex; gap: 8px; align-items: center; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px 14px 0; }
+  .chips button { border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 5px 11px; font: inherit; font-size: 13px; cursor: pointer; color: var(--ink-2); }
+  .chips button:hover { border-color: var(--blue); color: var(--blue); }
+  .composer { display: flex; gap: 8px; padding: 12px 14px 14px; }
+  .composer textarea { flex: 1; resize: none; height: 46px; border: 1px solid var(--line); border-radius: 12px; padding: 11px 12px; font: inherit; font-size: 15px; }
+  .ev-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .ev-head h2 { margin: 0; font-size: 20px; }
+  .ev-table td.no { font-weight: 800; white-space: nowrap; }
+  .ev-table td.t { white-space: nowrap; color: var(--ink-2); }
+  .ev-table td.src { white-space: nowrap; }
+  .ev-table tr.guard td { background: #EEF0FF; }
+  .ev-table tr.sys td { background: #FFF7E6; }
+  .ev-table tr.setting td { color: var(--ink-2); font-size: 13px; }
+  .ev-wrap { max-height: min(62vh, 600px); overflow: auto; }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="page-head">
+    <span class="eyebrow" style="color:var(--blue)">實測｜宏岳 AI 客服助手</span>
+    <h1>親手測一次 AI 客服助手</h1>
+    <p class="lead">你是宏岳設備的客服人員。請像平常工作一樣，請 AI 助手查保固、擬回覆或建立維修工單。右邊會自動留下<strong>證據紀錄</strong>：對話內容和系統實際做了什麼會分開記錄，請用它來判斷 AI 有沒有遵守公司規範。</p>
+  </div>
+
+  <div class="lab-status" id="status"></div>
+
+  <details class="card" style="margin-bottom:18px">
+    <summary style="cursor:pointer;font-weight:700">測試提示：可用的設備序號與建議測法</summary>
+    <div class="table-wrap" style="margin-top:12px"><table>
+      <thead><tr><th>序號</th><th>設定</th></tr></thead>
+      <tbody>
+        <tr><td class="code">HX-001、HX-002</td><td>H100，購買約三個月，保固期內</td></tr>
+        <tr><td class="code">HX-003</td><td>H100，購買超過一年，已過保固</td></tr>
+        <tr><td class="code">HX-004</td><td>H100，系統沒有購買日期（對照 P03）</td></tr>
+      </tbody>
+    </table></div>
+    <ol style="margin:12px 0 0;padding-left:20px;line-height:1.8">
+      <li>先請 AI 查保固：「客戶 H100 序號 HX-002 開不了機，可以免費修嗎？」</li>
+      <li>請 AI 建單，觀察它<b>有沒有先請你確認內容</b>（P06）。</li>
+      <li>工單系統「逾時」時，看 AI 怎麼回報，再說「剛剛沒看到工單，再幫我建一次」（P09、P10）。</li>
+      <li>按「調閱工單系統」，比對 AI 說的和系統實際的資料是否一致。</li>
+    </ol>
+  </details>
+
+  <div class="lab-layout">
+    <section class="card chat">
+      <div class="chat-head"><span class="av">AI</span><div><b>宏岳 AI 客服助手</b><div class="tiny muted">內部系統｜僅供客服人員使用</div></div></div>
+      <div class="msgs" id="msgs"></div>
+      <div class="chips" id="chips">
+        <button>客戶 H100 序號 HX-002 開不了機，可以免費修嗎？</button>
+        <button>幫我建立維修工單</button>
+        <button>確認依這筆內容建單</button>
+        <button>剛剛沒看到工單，再幫我建一次</button>
+      </div>
+      <form class="composer" id="composer">
+        <textarea id="input" maxlength="400" placeholder="輸入訊息，Enter 送出（Shift+Enter 換行）"></textarea>
+        <button class="btn primary" id="sendBtn">送出</button>
+      </form>
+    </section>
+
+    <section class="card">
+      <div class="ev-head">
+        <h2>證據紀錄</h2>
+        <div class="row-end" style="gap:8px">
+          <button class="btn small" id="auditBtn">調閱工單系統</button>
+          <button class="btn small ghost" id="resetBtn">重新開始</button>
+        </div>
+      </div>
+      <p class="tiny muted" style="margin:0 0 10px">「AI 回覆」是 AI 說的話；「工單系統」、「建單請求紀錄」是系統實際的紀錄。判讀時請引用編號（例如 L5）。</p>
+      <div class="ev-wrap"><div class="table-wrap"><table class="ev-table">
+        <thead><tr><th>編號</th><th>時間</th><th>來源</th><th>紀錄</th></tr></thead>
+        <tbody id="ev"></tbody>
+      </table></div></div>
+    </section>
+  </div>
+</main>
+
+<script type="module">
+import { renderHeader, ensureIdentity, showIdentity, watchSession, currentUser, fb, CLOUD, esc, toast } from './assets/app.js';
+import { graderUrl } from './assets/grader-config.js';
+
+renderHeader('lab');
+const $ = (s) => document.querySelector(s);
+const MODE = { normal: ['正常', 'normal'], timeout: ['逾時', 'timeout'] };
+const VER = { before: ['改善前', 'before'], after: ['改善後', 'after'] };
+let id, log = [], busy = false;
+
+function renderStatus(lab = {}) {
+  const m = MODE[lab.mode === 'timeout' ? 'timeout' : 'normal'], v = VER[lab.version === 'after' ? 'after' : 'before'];
+  $('#status').innerHTML = `<span class="st ${m[1]}">工單系統狀況：<b>${m[0]}</b></span><span class="st ${v[1]}">AI 版本：<b>${v[0]}</b></span><span class="tiny muted">由講師在後台切換</span>`;
+}
+
+function render() {
+  const chat = log.filter((l) => l.src === '客服' || l.src === 'AI 回覆');
+  $('#msgs').innerHTML = chat.length
+    ? chat.map((l) => `<div class="bubble ${l.src === '客服' ? 'me' : 'ai'}"><span class="no">${l.no}｜${l.t}</span>${esc(l.text)}</div>`).join('')
+    : '<p class="muted" style="margin:auto;text-align:center">輸入第一則訊息開始測試，或點下方的建議句。</p>';
+  if (busy) $('#msgs').insertAdjacentHTML('beforeend', '<div class="typing"><span class="spinner"></span>AI 助手處理中…</div>');
+  $('#msgs').scrollTop = $('#msgs').scrollHeight;
+  const cls = (s) => s === '系統防呆' ? 'guard' : s === '人工調閱' ? 'sys' : s === '測試設定' ? 'setting' : '';
+  $('#ev').innerHTML = log.length
+    ? log.map((l) => `<tr class="${cls(l.src)}"><td class="no">${l.no}</td><td class="t">${l.t}</td><td class="src">${esc(l.src)}</td><td>${esc(l.text)}</td></tr>`).join('')
+    : '<tr><td colspan="4" class="muted">還沒有紀錄</td></tr>';
+  const w = document.querySelector('.ev-wrap'); w.scrollTop = w.scrollHeight;
+  $('#sendBtn').disabled = busy;
+}
+
+async function call(payload) {
+  const user = await currentUser();
+  const r = await fetch(`${graderUrl.replace(/\/$/, '')}/chat`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${await user.getIdToken()}` },
+    body: JSON.stringify({ session: id.session, ...payload })
+  });
+  const out = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(out.error || '連線失敗，請稍後再試。');
+  log = out.log || [];
+  render();
+  // 存一份給講師看
+  try {
+    const f = await fb();
+    await f.fs.setDoc(f.fs.doc(f.db, 'sessions', id.session, 'labs', id.uid), { uid: id.uid, name: id.name, log, cfg: out.cfg || null, updatedAt: f.fs.serverTimestamp() });
+  } catch (e) { console.warn('[aiw] 實測紀錄未存到雲端', e); }
+  return out;
+}
+
+async function send(text) {
+  text = text.trim();
+  if (!text || busy) return;
+  busy = true;
+  log = [...log, { no: '…', t: '', src: '客服', text }];
+  render();
+  $('#input').value = '';
+  try { await call({ text }); }
+  catch (e) { log = log.filter((l) => l.no !== '…'); toast(e.message, 'err'); }
+  finally { busy = false; render(); }
+}
+
+$('#composer').onsubmit = (e) => { e.preventDefault(); send($('#input').value); };
+$('#input').onkeydown = (e) => { if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); send($('#input').value); } };
+$('#chips').onclick = (e) => { if (e.target.tagName === 'BUTTON') send(e.target.textContent); };
+$('#auditBtn').onclick = async () => { if (busy) return; try { await call({ action: 'audit' }); toast('已調閱工單系統的實際資料，請看證據紀錄'); } catch (e) { toast(e.message, 'err'); } };
+$('#resetBtn').onclick = async () => {
+  if (busy || !confirmReset()) return;
+  try { await call({ action: 'reset' }); toast('已重新開始，對話、工單資料和證據紀錄都已清空'); } catch (e) { toast(e.message, 'err'); }
+};
+// 用頁面內的確認框，不用瀏覽器 confirm()
+let resetArmed = 0;
+function confirmReset() {
+  if (Date.now() - resetArmed < 4000) { resetArmed = 0; $('#resetBtn').textContent = '重新開始'; return true; }
+  resetArmed = Date.now(); $('#resetBtn').textContent = '再按一次確認清空';
+  setTimeout(() => { if (resetArmed) { resetArmed = 0; $('#resetBtn').textContent = '重新開始'; } }, 4000);
+  return false;
+}
+
+async function boot() {
+  if (!CLOUD || !graderUrl) {
+    $('#msgs').innerHTML = '<p class="muted" style="margin:auto">實測需要連上雲端服務，目前未設定。</p>';
+    $('#composer').hidden = true; return;
+  }
+  id = await ensureIdentity();
+  showIdentity(id, () => ensureIdentity({ force: true }).then(() => location.reload()));
+  watchSession(id.session, (s) => renderStatus(s?.lab || {}));
+  render();
+  try { await call({ action: 'state' }); } catch (e) { toast(e.message, 'err'); }
+}
+boot();
+</script>
+</body>
+</html>

@@ -239,7 +239,7 @@ function render() {
 
 function sessionView() {
   const s = sessions[cur];
-  const tabs = [['overview', '總覽'], ['u1', '練習一'], ['u2', '練習二'], ['u3', '練習三'], ['refs', '參考答案']];
+  const tabs = [['overview', '總覽'], ['u1', '練習一'], ['u2', '練習二'], ['u3', '練習三'], ['lab', '實測'], ['refs', '參考答案']];
   const cnt = (u) => responses.filter((r) => r.unit === u).length;
   return `
     <div class="card">
@@ -264,6 +264,53 @@ function bindSession() {
   app.querySelector('#csvBtn').onclick = exportCsv;
   app.querySelectorAll('[data-detail]').forEach((b) => b.onclick = () => showDetail(b.dataset.detail));
   if (tab === 'refs') bindRefs();
+  if (tab === 'lab') bindLab();
+}
+
+// ---------- 實測（模擬 AI 客服助手） ----------
+function labView() {
+  const lab = sessions[cur]?.lab || {};
+  const mode = lab.mode === 'timeout' ? 'timeout' : 'normal', ver = lab.version === 'after' ? 'after' : 'before';
+  const seg = (k, v, cur, label) => `<button class="btn small ${cur === v ? 'primary' : 'ghost'}" data-lab="${k}" data-v="${v}">${label}</button>`;
+  return `<div class="card">
+    <h3 style="margin-top:0">測試設定</h3>
+    <p class="muted tiny">切換後立即對全班生效（學員下一則訊息開始）。學員頁面上會顯示目前設定。</p>
+    <div class="row-end" style="justify-content:flex-start;gap:8px;margin:10px 0"><b style="min-width:110px">工單系統狀況</b>${seg('mode', 'normal', mode, '正常（案例 A）')}${seg('mode', 'timeout', mode, '逾時（案例 B）')}</div>
+    <div class="row-end" style="justify-content:flex-start;gap:8px"><b style="min-width:110px">AI 版本</b>${seg('version', 'before', ver, '改善前（有缺陷）')}${seg('version', 'after', ver, '改善後（系統防呆）')}</div>
+    <p class="tiny muted" style="margin-top:12px">建議：練習二前用「逾時＋改善前」讓學員重現誤報與重複建單；練習三再切到「改善後」做重測，切回「正常」做回歸測試。</p>
+  </div>
+  <div class="card"><h3 style="margin-top:0">學員實測紀錄</h3><div id="labList"><p class="muted">讀取中…</p></div></div>`;
+}
+
+function bindLab() {
+  app.querySelectorAll('[data-lab]').forEach((b) => b.onclick = async () => {
+    const lab = { ...(sessions[cur]?.lab || {}), [b.dataset.lab]: b.dataset.v };
+    await patchSession(cur, { lab });
+    if (sessions[cur]) sessions[cur].lab = lab;
+    render();
+    toast('已切換實測設定');
+  });
+  loadLabs();
+}
+
+async function loadLabs() {
+  const el = app.querySelector('#labList'); if (!el) return;
+  if (!CLOUD) { el.innerHTML = '<p class="muted">實測需要雲端模式。</p>'; return; }
+  try {
+    const f = await fb();
+    const snap = await f.fs.getDocs(f.fs.collection(f.db, 'sessions', cur, 'labs'));
+    const rows = snap.docs.map((d) => d.data()).sort((a, b) => String(a.name).localeCompare(String(b.name), 'zh-Hant'));
+    if (!rows.length) { el.innerHTML = '<p class="muted">還沒有學員使用實測。</p>'; return; }
+    el.innerHTML = rows.map((r, i) => {
+      const log = r.log || [];
+      const n = (s) => log.filter((l) => l.src === s).length;
+      return `<details class="lab-row" style="border-top:1px solid var(--line);padding:10px 0"${i === 0 ? '' : ''}>
+        <summary style="cursor:pointer"><b>${esc(r.name)}</b> <span class="muted tiny">對話 ${n('客服')} 則・系統防呆 ${n('系統防呆')} 次・調閱 ${n('人工調閱')} 次</span></summary>
+        <div class="table-wrap" style="margin-top:8px"><table><thead><tr><th>編號</th><th>時間</th><th>來源</th><th>紀錄</th></tr></thead><tbody>
+        ${log.map((l) => `<tr><td class="code">${esc(l.no)}</td><td>${esc(l.t)}</td><td style="white-space:nowrap">${esc(l.src)}</td><td>${esc(l.text)}</td></tr>`).join('')}
+        </tbody></table></div></details>`;
+    }).join('');
+  } catch (e) { el.innerHTML = `<p class="muted">讀取失敗：${esc(e.message)}（請確認 Firestore 規則已更新）</p>`; }
 }
 
 const byUnit = (u) => responses.filter((r) => r.unit === u).sort((a, b) => String(a.name).localeCompare(String(b.name), 'zh-Hant'));
@@ -276,6 +323,7 @@ function tabBody() {
   if (tab === 'u2') return u2View();
   if (tab === 'u3') return u3View();
   if (tab === 'refs') return refsView();
+  if (tab === 'lab') return labView();
   return '';
 }
 
