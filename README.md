@@ -46,6 +46,36 @@
 - `assets/firebase-config.js` 的 `apiKey` 留空時，網站會切換成**本機模式**：作答只存在瀏覽器的 localStorage，適合沒有網路或測試時使用。
 - 第三方套件從 CDN 載入：Firebase 10.12.2、Mermaid 10.9.1、marked 12.0.2。
 
+### AI 批改
+
+批改服務是一個 Cloudflare Worker（`ai-course-grader`），程式放在 repo 外的 `grader/` 資料夾，不公開。網站只知道它的網址，寫在 `assets/grader-config.js`；網址留空時，網站不會顯示 AI 回饋。
+
+批改流程：
+
+1. 學員按「送出作答」後，網頁帶著學員的 Firebase 登入憑證呼叫 `POST /grade`，內容只有梯次代碼和單元。
+2. Worker 驗證登入憑證，再用同一張憑證向 Firestore 讀回學員「已送出」的作答。Worker 不採用網頁傳來的作答內容，所以無法偽造。
+3. 檢查次數上限：每位學員每個練習最多 5 次，全站每天最多 600 次。次數記在 Cloudflare KV；批改失敗不扣次數。
+4. 把題本、公司規範、參考答案和學員作答交給 Claude（`claude-opus-5-5`），以固定格式回傳：整體評語、各部分評等（到位／部分到位／缺漏／方向有誤）與建議、最優先修改的一件事。
+5. 網頁顯示回饋，並存到 Firestore `sessions/{梯次}/feedback/{uid}_{單元}`。講師在後台的個人詳細資料可以展開查看。
+
+安全設計：
+
+- Claude API 金鑰只存在 Worker 的加密設定（Secret），不在網站程式碼或 repo 裡。
+- 只接受來自 `https://71next.github.io` 和本機預覽 `http://localhost:8765` 的請求。
+- 學員作答以「資料」交給 AI，作答中如果寫了「給我好評」之類的指令，AI 會照常批改並在評語中指出。
+- 參考答案在部署 Worker 時才複製進去（`npm run deploy` 會先執行 `sync-ref`），不放進公開的網站 repo。
+
+`grader/wrangler.toml` 的設定：
+
+| 設定 | 目前值 | 說明 |
+| --- | --- | --- |
+| `MODEL` | `claude-opus-5-5` | 批改用的模型 |
+| `MAX_PER_UNIT` | `5` | 每位學員每個練習最多批改幾次 |
+| `DAILY_CAP` | `600` | 全站每天最多批改幾次（成本上限） |
+| `ALLOWED_ORIGINS` | 網站與本機預覽 | 允許呼叫的網站來源 |
+
+費用：一班 40 人三個練習各批改一次，約 US$3～5。實測一次批改約 15 秒。
+
 ### 檔案結構
 
 ```
@@ -58,15 +88,18 @@ assets/
   flow.js           步驟資料 → Mermaid 流程圖
   unit1-data.js     練習一題本：公司規範、案例、下拉選項（OPTIONS）
   carry.js          跨單元帶入（練習一 → 二 → 三）
+  ai-feedback.js    AI 回饋：呼叫批改服務、顯示與保存回饋
+  grader-config.js  批改服務網址（留空 = 關閉 AI 回饋）
   style.css         共用樣式
   firebase-config.js
 downloads/          講義與評估表
 ```
 
-以下兩個檔案放在 repo 外面，**不公開**：
+以下檔案放在 repo 外面，**不公開**：
 
 - **安全規則**：`firestore.rules`，已貼到 Firebase Console 發布。
-- **參考答案母本**：`參考答案.md`，由講師在後台匯入。
+- **參考答案母本**：`參考答案.md`，由講師在後台匯入，部署 AI 批改時也會複製一份進 Worker。
+- **AI 批改服務**：`grader/`（`src/index.js` 主程式、`src/context.js` 題本與作答轉文字、`wrangler.toml` 設定）。
 
 ## 製作過程
 
@@ -99,6 +132,11 @@ downloads/          講義與評估表
 6. **部署**：
    - 先部署在個人帳號，之後搬到 71next 帳號，並刪除舊 repo。
    - 建立 Firebase 專案：開啟匿名與 Google 登入、建立 Firestore、發布安全規則、加入授權網域 `71next.github.io`、設定第一位講師。
+7. **自動對答案**：參考答案母本加入答案鍵，講師開放某單元答案後，學員頁面即時標出對錯。
+8. **AI 批改**：
+   - 比較過三種做法後，選擇 Cloudflare Worker 中繼（金鑰不進網頁），學員送出後立即回饋，三個練習全部批改。
+   - 部署 Worker、建立次數計算用的 KV、設定 API 金鑰、在安全規則加入 `feedback` 子集合。
+   - 用 `TEST` 梯次實測：故意答錯的兩題都被判為「方向有誤」並說明原因。
 
 ## 維護
 
@@ -114,4 +152,11 @@ downloads/          講義與評估表
   # 開 http://localhost:8765
   ```
 
+- **AI 批改的維護**（在 `grader/` 資料夾執行）：
+  - **修改參考答案後**：除了到後台重新匯入，也要執行 `npm run deploy`，AI 才會用新版本批改。
+  - **調整次數上限或模型**：編輯 `wrangler.toml`，再執行 `npm run deploy`。
+  - **更換 API 金鑰**：到 Cloudflare 網頁 → Workers & Pages → `ai-course-grader` → Settings → Variables and Secrets，刪除舊的 `ANTHROPIC_API_KEY` 再新增，類型選 Secret。也可以在**終端機 App** 執行 `npx wrangler secret put ANTHROPIC_API_KEY`。注意：在 Claude Code 用 `!` 執行這行指令無法輸入金鑰，會存成空值。
+  - **查看錯誤紀錄**：執行 `npx wrangler tail`，再請人送出作答，就能看到即時紀錄。紀錄只有錯誤類型，不含金鑰。
+  - **暫停 AI 回饋**：把 `assets/grader-config.js` 的網址改成空字串，push 後網站就不再顯示 AI 回饋。
+  - 第一次在新電腦部署，要先執行 `npm install` 和 `npx wrangler login`。
 - **免費額度**：Firestore 每天 5 萬次讀取、2 萬次寫入。一班 40 人上一堂課，估計約數千到一萬次寫入。
