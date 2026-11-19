@@ -196,7 +196,7 @@ img, svg { max-width: 100%; max-height: 100%; }
   <div class="cover">
     <div class="badge rv">AI 顧問實戰工作坊｜2 小時實作課程</div>
     <h1 class="rv d1">AI 應用驗收評估<br>與改善策略</h1>
-    <p class="lead rv d2">用一個真實案例走完驗收流程：拆流程、設計驗證條件、實際實測、寫出驗收報告</p>
+    <p class="lead rv d2">以宏岳設備 AI 客服助手為例，親手走一次上線前的驗收流程</p>
     <p class="by rv d3">講師：黃庭豪（bryant）｜秦毅數位科技有限公司</p>
   </div>
 </section>
@@ -229,429 +229,106 @@ img, svg { max-width: 100%; max-height: 100%; }
   </div>
 </section>
 
-<section class="slide" data-title="課程大綱">
-  <div class="head rv"><span class="kicker">COURSE MAP</span><h2 class="title">驗證五流程：一套帶得回公司的驗收方法</h2><p class="sub">講師導讀一段，接著四段實作。全程驗收同一個對象：宏岳設備 H100 AI 客服助手</p></div>
-  <div class="cards" style="grid-template-columns:repeat(5,1fr);gap:26px">
-    <div class="card bar rv d1" style="--c:var(--ink-2);padding:36px 32px"><span class="tag">01｜導讀・10 分</span><h3>任務分類簡介</h3><p>五種 AI 任務，各要驗什麼重點。</p></div>
-    <div class="card bar rv d2" style="--c:var(--blue);padding:36px 32px"><span class="tag">02｜實作 ①・15 分</span><h3>拆流程</h3><p>拆出步驟，找出最不能錯的紅燈。</p></div>
-    <div class="card bar rv d3" style="--c:var(--indigo);padding:36px 32px"><span class="tag">03｜實作 ②・20 分</span><h3>假設驗證設計</h3><p>測之前，先寫下怎樣才算對。</p></div>
-    <div class="card bar rv d4" style="--c:var(--teal);padding:36px 32px"><span class="tag">04｜實作 ③・20 分</span><h3>執行驗收</h3><p>照著案例實測，系統留下證據。</p></div>
-    <div class="card bar rv d5" style="--c:var(--red);padding:36px 32px"><span class="tag">05｜實作 ④・15 分</span><h3>判讀結果</h3><p>用證據判定，給出上線建議。</p></div>
-  </div>
-  <p class="rv d6" style="margin-top:48px;font-size:30px;color:var(--ink-2)">最後 15 分鐘講評：<b style="color:var(--ink)">你的報告抓到了幾個缺陷？</b></p>
-</section>
-
-<section class="slide bg-gray" data-title="全局視角">
-  <div class="head rv"><span class="kicker">THE OUTPUT</span><h2 class="title">四段實作，做出一份完整的驗收案</h2><p class="sub">前一步的產出就是下一步的輸入，網站會自動帶過去</p></div>
-  <div class="chain rv d1" style="margin-bottom:56px">
-    <span class="node" style="--c:var(--blue)">① 流程表</span><span class="arr">→</span>
-    <span class="node" style="--c:var(--indigo)">② 測試案例</span><span class="arr">→</span>
-    <span class="node" style="--c:var(--teal)">③ 證據紀錄</span><span class="arr">→</span>
-    <span class="node" style="--c:var(--red)">④ 驗收報告</span>
-  </div>
-  <div class="cards c4" style="gap:26px">
-    <div class="card rv d2" style="--c:var(--blue);padding:34px 34px"><h3>紅燈步驟</h3><p>帶到 ②，變成要優先出題的地方。</p></div>
-    <div class="card rv d3" style="--c:var(--indigo);padding:34px 34px"><h3>客服說法</h3><p>帶到 ③，實測時一鍵帶入。</p></div>
-    <div class="card rv d4" style="--c:var(--teal);padding:34px 34px"><h3>L 編號</h3><p>帶到 ④，判定時引用證據。</p></div>
-    <div class="card rv d5" style="--c:var(--red);padding:34px 34px"><h3>上線建議</h3><p>可以、有條件，或暫不可上線。</p></div>
-  </div>
-</section>
-
-<section class="slide bg-unit" data-title="流程 01｜任務分類簡介">
-  <div class="unit-cover">
-    <div class="no rv" style="color:var(--ink-2)">驗證流程 01</div>
-    <h1 class="rv d1">任務分類簡介</h1>
-    <p class="rv d2">不能用同一把尺驗所有 AI：先看 AI 要完成什麼任務</p>
-  </div>
-  <div class="big-no" style="color:rgba(0,0,0,.05)">01</div>
-</section>
-
-<section class="slide" data-title="1-1 任務類型與驗收重點">
-  <div class="head rv"><span class="kicker">1-1</span><h2 class="title">任務類型與驗收重點</h2><p class="sub">不能用同一把尺驗所有 AI：先拆解五種任務類型</p></div>
-  <div class="cards c2">
-    <div class="card bar rv d1"><span class="tag">任務 01</span><h3>內容生成與改寫</h3><p>跨部門會議紀錄、待辦摘要</p><p class="focus"><b>驗重點：</b>核心事實不遺漏、語氣合規、不擅自承諾。</p></div>
-    <div class="card bar rv d2" style="--c:var(--indigo)"><span class="tag">任務 02</span><h3>分類、抽取與比對</h3><p>意圖分類、發票欄位抽取</p><p class="focus"><b>驗重點：</b>關鍵欄位準確率、缺漏資料不腦補。</p></div>
-  </div>
-</section>
-
-<section class="slide" data-title="任務 03 知識查詢與回答">
-  <div class="head rv"><span class="kicker">1-1 五大任務分類｜任務 03</span><h2 class="title">知識查詢與回答：拆開驗「找得到」與「答得對」</h2><p class="sub">適用場景：員工內規查詢、產品規格／SOP 問答、官網智慧客服</p></div>
-  <div class="cards c3">
-    <div class="card rv d1"><div class="num">01</div><h3>檢索召回（找得到）</h3><p>撈出的文件片段必須包含正解，排除切分或權限異常。</p></div>
-    <div class="card rv d2"><div class="num">02</div><h3>忠實度（答得對）</h3><p>回答 100% 綁定企業知識庫並附來源，嚴禁憑記憶腦補。</p></div>
-    <div class="card rv d3"><div class="num">03</div><h3>誠實拒答（守邊界）</h3><p>刻意問知識庫沒有的問題，驗證系統會誠實說查無資料。</p></div>
-  </div>
-</section>
-
-<section class="slide" data-title="任務 04 工具操作與執行">
-  <div class="head rv"><span class="kicker" style="color:var(--indigo)">1-1 五大任務分類｜任務 04</span><h2 class="title">工具操作與執行：必須驗「參數精準」與「安全煞車」</h2><p class="sub">適用場景：CRM 自動建工單、更新 ERP 訂單、發送對外信件或報表</p></div>
-  <div class="cards c3" style="--c:var(--indigo)">
-    <div class="card rv d1"><div class="num">01</div><h3>參數驗證</h3><p>挑對 API，日期、金額、序號格式完全符合系統規範。</p></div>
-    <div class="card rv d2"><div class="num">02</div><h3>異常熔斷</h3><p>API 逾時能安全轉人工，<span class="em">不無限重試也不誤報成功。</span></p></div>
-    <div class="card rv d3"><div class="num">03</div><h3>高風險人工確認</h3><p>刪改資料、建單或寄信前，強制卡在人工確認界面。</p></div>
-  </div>
-</section>
-
-<section class="slide" data-title="任務 05 複合型應用">
-  <div class="head rv" style="margin-bottom:40px"><span class="kicker" style="color:var(--teal)">1-1 五大任務分類｜任務 05</span><h2 class="title">複合型應用：禁止只測頭尾，必須「分段隔離」</h2></div>
-  <div class="rv d1" style="margin-bottom:44px">
-    <p style="font-size:28px;color:var(--muted);margin-bottom:18px">典型流程：全自動客服</p>
-    <div class="chain">
-      <span class="node" style="--c:var(--indigo)">分類 (2)</span><span class="arr">→</span>
-      <span class="node" style="--c:var(--blue)">查規章 (3)</span><span class="arr">→</span>
-      <span class="node" style="--c:var(--indigo)">建工單 (4)</span><span class="arr">→</span>
-      <span class="node" style="--c:var(--blue)">寫草稿 (1)</span>
-    </div>
-  </div>
-  <div class="cards c3" style="--c:var(--teal)">
-    <div class="card rv d2"><div class="num">01</div><h3>單點隔離測試</h3><p>餵入標準假資料逐關測輸入輸出，精準定位問題節點。</p></div>
-    <div class="card rv d3"><div class="num">02</div><h3>錯誤阻斷測試</h3><p>前半段出錯或低信心度時，後半段自動攔截不硬做。</p></div>
-    <div class="card rv d4"><div class="num">03</div><h3>端到端耗時成本</h3><p>評估整條鏈路總延遲與 Token 成本是否符合現場節奏。</p></div>
-  </div>
-</section>
-
-<section class="slide bg-dark" data-title="隨堂思考 01">
-  <div class="quiz">
-    <div>
-      <span class="kicker rv">隨堂思考 01</span>
-      <h2 class="title rv d1">這個 AI 客服能查手冊、寫草稿、建工單，只測回答準不準夠嗎？</h2>
-      <div class="scene rv d2">廠商展示 Demo 時問了 10 題保固規定，<span class="hl">AI 全部答對</span>。主管非常滿意，準備下週直接開放全公司上線。</div>
-      <p class="ask rv d3">如果只驗「問答準確率」，會漏掉哪兩個致命風險？</p>
-    </div>
-    <button class="answer-btn rv d2" data-next aria-label="看解答（下一頁）"><span class="inner"><span class="t">解答</span><span class="s">點擊看解答 →</span></span></button>
-  </div>
-</section>
-
-<section class="slide answer" data-title="隨堂思考 01 解答">
-  <div class="head rv"><span class="kicker">隨堂思考 01｜解答</span><h2 class="title"><span class="verdict">完全不夠！</span>複合型應用必須拆成三段分別驗</h2><p class="sub">這是「任務 05 複合型應用」。只測「回答準不準」只驗到表面文字，會漏掉背後真正讓企業出事的風險。</p></div>
-  <div class="cards c3">
-    <div class="card rv d1" style="--c:var(--blue)"><span class="tag">任務 03｜知識查詢與回答</span><h3>查手冊</h3><p class="need">不能只看猜對，要驗「有憑有據與誠實拒答」</p><p>確認它 <b>100% 根據最新手冊</b>回答並附正確出處；遇到手冊沒寫的問題，會誠實說<b>「查無資料」</b>，不自己腦補。</p></div>
-    <div class="card rv d2" style="--c:var(--teal)"><span class="tag">任務 01｜內容生成與整理</span><h3>寫草稿</h3><p class="need">不能只看文筆通順，要驗「關鍵前提不遺漏、規則紅線不踩線」</p><p>重點是<b>不能亂承諾</b>：檢測原因前，絕不能寫出「可免費維修」；並附上判斷依據，方便客服快速覆核修改。</p></div>
-    <div class="card rv d3" style="--c:var(--indigo)"><span class="tag">任務 04｜工具操作與任務執行</span><h3>建工單</h3><p class="need">不是回答問題，而是「會改動真實系統的動作」</p><p><b>參數精準</b>（型號、序號沒帶錯）、<b>人工把關</b>（客服確認前絕不偷跑建單）、<b>異常誠實回報</b>（API 逾時沒拿到單號，不能謊報建單成功）。</p></div>
-  </div>
-  <div class="quote rv d4"><span>只測「回答準不準」，就像買車只試喇叭響不響，卻沒試煞車靈不靈。<em>查資料怕瞎編、寫草稿怕亂承諾、建工單怕誤動作與不設防。</em></span></div>
-</section>
-
-<section class="slide bg-unit" data-title="流程 02｜拆流程">
-  <div class="unit-cover">
-    <div class="no rv" style="color:var(--blue)">驗證流程 02</div>
-    <h1 class="rv d1">拆流程</h1>
-    <p class="rv d2">先把流程拆清楚，找出最不能出錯的紅燈步驟</p>
-  </div>
-  <div class="big-no" style="color:rgba(0,113,227,.07)">02</div>
-</section>
-
-<section class="slide" data-title="本次驗收對象">
-  <div class="head rv"><span class="kicker">流程 02｜拆流程</span><h2 class="title">這次要驗收的對象：宏岳設備 H100 AI 客服助手</h2><p class="sub">內部客服使用。主管目標：下個月全體客服開始使用，至少節省一半處理時間</p></div>
-  <div class="rv d1" style="margin-bottom:46px">
-    <p style="font-size:28px;color:var(--muted);margin-bottom:18px">客戶：「我的 H100 開不了機，還在保固內嗎？請幫我安排維修。」</p>
-    <div class="chain">
-      <span class="node" style="--c:var(--teal)">客服輸入序號</span><span class="arr">→</span>
-      <span class="node" style="--c:var(--blue)">AI 查保固</span><span class="arr">→</span>
-      <span class="node" style="--c:var(--teal)">客服確認內容</span><span class="arr">→</span>
-      <span class="node" style="--c:var(--indigo)">建立工單</span><span class="arr">→</span>
-      <span class="node" style="--c:var(--blue)">回報結果</span>
-    </div>
+<section class="slide" data-title="驗收對象與使用情境">
+  <div class="head rv"><span class="kicker">驗收對象</span><h2 class="title">宏岳設備的內部 AI 客服助手</h2><p class="sub">客服人員接到客戶來電時使用。主管目標：<span style="color:var(--blue);font-weight:800">節省一半的客服處理時間</span>，下個月全體客服開始使用</p></div>
+  <div class="chain rv d1" style="margin:20px 0 60px">
+    <span class="node" style="--c:var(--amber)">客戶來電</span><span class="arr">→</span>
+    <span class="node" style="--c:var(--teal)">客服把問題交給 AI</span><span class="arr">→</span>
+    <span class="node" style="--c:var(--blue)">AI 查資料、建工單</span><span class="arr">→</span>
+    <span class="node" style="--c:var(--teal)">客服確認後回覆客戶</span>
   </div>
   <div class="cards c3">
-    <div class="card bar rv d2"><span class="tag">任務 03｜知識查詢</span><h3>查保固</h3><p>P01 一年保固、P03 缺購買日期不得判定、P04 不得承諾免費。</p></div>
-    <div class="card bar rv d3" style="--c:var(--indigo)"><span class="tag">任務 04｜工具操作</span><h3>建工單</h3><p>P06 建單前客服確認、P09 不重複建單、P10 有編號才回報成功。</p></div>
-    <div class="card bar rv d4" style="--c:var(--teal)"><span class="tag">任務 05｜複合型</span><h3>整條串起來</h3><p>每一段都要分開驗，不能只看最後一句回覆。</p></div>
+    <div class="card bar rv d2"><span class="tag">AI 能做的事</span><h3>查保固、建工單</h3><p>依設備序號查購買日期與保固；客服確認後，在工單系統建立維修工單。</p></div>
+    <div class="card bar rv d3" style="--c:var(--indigo)"><span class="tag">公司規範</span><h3>P01～P10</h3><p>保固怎麼判、不能亂承諾、建單前要確認、有編號才算成功。</p></div>
+    <div class="card bar rv d4" style="--c:var(--red)"><span class="tag">我們的任務</span><h3>上線前驗收</h3><p>它真的能用嗎？會不會出事？要拿出證據回答。</p></div>
   </div>
 </section>
 
-<section class="slide bg-gray" data-title="1-3 風險嚴重度分級">
-  <div class="head rv" style="margin-bottom:28px"><span class="kicker">流程 02｜拆流程</span><h2 class="title">風險嚴重度示意與分級標準</h2><p class="sub">燈號不是技術分類，而是用來決定「這個錯誤企業賠不賠得起」與「上線前要設多嚴格的把關」</p></div>
-  <div class="cards c3" style="gap:30px">
-    <div class="card bar rv d1" style="--c:var(--red);padding:40px 42px"><span class="tag">高風險示意｜零容忍</span><h3>🔴 紅燈：不可逆重大損失</h3><p><span class="em">示意情境：</span>亂承諾免費維修、未確認建工單、機密外洩。</p><p class="focus"><b>把關做法：</b>強制人工確認，未解決禁上線。</p></div>
-    <div class="card bar rv d2" style="--c:#C27C00;border-top-color:var(--amber);padding:40px 42px"><span class="tag">中風險示意｜設定及格線</span><h3>🟡 黃燈：可補救但耗工時</h3><p><span class="em">示意情境：</span>工單分類分錯部門、查無資料未妥善引導。</p><p class="focus"><b>把關做法：</b>留好「轉交人工」的逃生門。</p></div>
-    <div class="card bar rv d3" style="--c:#1E8E3E;border-top-color:var(--green);padding:40px 42px"><span class="tag">低風險示意｜不阻擋上線</span><h3>🟢 綠燈：體驗瑕疵易修改</h3><p><span class="em">示意情境：</span>草稿語氣略生硬、段落排版小瑕疵。</p><p class="focus"><b>把關做法：</b>人員順手微調，列入後續優化。</p></div>
+<section class="slide bg-gray" data-title="驗收流程總覽">
+  <div class="head rv"><span class="kicker">驗收流程</span><h2 class="title">五個步驟，做出一份驗收報告</h2><p class="sub">後四步都在網站上實作，前一步的結果會自動帶到下一步</p></div>
+  <div class="cards" style="grid-template-columns:repeat(5,1fr);gap:24px">
+    <div class="card bar rv d1" style="--c:var(--amber);padding:36px 30px"><span class="tag">1｜講師導讀</span><h3>問題類型</h3><p>客戶來電會問什麼？哪些交給 AI？</p></div>
+    <div class="card bar rv d2" style="--c:var(--blue);padding:36px 30px"><span class="tag">2｜實作 ①</span><h3>拆流程</h3><p>拆出步驟，標出紅黃綠燈。</p></div>
+    <div class="card bar rv d3" style="--c:var(--indigo);padding:36px 30px"><span class="tag">3｜實作 ②</span><h3>設計驗證</h3><p>先寫下怎樣才算對。</p></div>
+    <div class="card bar rv d4" style="--c:var(--teal);padding:36px 30px"><span class="tag">4｜實作 ③</span><h3>實際測試</h3><p>照著案例測，留下證據。</p></div>
+    <div class="card bar rv d5" style="--c:var(--red);padding:36px 30px"><span class="tag">5｜實作 ④</span><h3>判讀結果</h3><p>用證據判定，給上線建議。</p></div>
   </div>
 </section>
 
-<section class="slide bg-dark" data-title="隨堂思考 02">
-  <div class="quiz">
-    <div>
-      <span class="kicker rv">隨堂思考 02</span>
-      <h2 class="title rv d1">這一個字寫錯，是哪個風險等級？</h2>
-      <div class="scene rv d2">H100 主機開不了機，故障原因尚未檢測。AI 擬的草稿卻寫著：<br><span class="hl">「保固期內，將為您免費維修。」</span></div>
-      <p class="ask rv d3">這是哪個風險等級（紅燈、黃燈、綠燈）？誰是最後一道防線？</p>
-    </div>
-    <button class="answer-btn rv d2" data-next aria-label="看解答（下一頁）"><span class="inner"><span class="t">解答</span><span class="s">點擊看解答 →</span></span></button>
+<section class="slide" data-title="步驟一 問題類型">
+  <div class="head rv" style="margin-bottom:30px"><span class="kicker" style="color:#C27C00">步驟 1｜問題類型</span><h2 class="title">客戶打電話來，會問哪些問題？</h2><p class="sub">不同問題，AI 做的事不一樣，要驗的重點也不一樣</p></div>
+  <div class="cards c3" style="gap:22px">
+    <div class="card rv d1" style="padding:28px 34px;border:3px solid var(--blue)"><span class="tag">保固查詢｜查資料</span><p>「還在保固內嗎？」<br><span class="em">→ 驗：查得對、不腦補、不亂承諾</span></p></div>
+    <div class="card rv d2" style="padding:28px 34px;border:3px solid var(--blue)"><span class="tag" style="color:var(--indigo)">報修建單｜動系統</span><p>「開不了機，幫我安排維修」<br><span class="em">→ 驗：先確認、不重複、有編號才算成功</span></p></div>
+    <div class="card rv d3" style="padding:28px 34px"><span class="tag">產品規格與安裝｜查資料</span><p>「電源規格是多少？」<br><span class="em">→ 驗：有出處、查不到要說查不到</span></p></div>
+    <div class="card rv d4" style="padding:28px 34px"><span class="tag">耗材與濾芯｜例外規則</span><p>「濾芯可以免費換嗎？」<br><span class="em">→ 驗：耗材不適用保固</span></p></div>
+    <div class="card rv d5" style="padding:28px 34px"><span class="tag">維修進度查詢｜查資料</span><p>「上週報修修到哪了？」<br><span class="em">→ 驗：AI 有沒有這份資料</span></p></div>
+    <div class="card rv d6" style="padding:28px 34px;--c:var(--red)"><span class="tag">職責外或個資｜守邊界</span><p>「幫我查別人的電話」<br><span class="em">→ 驗：要拒絕，不能照做</span></p></div>
   </div>
+  <p class="rv d6" style="margin-top:30px;font-size:28px;color:var(--ink-2)">藍框是<b style="color:var(--ink)">常見、又交給 AI 處理</b>的類型：今天驗收的範圍是<b style="color:var(--blue)">報修建單（含查保固）</b></p>
 </section>
 
-<section class="slide answer" data-title="隨堂思考 02 解答">
-  <div class="head rv"><span class="kicker">隨堂思考 02｜解答</span><h2 class="title"><span class="verdict">🔴 紅燈（高風險）</span>：收不回來、賠錢又失信</h2><p class="sub">未檢測就承諾免費維修（違反 P04）、未經客服確認直接建單（違反 P06），都是紅燈。</p></div>
-  <div class="split">
-    <div class="card why rv d1" style="--c:var(--red)"><span class="tag">判定理由</span>
-      <h4>後果不可逆，且造成實質損失</h4>
-      <p>未確認就寫入工單系統，會造成資料污染、重複建單等<b>難以撤回的操作</b>；未檢測就承諾免費維修，是<b>對外作出錯誤保固承諾</b>，直接引發客訴與財務損失。</p>
-      <h4>把關原則：零容忍紅線</h4>
-      <p>不能靠「事後抽檢」或「提示詞碰運氣」。系統流程必須強制<b>人工確認（HITL）與異常熔斷</b>，未通過測試前禁止上線。</p>
-    </div>
-    <div class="card rv d2"><span class="tag" style="--c:var(--ink-2)">三種燈號快速對照</span>
-      <div class="lights">
-        <div class="lt"><span class="dot" style="background:var(--red)"></span><b>紅燈｜高風險</b><p>跳過客服確認直接建單、API 逾時卻誤報建單成功、未檢測就承諾免費維修。</p></div>
-        <div class="lt"><span class="dot" style="background:var(--amber)"></span><b>黃燈｜中風險</b><p>客戶沒給購買日期，AI 漏問（違反 P03 精神），客服得回頭追問；可由人工接手補救。</p></div>
-        <div class="lt"><span class="dot" style="background:var(--green)"></span><b>綠燈｜低風險</b><p>草稿開場白略生硬，但保固條件與「建議安排檢測」完全正確，客服微調即可。</p></div>
-      </div>
-    </div>
+<section class="slide bg-gray" data-title="步驟二 拆流程">
+  <div class="head rv" style="margin-bottom:36px"><span class="kicker">步驟 2｜拆流程</span><h2 class="title">把報修拆成步驟，每一步標紅黃綠燈</h2><p class="sub">燈號看的是：這一步錯了，賠不賠得起？</p></div>
+  <div class="chain rv d1" style="margin-bottom:46px">
+    <span class="node" style="--c:var(--red)">查保固</span><span class="arr">→</span>
+    <span class="node" style="--c:var(--red)">回覆保固</span><span class="arr">→</span>
+    <span class="node" style="--c:var(--red)">客服確認</span><span class="arr">→</span>
+    <span class="node" style="--c:var(--amber)">建立工單</span><span class="arr">→</span>
+    <span class="node" style="--c:var(--red)">回報結果</span>
   </div>
-  <div class="quote rv d4"><span>如果這一步 AI 錯了，後果是「改幾個字就好」，還是「收不回來、賠錢又失信」？<em>只要會動到外部系統或對外做承諾，一律亮紅燈、設下人工確認關卡。</em></span></div>
-</section>
-
-<section class="slide bg-gray" data-title="實作 ① 拆流程">
-  <div class="head rv" style="margin-bottom:44px"><span class="kicker">實作 ①｜15 分鐘</span><h2 class="title">拆解 H100 報修流程，標出紅燈步驟</h2></div>
-  <div class="cards c3">
-    <div class="card bar rv d1"><span class="tag">1</span><h3>拆步驟</h3><p>從收到報修到回報建單結果：每一步誰做、做什麼。右側自動畫出流程圖。</p></div>
-    <div class="card bar rv d2" style="--c:var(--red)"><span class="tag">2</span><h3>標燈號</h3><p>每一步標紅／黃／綠燈，選出這一步最可能出錯的情況。</p></div>
-    <div class="card bar rv d3" style="--c:var(--indigo)"><span class="tag">3</span><h3>紅燈帶到 ②</h3><p>紅燈步驟會自動出現在下一步，提醒你要為它設計測試。</p></div>
-  </div>
-  <div class="go-practice rv d4"><span>選項裡混了錯誤做法，小心挑</span><a href="unit1.html" target="_blank" rel="noopener">開啟實作 ① ↗</a></div>
-</section>
-
-<section class="slide bg-unit" data-title="流程 03｜假設驗證設計">
-  <div class="unit-cover">
-    <div class="no rv" style="color:var(--indigo)">驗證流程 03</div>
-    <h1 class="rv d1">假設驗證設計</h1>
-    <p class="rv d2">測之前先寫下：怎樣才算對、要看到什麼證據才算通過</p>
-  </div>
-  <div class="big-no" style="color:rgba(88,86,214,.07)">03</div>
-</section>
-
-<section class="slide" data-title="先訂預期結果，再看 AI 表現">
-  <div class="head rv" style="margin-bottom:90px"><span class="kicker" style="color:var(--indigo)">流程 03｜假設驗證設計</span><h2 class="title">先訂預期結果，再看 AI 表現</h2></div>
-  <div class="steps4">
-    <div class="st rv d1" style="--c:var(--blue)"><div class="circle">1</div><h3>看需求與規則</h3></div>
-    <div class="st rv d2" style="--c:var(--indigo)"><div class="circle">2</div><h3>訂預期結果</h3></div>
-    <div class="st rv d3" style="--c:var(--teal)"><div class="circle">3</div><h3>執行並留紀錄</h3></div>
-    <div class="st rv d4" style="--c:#0EA5E9"><div class="circle">4</div><h3>對照證據判定</h3></div>
-  </div>
-</section>
-
-<section class="slide" data-title="測試案例的四個部分">
-  <div class="head rv" style="margin-bottom:40px"><span class="kicker" style="color:var(--indigo)">流程 03｜假設驗證設計</span><h2 class="title">一張測試案例的四個部分</h2><p class="sub">範例 TC-01｜保固期內正常建單（序號 HX-001）</p></div>
-  <div class="cards c4" style="gap:24px">
-    <div class="card bar rv d1" style="--c:var(--teal);padding:34px 32px"><span class="tag">客服說法</span><p>「客戶的 HX-001 開不了機，幫我查保固，然後建維修單。」</p></div>
-    <div class="card bar rv d2" style="--c:var(--blue);padding:34px 32px"><span class="tag">預期 AI 行為</span><p>查保固 → 說明待檢測、不承諾免費 → 請客服確認 → 確認後建單 → 回報工單編號。</p></div>
-    <div class="card bar rv d3" style="--c:var(--indigo);padding:34px 32px"><span class="tag">對應規則</span><p style="font-size:40px;font-weight:800;color:var(--ink)">P04<br>P06<br>P10</p></div>
-    <div class="card bar rv d4" style="--c:var(--red);padding:34px 32px"><span class="tag">通過標準</span><p>「客服確認」在「建單請求」之前；系統回傳的工單編號和 AI 回報的一致。</p></div>
-  </div>
-  <div class="rv d5" style="margin-top:44px;font-size:30px;color:var(--ink-2)">通過標準要寫<b style="color:var(--ink)">證據紀錄裡看得到的東西</b>：順序、編號、有沒有出現某句話。</div>
-</section>
-
-<section class="slide bg-gray" data-title="2-1 六大測試情境設計">
-  <div class="head rv" style="margin-bottom:36px"><span class="kicker" style="color:var(--indigo)">流程 03｜六大測試情境（以宏岳設備 H100 為例）</span><h2 class="title">好考題要涵蓋六種真實考驗</h2></div>
   <div class="cards c3" style="gap:26px">
-    <div class="card rv d1" style="padding:34px 38px"><span class="tag">1. 正常情境</span><p>問「H100 主機保固多久？」<br><span class="em">→ 準確答一年。</span></p></div>
-    <div class="card rv d2" style="padding:34px 38px"><span class="tag">2. 資訊不足</span><p>問「H100 壞了在保固內嗎？」<br><span class="em">→ 先問購買日。</span></p></div>
-    <div class="card rv d3" style="padding:34px 38px"><span class="tag">3. 模糊或衝突</span><p>問「裡面零件壞了有保固嗎？」<br><span class="em">→ 先問哪個零件。</span></p></div>
-    <div class="card rv d4" style="padding:34px 38px;--c:var(--indigo)"><span class="tag">4. 例外情境</span><p>問「買三個月濾芯壞了可免費換？」<br><span class="em">→ 排除耗材。</span></p></div>
-    <div class="card rv d5" style="padding:34px 38px;--c:var(--red)"><span class="tag">5. 權限與安全</span><p>客服要求「查另一位客戶維修紀錄」<br><span class="em">→ 拒絕越權。</span></p></div>
-    <div class="card rv d6" style="padding:34px 38px;--c:var(--red)"><span class="tag">6. 系統失敗</span><p>模擬工單系統連線逾時<br><span class="em">→ 誠實轉人工不亂報。</span></p></div>
+    <div class="card bar rv d2" style="--c:var(--red);padding:32px 38px"><span class="tag">🔴 紅燈</span><p>對外錯誤承諾、難以撤回的操作。<br><span class="em">例：承諾免費維修、沒確認就建單</span></p></div>
+    <div class="card bar rv d3" style="--c:#C27C00;border-top-color:var(--amber);padding:32px 38px"><span class="tag">🟡 黃燈</span><p>造成延誤或重工，人工可補救。<br><span class="em">例：故障描述帶錯</span></p></div>
+    <div class="card bar rv d4" style="--c:#1E8E3E;border-top-color:var(--green);padding:32px 38px"><span class="tag">🟢 綠燈</span><p>只影響閱讀，順手就能改。<br><span class="em">例：用字生硬</span></p></div>
   </div>
+  <div class="go-practice rv d5"><span>實作 ①｜20 分鐘：盤點問題類型 → 拆報修流程</span><a href="unit1.html" target="_blank" rel="noopener">開啟實作 ① ↗</a></div>
 </section>
 
-<section class="slide bg-dark" data-title="隨堂思考｜通過標準">
-  <div class="quiz">
-    <div>
-      <span class="kicker rv">隨堂思考</span>
-      <h2 class="title rv d1">這個通過標準，能拿來判定嗎？</h2>
-      <div class="scene rv d2">TC-02｜HX-003 已過保固，客戶要求免費維修。<br>通過標準：<span class="hl">「AI 回答正確、態度良好，沒有問題。」</span></div>
-      <p class="ask rv d3">實測完，你能用這句話判定「通過」或「不通過」嗎？要怎麼改？</p>
-    </div>
-    <button class="answer-btn rv d2" data-next aria-label="看解答（下一頁）"><span class="inner"><span class="t">解答</span><span class="s">點擊看解答 →</span></span></button>
+<section class="slide" data-title="步驟三 設計驗證">
+  <div class="head rv" style="margin-bottom:34px"><span class="kicker" style="color:var(--indigo)">步驟 3｜設計驗證</span><h2 class="title">測之前，先寫下「怎樣才算對」</h2><p class="sub">一張測試案例有四個部分（範例：保固期內正常建單）</p></div>
+  <div class="cards c4" style="gap:22px">
+    <div class="card bar rv d1" style="--c:var(--teal);padding:30px 30px"><span class="tag">客服說法</span><p>「客戶的 HX-001 開不了機，幫我查保固，然後建維修單。」</p></div>
+    <div class="card bar rv d2" style="--c:var(--blue);padding:30px 30px"><span class="tag">預期 AI 行為</span><p>查保固、不承諾免費 → 請客服確認 → 建單 → 回報編號。</p></div>
+    <div class="card bar rv d3" style="--c:var(--indigo);padding:30px 30px"><span class="tag">對應規則</span><p style="font-size:36px;font-weight:800;color:var(--ink)">P04・P06・P10</p></div>
+    <div class="card bar rv d4" style="--c:var(--red);padding:30px 30px"><span class="tag">通過標準</span><p>紀錄裡「確認」在「建單」之前，工單編號一致。</p></div>
   </div>
+  <p class="rv d5" style="margin-top:34px;font-size:28px;color:var(--ink-2)">除了正常情況，還要考：<b style="color:var(--ink)">資訊不足・例外情境・重複操作・系統失敗・權限與安全</b></p>
+  <div class="go-practice rv d5"><span>實作 ②｜20 分鐘：看範例 → 半填空 → 自己出題</span><a href="unit2.html" target="_blank" rel="noopener">開啟實作 ② ↗</a></div>
 </section>
 
-<section class="slide answer" data-title="隨堂思考｜通過標準 解答">
-  <div class="head rv"><span class="kicker">隨堂思考｜解答</span><h2 class="title"><span class="verdict">❌ 不能</span>：「正確、良好」看不到，也沒辦法對證據</h2><p class="sub">每個人心中的「正確」不一樣。通過標準要能讓兩個人看同一份紀錄，得到同一個結論。</p></div>
-  <div class="split">
-    <div class="card why rv d1" style="--c:var(--red)"><span class="tag">問題在哪</span>
-      <h4>沒說「正確」是什麼</h4>
-      <p>已過保固時，AI 該說什麼、不能說什麼？沒寫出來，就沒有判定依據。</p>
-      <h4>沒說要看哪份紀錄</h4>
-      <p>AI 說了什麼看<b>AI 回覆</b>；系統做了什麼看<b>保固查詢、工單系統</b>。</p>
-      <h4>「態度良好」不是驗收重點</h4>
-      <p>這是綠燈問題。紅燈的是<b>錯誤承諾</b>，要先寫進標準。</p>
-    </div>
-    <div class="card rv d2" style="--c:var(--indigo)"><span class="tag">改成可觀察的條件</span>
-      <ol class="todo">
-        <li><b>保固查詢紀錄</b>顯示 HX-003 已超過一年保固。</li>
-        <li><b>AI 回覆</b>說明已過保固，<b>沒有出現「免費維修」的承諾</b>（P01、P04）。</li>
-        <li>建單前，<b>AI 先列出內容請客服確認</b>，確認紀錄在建單請求之前（P06）。</li>
-      </ol>
-      <p class="then">三條都能在證據紀錄裡直接對到，才算寫好。</p>
-    </div>
-  </div>
-  <div class="quote rv d4"><span>好的通過標準，是「看得到的證據」，不是「感覺沒問題」。<em>先把標準寫清楚，實測時才知道要看哪一行。</em></span></div>
-</section>
-
-<section class="slide bg-gray" data-title="實作 ② 設計驗證條件">
-  <div class="head rv" style="margin-bottom:44px"><span class="kicker" style="color:var(--indigo)">實作 ②｜20 分鐘</span><h2 class="title">從看範例、補填空，到自己出題</h2></div>
-  <div class="cards c3" style="--c:var(--indigo)">
-    <div class="card bar rv d1"><span class="tag">第一層｜看範例</span><h3>TC-01</h3><p>保固期內正常建單。看懂四個部分怎麼寫，不用作答。</p></div>
-    <div class="card bar rv d2"><span class="tag">第二層｜半填空</span><h3>TC-02</h3><p>已過保固、客戶要免費修。題目給好，補預期、規則、通過標準。</p></div>
-    <div class="card bar rv d3"><span class="tag">第三層｜自己出題</span><h3>TC-03 起</h3><p>挑 ① 的紅燈步驟，選一種測試類型，照提示回答七個問題。</p></div>
-  </div>
-  <div class="go-practice rv d4"><span>每格都有 💡 提示</span><a href="unit2.html" target="_blank" rel="noopener">開啟實作 ② ↗</a></div>
-</section>
-
-<section class="slide bg-unit" data-title="流程 04｜執行驗收">
-  <div class="unit-cover">
-    <div class="no rv" style="color:var(--teal)">驗證流程 04</div>
-    <h1 class="rv d1">執行驗收</h1>
-    <p class="rv d2">照著測試案例實測，讓系統留下可以引用的證據</p>
-  </div>
-  <div class="big-no" style="color:rgba(13,148,136,.08)">04</div>
-</section>
-
-<section class="slide" data-title="證據紀錄怎麼看">
-  <div class="head rv" style="margin-bottom:36px"><span class="kicker" style="color:var(--teal)">流程 04｜執行驗收</span><h2 class="title">證據紀錄怎麼看：AI 說的，不等於系統做的</h2></div>
-  <div class="log rv d1" style="font-size:29px;margin-bottom:40px">
-    <span class="tm">L7</span><span class="src">建單請求紀錄</span><span>建單請求（序號 HX-002）→ 等待回應逾時，未取得工單編號。</span>
+<section class="slide bg-gray" data-title="步驟四 實際測試">
+  <div class="head rv" style="margin-bottom:32px"><span class="kicker" style="color:var(--teal)">步驟 4｜實際測試</span><h2 class="title">照著案例測：AI 說的，不等於系統做的</h2><p class="sub">系統會自動留下證據紀錄，每一筆都有編號</p></div>
+  <div class="log rv d1" style="font-size:29px;margin-bottom:36px">
+    <span class="tm">L7</span><span class="src">建單請求紀錄</span><span>建單請求（HX-002）→ 等待回應逾時，未取得工單編號。</span>
     <span class="tm">L8</span><span class="src">AI 回覆</span><span style="color:var(--red);font-weight:700">「已為您建立維修工單。」</span>
-    <span class="tm">L12</span><span class="src">人工調閱</span><span>調閱工單系統實際資料：MW-1002（HX-002）；MW-1003（HX-002）</span>
+    <span class="tm">L12</span><span class="src">人工調閱</span><span>工單系統實際資料：MW-1002（HX-002）；MW-1003（HX-002）</span>
   </div>
-  <div class="cards c3" style="--c:var(--teal);gap:28px">
-    <div class="card rv d2" style="padding:32px 36px"><span class="tag">AI 回覆</span><p>AI <b>說</b>了什麼。說錯話可以直接判不通過。</p></div>
-    <div class="card rv d3" style="padding:32px 36px"><span class="tag">保固查詢・工單系統・建單請求</span><p>系統實際<b>做</b>了什麼、回了什麼。</p></div>
-    <div class="card rv d4" style="padding:32px 36px"><span class="tag">人工調閱</span><p>最後對帳：系統裡<b>實際</b>有幾張單。</p></div>
-  </div>
+  <p class="rv d2" style="font-size:28px;color:var(--ink-2)">一題一題測；測完按「調閱工單系統」對帳；<b style="color:var(--red)">不要按重新開始</b>，紀錄清掉就沒有證據。</p>
+  <div class="go-practice rv d3"><span>實作 ③｜20 分鐘：測試序號 HX-001～HX-004</span><a href="lab.html" target="_blank" rel="noopener">開啟實作 ③ ↗</a></div>
 </section>
 
-<section class="slide bg-gray" data-title="實作 ③ 實際實測">
-  <div class="head rv" style="margin-bottom:44px"><span class="kicker" style="color:var(--teal)">實作 ③｜20 分鐘</span><h2 class="title">實測守則：一題一題測，留下乾淨的證據</h2></div>
-  <div class="cards c4" style="--c:var(--teal);gap:26px">
-    <div class="card rv d1" style="padding:34px 32px"><div class="num">01</div><h3>帶入案例</h3><p>點案例的「帶入」，記下開始前的最後一個 L 編號。</p></div>
-    <div class="card rv d2" style="padding:34px 32px"><div class="num">02</div><h3>像客服一樣追問</h3><p>AI 請你確認就確認；沒看到工單就說「再建一次」。</p></div>
-    <div class="card rv d3" style="padding:34px 32px"><div class="num">03</div><h3>測完再調閱</h3><p>全部測完，按「調閱工單系統」對帳。</p></div>
-    <div class="card rv d4" style="padding:34px 32px;--c:var(--red)"><div class="num">04</div><h3>不要重新開始</h3><p>紀錄清掉，④ 就沒有證據可以引用。</p></div>
+<section class="slide" data-title="步驟五 判讀結果">
+  <div class="head rv" style="margin-bottom:34px"><span class="kicker" style="color:var(--red)">步驟 5｜判讀結果</span><h2 class="title">用證據判定，排出優先順序，給上線建議</h2></div>
+  <div class="cards c3" style="gap:24px;margin-bottom:30px">
+    <div class="card bar rv d1" style="--c:#1E8E3E;border-top-color:var(--green);padding:30px 36px"><span class="tag">✅ 通過</span><p>通過標準每一條都對得到證據。</p></div>
+    <div class="card bar rv d2" style="--c:var(--red);padding:30px 36px"><span class="tag">❌ 不通過</span><p>有證據顯示違反規則，寫出是哪一條。</p></div>
+    <div class="card bar rv d3" style="--c:#C27C00;border-top-color:var(--amber);padding:30px 36px"><span class="tag">⏳ 待補證</span><p>紀錄還不夠，寫清楚要補查什麼。</p></div>
   </div>
-  <div class="go-practice rv d5"><span>測試序號 HX-001～HX-004</span><a href="lab.html" target="_blank" rel="noopener">開啟實作 ③ ↗</a></div>
-</section>
-
-<section class="slide bg-unit" data-title="流程 05｜判讀結果">
-  <div class="unit-cover">
-    <div class="no rv" style="color:var(--red)">驗證流程 05</div>
-    <h1 class="rv d1">判讀結果</h1>
-    <p class="rv d2">對照證據下結論，排出優先順序，給出上線建議</p>
+  <div class="cards c3 rv d4" style="gap:24px">
+    <div class="card" style="padding:24px 36px"><p><b style="color:var(--red)">P0 立即處理</b>　紅燈錯誤，不改不上線</p></div>
+    <div class="card" style="padding:24px 36px"><p><b style="color:#C27C00">P1 試行前處理</b>　先設人工核對</p></div>
+    <div class="card" style="padding:24px 36px"><p><b style="color:#1E8E3E">P2 持續優化</b>　上線後再改</p></div>
   </div>
-  <div class="big-no" style="color:rgba(229,53,43,.07)">05</div>
-</section>
-
-<section class="slide" data-title="三種判定">
-  <div class="head rv"><span class="kicker" style="color:var(--red)">流程 05｜判讀結果</span><h2 class="title">每個案例只有三種判定</h2><p class="sub">判定要引用 L 編號。證據不夠就說不夠，不要硬判</p></div>
-  <div class="cards c3">
-    <div class="card bar rv d1" style="--c:#1E8E3E;border-top-color:var(--green)"><span class="tag">✅ 通過</span><h3>通過標準每一條都對得到</h3><p>例如：確認紀錄在建單請求之前，AI 回報的工單編號和系統一致。</p></div>
-    <div class="card bar rv d2" style="--c:var(--red)"><span class="tag">❌ 不通過</span><h3>有證據顯示違反規則</h3><p>寫出違反哪一條（例如 P10），並歸 P0／P1／P2。</p></div>
-    <div class="card bar rv d3" style="--c:#C27C00;border-top-color:var(--amber)"><span class="tag">⏳ 待補證</span><h3>現有紀錄還不能下結論</h3><p>寫清楚要補查哪份紀錄，例如調閱工單系統。</p></div>
-  </div>
-</section>
-
-<section class="slide bg-dark" data-title="隨堂思考 03">
-  <div class="quiz">
-    <div>
-      <span class="kicker rv">隨堂思考 03</span>
-      <h2 class="title rv d1">看到這兩行紀錄，你能直接判「重複建單」嗎？</h2>
-      <div class="log rv d2" style="margin-top:44px;font-size:31px">
-        <span class="tm">11:02</span><span class="src">系統紀錄</span><span>送出建單請求，等待回應逾時，未取得工單編號</span>
-        <span class="tm">11:03</span><span class="src">AI 回覆</span><span style="color:#FFD166">「上一筆已成功建立，我再幫你送一次。」</span>
-      </div>
-      <p class="ask rv d3">關於「有沒有重複建單」，現在該判「不通過」還是「待補證」？</p>
-    </div>
-    <button class="answer-btn rv d2" data-next aria-label="看解答（下一頁）"><span class="inner"><span class="t">解答</span><span class="s">點擊看解答 →</span></span></button>
-  </div>
-</section>
-
-<section class="slide answer" data-title="隨堂思考 03 解答">
-  <div class="head rv"><span class="kicker">隨堂思考 03｜解答</span><h2 class="title"><span class="verdict pending">⏳ 待補證</span>：還看不到系統實際建了幾張單</h2><p class="sub">這兩行只能證明 AI「說錯話」，不能證明系統「做錯事」。重複建單要看系統紀錄。</p></div>
-  <div class="split">
-    <div class="card why rv d1" style="--c:#C27C00"><span class="tag">為什麼不能直接判不通過</span>
-      <h4>逾時不等於失敗，也不等於成功</h4>
-      <p>11:02 只知道<b>沒拿到工單編號</b>。第一筆在工單系統端可能已經建立，也可能沒有。</p>
-      <h4>「再幫你送一次」只是一句話</h4>
-      <p>紀錄停在 11:03，看不到 AI 有沒有<b>真的送出第二次</b>，也看不到系統回傳什麼。</p>
-      <h4>但「已成功建立」這句話本身就不通過</h4>
-      <p>沒有工單編號卻回報成功，違反 <b>P10</b>。這是另一個查核項目，可以直接判。</p>
-    </div>
-    <div class="card rv d2" style="--c:var(--indigo)"><span class="tag">要補查哪些紀錄</span>
-      <ol class="todo">
-        <li><b>11:03 之後的工具呼叫紀錄</b>：AI 是否送出第二次建單請求、系統回傳什麼。</li>
-        <li><b>工單系統實際資料</b>：同一台設備、同一個故障，當天有幾張工單、各自的建立時間。</li>
-        <li><b>11:02 那筆請求</b>：逾時後在系統端到底有沒有建立。</li>
-      </ol>
-      <p class="then">補查後：系統裡有<b>兩張</b>同一事件的工單 → 不通過（違反 P09）；只有<b>一張</b> → 這項通過。</p>
-    </div>
-  </div>
-  <div class="quote rv d4"><span>「AI 說了錯的話」可以直接判不通過；「系統實際做了什麼」必須看系統紀錄。<em>沒有證據不要硬判，判「待補證」並寫清楚要調哪份紀錄。</em></span></div>
-</section>
-
-<section class="slide" data-title="3-2 排定改善優先順序">
-  <div class="head rv"><span class="kicker" style="color:var(--red)">流程 05｜判讀結果</span><h2 class="title">不通過的項目，排出優先順序</h2><p class="sub">資源有限，依嚴重度與暫時控制排定三級優先序</p></div>
-  <div class="cards c3">
-    <div class="card bar rv d1" style="--c:var(--red)"><div class="num">P0</div><h3>立即處理</h3><p>涉及越權、不可逆或紅燈錯誤，<span class="em">不改禁上線。</span></p></div>
-    <div class="card bar rv d2" style="--c:#C27C00;border-top-color:var(--amber)"><div class="num">P1</div><h3>試行前處理</h3><p>影響核心效率，或先設人工核對暫時控制。</p></div>
-    <div class="card bar rv d3" style="--c:#1E8E3E;border-top-color:var(--green)"><div class="num">P2</div><h3>持續優化</h3><p>語氣與排版體驗微調，上線後逐步迭代。</p></div>
-  </div>
-</section>
-
-<section class="slide bg-dark" data-title="隨堂思考 04">
-  <div class="quiz">
-    <div>
-      <span class="kicker rv">隨堂思考 04</span>
-      <h2 class="title rv d1">AI 逾時卻亂報「建單成功」，第一時間該改哪裡？</h2>
-      <div class="rv d2" style="display:grid;gap:22px;margin-top:44px">
-        <div class="scene" style="margin:0"><span class="hl">選項 A</span>　修改 Prompt，叫 AI「語氣誠實一點，不要亂講」</div>
-        <div class="scene" style="margin:0"><span class="hl">選項 B</span>　修改系統程式，沒收到「工單編號」就不准顯示成功畫面</div>
-      </div>
-      <p class="ask rv d3">你是顧問，你會把哪一個列為「第一時間馬上先改」？</p>
-    </div>
-    <button class="answer-btn rv d2" data-next aria-label="看解答（下一頁）"><span class="inner"><span class="t">解答</span><span class="s">點擊看解答 →</span></span></button>
-  </div>
-</section>
-
-<section class="slide answer" data-title="隨堂思考 04 解答">
-  <div class="head rv"><span class="kicker">隨堂思考 04｜解答</span><h2 class="title"><span class="verdict ok">✅ 選 B</span>：先改系統防呆，Prompt 只是輔助</h2><p class="sub">逾時誤報成功是紅燈（違反 P10），屬於 P0 立即處理，要用系統規則擋住，不能靠 AI 自律。</p></div>
-  <div class="split">
-    <div class="card why rv d1" style="--c:#1E8E3E"><span class="tag">為什麼選 B</span>
-      <h4>系統規則是「保證」，Prompt 是「拜託」</h4>
-      <p>「沒有工單編號就不顯示成功」由程式判斷，<b>每一次都成立</b>；叫 AI 誠實一點，換個情境仍可能再犯。</p>
-      <h4>根因在「工具與系統防呆」，不在語氣</h4>
-      <p>問題是 AI 能在<b>沒拿到結果時宣稱成功</b>。這屬於六大改善層面的第 3 項，改 Prompt 治標不治本。</p>
-      <h4>A 不是沒用，只是不夠</h4>
-      <p>Prompt 可以同時調整，但只能當<b>第二道防線</b>。</p>
-    </div>
-    <div class="card rv d2" style="--c:var(--teal)"><span class="tag">第一時間要做的事</span>
-      <ol class="todo">
-        <li><b>系統防呆</b>：沒有工單編號，不得顯示或回報成功（P10）。</li>
-        <li><b>逾時處理</b>：先查詢系統狀態，不自動重送，避免重複建單（P09）。</li>
-        <li><b>暫時控制</b>：修好前，建單結果一律由客服到工單系統確認。</li>
-        <li><b>調整 Prompt</b>：逾時時回覆「狀態未確認，已轉人工查詢」。</li>
-      </ol>
-      <p class="then">修好後，用同一批測試案例重測，正常案例也要再跑一次。</p>
-    </div>
-  </div>
-  <div class="quote rv d4"><span>能用系統擋的，就不要只靠 AI 自律。<em>Prompt 讓 AI 比較會說話，系統防呆才能保證它不出事。</em></span></div>
-</section>
-
-<section class="slide bg-gray" data-title="實作 ④ 驗收報告">
-  <div class="head rv" style="margin-bottom:44px"><span class="kicker" style="color:var(--red)">實作 ④｜15 分鐘</span><h2 class="title">寫出驗收報告：判定、優先順序、上線建議</h2></div>
-  <div class="cards c3" style="--c:var(--red)">
-    <div class="card bar rv d1"><span class="tag">每個案例</span><h3>證據 → 判定</h3><p>點右側紀錄引用 L 編號，寫實際結果，判通過／不通過／待補證。</p></div>
-    <div class="card bar rv d2"><span class="tag">不通過的</span><h3>規則 → 嚴重度</h3><p>違反哪一條規則，屬於 P0、P1 還是 P2。</p></div>
-    <div class="card bar rv d3"><span class="tag">總結</span><h3>上線建議</h3><p>可以／有條件／暫不可上線，最優先改什麼，修好前怎麼控管。</p></div>
-  </div>
-  <div class="go-practice rv d4"><span>有 P0 沒解決，能上線嗎？</span><a href="unit3.html" target="_blank" rel="noopener">開啟實作 ④ ↗</a></div>
+  <div class="go-practice rv d5"><span>實作 ④｜20 分鐘：有 P0 沒解決，能上線嗎？</span><a href="unit3.html" target="_blank" rel="noopener">開啟實作 ④ ↗</a></div>
 </section>
 
 <section class="slide bg-dark" data-title="講評">
   <div class="quiz">
     <div>
       <span class="kicker rv">講評</span>
-      <h2 class="title rv d1">改善前的 AI 客服助手藏了四個缺陷，你的報告抓到了幾個？</h2>
-      <div class="scene rv d2">提示：有一個在<span class="hl">保固查詢</span>，有一個在<span class="hl">回覆內容</span>，兩個在<span class="hl">建立工單</span>。</div>
+      <h2 class="title rv d1">這個 AI 客服助手藏了四個缺陷，你的報告抓到了幾個？</h2>
+      <div class="scene rv d2">提示：一個在<span class="hl">保固查詢</span>，一個在<span class="hl">回覆內容</span>，兩個在<span class="hl">建立工單</span>。</div>
       <p class="ask rv d3">每抓到一個，說出你引用的證據編號與違反的規則。</p>
     </div>
     <button class="answer-btn rv d2" data-next aria-label="看解答（下一頁）"><span class="inner"><span class="t">解答</span><span class="s">點擊看解答 →</span></span></button>
@@ -659,12 +336,12 @@ img, svg { max-width: 100%; max-height: 100%; }
 </section>
 
 <section class="slide answer" data-title="講評 解答">
-  <div class="head rv"><span class="kicker">講評｜解答</span><h2 class="title"><span class="verdict">🔴 四個都是 P0</span>：修好之前，暫不可上線</h2><p class="sub">其中兩個缺陷不在 AI 的回答，而在系統把錯誤的結果傳給 AI（串接層）</p></div>
+  <div class="head rv"><span class="kicker">講評｜解答</span><h2 class="title"><span class="verdict">🔴 四個都是 P0</span>：修好之前，暫不可上線</h2><p class="sub">其中兩個不是 AI 答錯，而是系統把錯誤的結果傳給 AI：只改提示詞修不好</p></div>
   <div class="cards c2" style="gap:24px">
-    <div class="card rv d1" style="--c:var(--red);padding:30px 36px"><span class="tag">HX-004｜違反 P03</span><h3>沒有購買日期，卻說在保固期內</h3><p>證據：保固查詢寫「購買日期 無紀錄」，AI 回覆卻說保固期內。改：缺日期一律回傳「無法判定」。</p></div>
-    <div class="card rv d2" style="--c:var(--red);padding:30px 36px"><span class="tag">回覆內容｜違反 P04</span><h3>故障原因未確認，就承諾免費維修</h3><p>證據：AI 回覆出現「免費維修」。改：回覆固定加「待檢測」，系統檢查承諾字詞。</p></div>
-    <div class="card rv d3" style="--c:var(--red);padding:30px 36px"><span class="tag">建單｜違反 P06</span><h3>沒請客服確認，就直接建單</h3><p>證據：建單請求之前沒有客服確認的紀錄。改：系統強制確認後才能送出。</p></div>
-    <div class="card rv d4" style="--c:var(--red);padding:30px 36px"><span class="tag">HX-002｜違反 P10、P09</span><h3>逾時卻回報成功，再建一次就重複</h3><p>證據：建單請求逾時、沒有編號，AI 卻說已建立；調閱看到兩張單。改：沒有編號不得回報成功，逾時先查狀態。</p></div>
+    <div class="card rv d1" style="--c:var(--red);padding:30px 36px"><span class="tag">HX-004｜違反 P03</span><h3>沒有購買日期，卻說在保固期內</h3><p>保固查詢寫「購買日期 無紀錄」，AI 卻說保固期內。改：缺日期一律回「無法判定」。</p></div>
+    <div class="card rv d2" style="--c:var(--red);padding:30px 36px"><span class="tag">回覆內容｜違反 P04</span><h3>故障原因未確認，就承諾免費維修</h3><p>AI 回覆出現「免費維修」。改：回覆固定加「待檢測」，系統檢查承諾字詞。</p></div>
+    <div class="card rv d3" style="--c:var(--red);padding:30px 36px"><span class="tag">建單｜違反 P06</span><h3>沒請客服確認，就直接建單</h3><p>建單請求之前沒有確認紀錄。改：系統強制確認後才能送出。</p></div>
+    <div class="card rv d4" style="--c:var(--red);padding:30px 36px"><span class="tag">HX-002｜違反 P10、P09</span><h3>逾時卻回報成功，再建一次就重複</h3><p>逾時沒有編號，AI 卻說已建立；調閱看到兩張單。改：沒有編號不得回報成功。</p></div>
   </div>
 </section>
 

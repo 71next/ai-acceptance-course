@@ -4,7 +4,7 @@
 export const TRACK = 'simple';
 
 export const STEPS = [
-  { k: 'u1', no: '①', name: '拆流程', href: 'unit1.html', time: '15 分鐘', desc: '把 H100 報修流程拆成步驟，標出每一步的風險燈號' },
+  { k: 'u1', no: '①', name: '拆流程', href: 'unit1.html', time: '20 分鐘', desc: '盤點客戶來電的問題類型，再把報修流程拆成步驟、標出風險燈號' },
   { k: 'u2', no: '②', name: '設計驗證條件', href: 'unit2.html', time: '20 分鐘', desc: '看範例 → 補完半填題 → 自己出題，寫下預期結果與通過標準' },
   { k: 'lab', no: '③', name: '實際實測', href: 'lab.html', time: '20 分鐘', desc: '拿自己的測試案例跟 AI 客服助手對話，系統自動留下證據紀錄' },
   { k: 'u3', no: '④', name: '驗收報告', href: 'unit3.html', time: '15 分鐘', desc: '對照證據判定每個案例，歸 P0／P1／P2，提出上線建議' }
@@ -36,7 +36,19 @@ export const DEVICES = [
   ['HX-004', 'H100，系統沒有購買日期']
 ];
 
-// ---------- ① 拆流程 ----------
+// ---------- ① A. 客戶來電的問題類型 ----------
+export const QTYPES = [
+  ['warranty', '保固查詢', '我的 H100 還在保固內嗎？'],
+  ['repair', '報修建單', 'H100 開不了機，幫我安排維修。'],
+  ['spec', '產品規格與安裝', 'H100 的電源規格是多少？要怎麼安裝？'],
+  ['filter', '耗材與濾芯', '濾芯多久要換？可以免費換嗎？'],
+  ['progress', '維修進度查詢', '我上週報修的那台，現在修到哪裡了？'],
+  ['outside', '職責外或個資', '幫我查另一位客戶的電話和維修紀錄。']
+];
+export const FREQ = { high: '常見', mid: '偶爾', low: '少見' };
+export const HANDLE = { ai: 'AI 助手處理', human: '轉人工處理', no: '不處理' };
+
+// ---------- ① B. 拆流程 ----------
 export const CASE = {
   title: 'H100 報修：查保固並建立維修工單',
   quote: '我的 H100 開不了機，還在保固內嗎？請幫我安排維修。',

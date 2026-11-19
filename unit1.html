@@ -56,16 +56,16 @@
 <main class="wrap">
   <div id="stepper"></div>
   <div class="page-head">
-    <span class="eyebrow">實作 ①｜拆流程（約 15 分鐘）</span>
-    <h1>拆解宏岳設備 H100 報修流程，標出風險燈號</h1>
+    <span class="eyebrow">實作 ①｜拆流程（約 20 分鐘）</span>
+    <h1>從客戶來電的問題開始，拆解宏岳客服助手的流程</h1>
   </div>
 
   <section class="card brief">
-    <p>宏岳設備導入內部 AI 客服助手：客服把客戶的問題交給 AI，AI 依設備序號<b>查詢保固</b>，並在客服確認後<b>建立維修工單</b>。主管希望下個月全體客服開始使用。上線前，你要幫公司驗收這個 AI 助手。驗收的第一步，是先把流程拆清楚，找出最不能出錯的地方。</p>
+    <p><b>使用情境：</b>宏岳設備的客服人員接到客戶來電時，把問題交給內部 AI 客服助手。AI 可以依設備序號<b>查詢保固</b>，並在客服確認後<b>建立維修工單</b>。主管的目標是<b>節省一半的客服處理時間</b>，希望下個月全體客服開始使用。上線前，你要幫公司驗收這個 AI 助手。</p>
     <ol class="deliver">
-      <li><b>拆出流程步驟</b><span>誰做、做什麼；右側自動畫出流程圖</span></li>
-      <li><b>每一步標紅／黃／綠燈</b><span>並選出這一步最可能出錯的情況</span></li>
-      <li><b>紅燈步驟會帶到 ②</b><span>下一步要為它們設計測試案例</span></li>
+      <li><b>A. 盤點問題類型</b><span>客戶來電會問什麼？哪些要交給 AI？</span></li>
+      <li><b>B. 拆報修流程</b><span>誰做、做什麼；右側自動畫出流程圖</span></li>
+      <li><b>每一步標紅／黃／綠燈</b><span>紅燈步驟會帶到 ② 設計測試</span></li>
     </ol>
   </section>
 
@@ -79,8 +79,10 @@
 
   <div id="fbSummary"></div>
 
+  <div class="card" id="qtypes"></div>
+
   <div class="card">
-    <span class="pill blue">本次驗收的流程</span>
+    <span class="pill blue">B. 本次驗收的流程：報修建單</span>
     <h2 style="margin:10px 0" id="caseTitle"></h2>
     <blockquote class="quote" id="caseQuote"></blockquote>
     <p style="margin:0" id="caseDesc"></p>
@@ -118,7 +120,7 @@
 <script type="module">
 import { renderHeader, ensureIdentity, showIdentity, loadResponse, autosaver, watchReveal, esc, toast, uid8, stepperHtml } from './assets/app.js';
 import { mountFeedback } from './assets/ai-feedback.js';
-import { TRACK, RULES, LIGHTS, CASE, ROLES, OPTIONS } from './assets/simple-data.js';
+import { TRACK, RULES, LIGHTS, CASE, ROLES, OPTIONS, QTYPES, FREQ, HANDLE } from './assets/simple-data.js';
 import { renderFlow, END, ROLE_LEGEND } from './assets/flow.js';
 
 renderHeader('u1');
@@ -138,21 +140,54 @@ let ai = { run() {} };
 const blankStep = () => ({ id: uid8(), action: '', role: '', light: '', issue: '', next: [] });
 function blankState() {
   const steps = Array.from({ length: CASE.rows }, blankStep);
-  return { track: TRACK, steps, start: steps[0].id };
+  return { track: TRACK, types: blankTypes(), steps, start: steps[0].id };
 }
+const blankTypes = () => QTYPES.map(([k, name, ex]) => ({ id: k, name, example: ex, freq: '', handle: '' }));
 
 async function boot() {
   id = await ensureIdentity();
   showIdentity(id, () => ensureIdentity({ force: true }).then(() => location.reload()));
   const saved = await loadResponse(id, UNIT);
   state = saved?.data?.track === TRACK && saved.data.steps ? saved.data : blankState();
+  if (!state.types) state.types = blankTypes();
   saver = autosaver(id, UNIT, () => state, document.getElementById('saveStatus'));
   if (saved?.status === 'submitted' && saved.data?.track === TRACK) { saver.setStatus('submitted'); document.getElementById('submittedBadge').hidden = false; }
   document.getElementById('saveStatus').textContent = saved?.data?.track === TRACK ? '已載入先前的作答' : '作答會自動儲存';
   watchReveal(id, UNIT, document.getElementById('refPanel'), (k) => { KEY = k; renderSummary(); renderSteps(); });
   ai = mountFeedback(id, UNIT, document.getElementById('refPanel'));
-  renderSteps();
+  renderTypes(); renderSteps();
 }
+
+// ---------- A. 問題類型盤點 ----------
+function renderTypes() {
+  const el = document.getElementById('qtypes');
+  const radios = (t, f, map) => `<div class="seg">${Object.entries(map).map(([k, n]) => `<label><input type="radio" name="${f}_${t.id}" data-tf="${f}" value="${k}" ${t[f] === k ? 'checked' : ''}><span>${n}</span></label>`).join('')}</div>`;
+  el.innerHTML = `<span class="pill blue">A. 客戶來電的問題類型</span>
+    <h2 style="margin:10px 0 4px">客戶打電話來，會問哪些問題？</h2>
+    <p class="muted" style="margin:0 0 14px">為每一類標出「常不常見」和「要不要交給 AI 助手」。常見又交給 AI 的類型，就是驗收的重點。可以自己新增類型。</p>
+    <div class="table-wrap"><table><thead><tr><th>問題類型</th><th>客戶可能這樣問</th><th>常不常見</th><th>誰來處理</th><th></th></tr></thead><tbody>
+    ${state.types.map((t) => `<tr data-tid="${t.id}">
+      <td>${t.custom ? `<input data-tt="name" value="${esc(t.name)}" placeholder="問題類型">` : `<b>${esc(t.name)}</b>`}</td>
+      <td>${t.custom ? `<input data-tt="example" value="${esc(t.example)}" placeholder="客戶可能怎麼問">` : `<span class="muted">「${esc(t.example)}」</span>`}</td>
+      <td>${radios(t, 'freq', FREQ)}</td><td>${radios(t, 'handle', HANDLE)}</td>
+      <td>${t.custom ? '<button class="icon-btn" data-tdel aria-label="刪除">✕</button>' : ''}</td></tr>`).join('')}
+    </tbody></table></div>
+    <div class="row-end" style="justify-content:space-between;align-items:center;margin-top:10px">
+      <button class="btn small ghost" data-tadd>＋ 新增問題類型</button>
+      <span class="tiny muted">本次實作與實測的範圍：<b>報修建單</b>（含查保固）</span>
+    </div>`;
+}
+const qEl = document.getElementById('qtypes');
+qEl.addEventListener('input', (e) => {
+  const t = state.types.find((x) => x.id === e.target.closest('[data-tid]')?.dataset.tid); if (!t) return;
+  if (e.target.dataset.tf) t[e.target.dataset.tf] = e.target.value;
+  else if (e.target.dataset.tt) t[e.target.dataset.tt] = e.target.value;
+  saver.touch();
+});
+qEl.addEventListener('click', (e) => {
+  if (e.target.closest('[data-tadd]')) { state.types.push({ id: uid8(), name: '', example: '', freq: '', handle: '', custom: true }); renderTypes(); saver.touch(); }
+  else if (e.target.closest('[data-tdel]')) { const id_ = e.target.closest('[data-tid]').dataset.tid; state.types = state.types.filter((x) => x.id !== id_); renderTypes(); saver.touch(); }
+});
 
 /* ---------- 下拉選項（含「其他（自行輸入）」） ---------- */
 const OTHER = '__other';
@@ -308,6 +343,7 @@ function changed(flow = false) { if (flow) drawFlow(); saver.touch(); }
 // ---------- 送出 ----------
 function missing() {
   const out = [];
+  if (state.types.some((t) => t.name && (!t.freq || !t.handle))) out.push('A. 每個問題類型都要標「常不常見」和「誰來處理」');
   const filled = state.steps.filter((s) => s.action.trim());
   if (filled.length < 4) out.push('流程至少要有 4 個填好動作的步驟');
   if (filled.some((s) => !s.light)) out.push('每個步驟都要標紅／黃／綠燈');
