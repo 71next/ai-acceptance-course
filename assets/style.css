@@ -247,3 +247,8 @@ blockquote.quote { margin: 0 0 14px; padding: 14px 18px; border-left: 4px solid 
 .stepper .sep { color: var(--muted); }
 .hint-btn { appearance: none; border: 0; background: var(--amber-soft); color: var(--amber); font: inherit; font-size: 12px; font-weight: 700; padding: 2px 9px; border-radius: 999px; cursor: pointer; margin-left: 6px; }
 .hint { margin: 6px 0 8px; padding: 10px 12px; border-radius: 10px; background: var(--amber-soft); color: #5A3D00; font-size: 14px; line-height: 1.6; }
+
+/* 作答頁底部：送出並請 AI 批改 */
+.submit-zone { margin: 28px 0 16px; padding: 20px; border: 1px dashed var(--line, #d0d7e2); border-radius: 14px; text-align: center; }
+.submit-zone .btn.big { font-size: 17px; padding: 14px 28px; }
+.submit-zone p { margin: 10px 0 0; }

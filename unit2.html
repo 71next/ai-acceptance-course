@@ -88,21 +88,24 @@
   <div id="own"></div>
   <button class="btn ghost" id="addOwn" style="width:100%">＋ 新增一題自己設計的案例</button>
 
-  <div class="row-end" style="margin-top:20px"><a class="btn dark" href="lab.html">下一步：③ 拿案例去實測 →</a></div>
+  <div class="submit-zone">
+    <button class="btn primary big" id="submitBtn">送出作答，請 AI 批改</button>
+    <p class="tiny muted" id="submitHint">送出後 AI 助教會依講師的評分重點批改，約 20～60 秒；修改後可以再送出一次。</p>
+  </div>
+  <div class="row-end" id="nextRow"><a class="btn dark" href="lab.html">下一步：③ 拿案例去實測 →</a></div>
   <section id="refPanel" class="ref-panel" hidden></section>
 </main>
 
 <div class="save-bar">
   <span class="save-status" id="saveStatus">尚未開始</span>
   <span class="submitted-badge" id="submittedBadge" hidden>✓ 已送出（仍可修改後再次送出）</span>
-  <span class="spacer"></span>
-  <button class="btn primary" id="submitBtn">送出作答</button>
 </div>
 
 <script type="module">
 import { renderHeader, ensureIdentity, showIdentity, loadResponse, autosaver, watchReveal, esc, toast, uid8, stepperHtml } from './assets/app.js';
-import { mountFeedback } from './assets/ai-feedback.js';
+import { mountFeedback, AI_ON } from './assets/ai-feedback.js';
 import { TRACK, RULES, RULE_CODES, DEVICES, EXAMPLE, HALF, HINTS, TEST_TYPES, TYPE_NAME, TYPE_HINTS, caseNo } from './assets/simple-data.js';
+if (!AI_ON) { document.getElementById('submitBtn').textContent = document.getElementById('submitBtn').textContent.replace('，請 AI 批改', ''); document.getElementById('submitHint').hidden = true; }
 
 renderHeader('u2');
 document.getElementById('stepper').innerHTML = stepperHtml('u2');
@@ -130,7 +133,7 @@ async function boot() {
   if (saved?.status === 'submitted' && saved.data?.track === TRACK) { saver.setStatus('submitted'); document.getElementById('submittedBadge').hidden = false; }
   document.getElementById('saveStatus').textContent = saved?.data?.track === TRACK ? '已載入先前的作答' : '作答會自動儲存';
   watchReveal(id, UNIT, document.getElementById('refPanel'));
-  ai = mountFeedback(id, UNIT, document.getElementById('refPanel'));
+  ai = mountFeedback(id, UNIT, document.getElementById('nextRow'));
   renderExample(); renderHalf(); renderRed(); renderOwn();
 }
 

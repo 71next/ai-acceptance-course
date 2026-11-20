@@ -94,21 +94,24 @@
     </section>
   </div>
 
+  <div class="submit-zone">
+    <button class="btn primary big" id="submitBtn">送出驗收報告，請 AI 批改</button>
+    <p class="tiny muted" id="submitHint">送出後 AI 助教會依講師的評分重點批改，約 20～60 秒；修改後可以再送出一次。</p>
+  </div>
   <section id="refPanel" class="ref-panel" hidden></section>
 </main>
 
 <div class="save-bar">
   <span class="save-status" id="saveStatus">尚未開始</span>
   <span class="submitted-badge" id="submittedBadge" hidden>✓ 已送出（仍可修改後再次送出）</span>
-  <span class="spacer"></span>
-  <button class="btn primary" id="submitBtn">送出驗收報告</button>
 </div>
 
 <script type="module">
 import { renderHeader, ensureIdentity, showIdentity, loadResponse, autosaver, watchReveal, currentUser, CLOUD, esc, toast, stepperHtml } from './assets/app.js';
-import { mountFeedback } from './assets/ai-feedback.js';
+import { mountFeedback, AI_ON } from './assets/ai-feedback.js';
 import { graderUrl } from './assets/grader-config.js';
 import { TRACK, RULE_CODES, VERDICTS, SEVERITY, LAYERS, GO_LIVE, TYPE_NAME, allCases } from './assets/simple-data.js';
+if (!AI_ON) { document.getElementById('submitBtn').textContent = document.getElementById('submitBtn').textContent.replace('，請 AI 批改', ''); document.getElementById('submitHint').hidden = true; }
 
 renderHeader('u3');
 document.getElementById('stepper').innerHTML = stepperHtml('u3');
