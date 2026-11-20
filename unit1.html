@@ -168,10 +168,10 @@ function renderTypes() {
   const el = document.getElementById('qtypes');
   el.innerHTML = `<span class="pill blue">A. 客戶來電的問題類型</span>
     <h2 style="margin:10px 0 4px">依六種情境，設想宏岳的客戶會怎麼說</h2>
-    <p class="muted" style="margin:0 0 14px">不能只想「正常」的來電。每一種情境寫一句客戶可能的說法，再選 AI 助手該怎麼處理。卡住時按「💡 例子」。這些說法會帶到 ② 當作出題的起點。</p>
+    <p class="muted" style="margin:0 0 14px">不能只想「正常」的來電。每一種情境寫一句客戶可能的說法，再選 AI 助手該怎麼處理。卡住時按「💡 AI 小助手」看例子。這些說法會帶到 ② 當作出題的起點。</p>
     <div class="scen-list">${SCENARIOS.map(([k, n, dir, ex]) => { const t = state.scen.find((x) => x.id === k) || {}; return `
       <div class="scen" data-sid="${k}">
-        <div class="scen-h"><b>${n}</b><span class="muted tiny">${dir}</span><button type="button" class="hint-btn" data-ex>💡 例子</button></div>
+        <div class="scen-h"><b>${n}</b><span class="muted tiny">${dir}</span><button type="button" class="hint-btn" data-ex>💡 AI 小助手</button></div>
         <div class="hint" data-exbox hidden>${esc(ex)}</div>
         <div class="fgrid">
           <label class="field"><span>客戶可能這樣說</span><textarea data-st="say" rows="2">${esc(t.say || '')}</textarea></label>
