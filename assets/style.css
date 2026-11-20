@@ -131,12 +131,15 @@ select { appearance: none; background-image: linear-gradient(45deg, transparent 
 .seg input:focus-visible + span { box-shadow: 0 0 0 3px rgba(0,113,227,.25); }
 .seg input:checked + span { background: var(--ink); color: #fff; border-color: var(--ink); }
 /* 判定按鈕：未選時也帶各自的顏色 */
-.seg .v-pass span { background: var(--green-soft); border-color: var(--green); color: var(--green); }
-.seg .v-fail span { background: var(--red-soft); border-color: var(--red); color: var(--red); }
-.seg .v-pending span { background: var(--amber-soft); border-color: var(--amber-dot); color: var(--amber); }
-.seg .v-pass input:checked + span, .seg .l-green input:checked + span { background: var(--green); border-color: var(--green); }
-.seg .v-fail input:checked + span, .seg .l-red input:checked + span { background: var(--red); border-color: var(--red); }
-.seg .v-pending input:checked + span, .seg .l-yellow input:checked + span { background: var(--amber-dot); border-color: var(--amber-dot); color: #3A2A00; }
+.seg .v-pass span { background: var(--green-soft); border-color: color-mix(in srgb, var(--green) 60%, #fff); color: color-mix(in srgb, var(--green) 60%, #fff); }
+.seg .v-fail span { background: var(--red-soft); border-color: color-mix(in srgb, var(--red) 60%, #fff); color: color-mix(in srgb, var(--red) 60%, #fff); }
+.seg .v-pending span { background: var(--amber-soft); border-color: color-mix(in srgb, var(--amber-dot) 60%, #fff); color: color-mix(in srgb, var(--amber) 60%, #fff); }
+.seg .v-pass input:checked + span { background: color-mix(in srgb, var(--green) 60%, #fff); border-color: color-mix(in srgb, var(--green) 60%, #fff); }
+.seg .v-fail input:checked + span { background: color-mix(in srgb, var(--red) 60%, #fff); border-color: color-mix(in srgb, var(--red) 60%, #fff); }
+.seg .v-pending input:checked + span { background: color-mix(in srgb, var(--amber-dot) 60%, #fff); border-color: color-mix(in srgb, var(--amber-dot) 60%, #fff); color: #3A2A00; }
+.seg .l-green input:checked + span { background: var(--green); border-color: var(--green); }
+.seg .l-red input:checked + span { background: var(--red); border-color: var(--red); }
+.seg .l-yellow input:checked + span { background: var(--amber-dot); border-color: var(--amber-dot); color: #3A2A00; }
 .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
 .dot.red { background: var(--red); } .dot.yellow { background: var(--amber-dot); } .dot.green { background: var(--green-dot); }
 .seg input:checked + span .dot { box-shadow: 0 0 0 2px #fff; }
