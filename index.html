@@ -56,13 +56,24 @@
   .stage .k { font-size: 12px; font-weight: 800; color: var(--c); letter-spacing: .05em; }
   .stage b { font-size: 17px; }
   .stage .d { font-size: 13px; color: var(--muted); }
+  .hero .qr { position: absolute; top: clamp(24px, 4vw, 48px); right: clamp(24px, 4vw, 48px); width: 168px; padding: 12px 12px 8px; background: #fff; border-radius: 18px; box-shadow: var(--shadow); text-align: center; cursor: zoom-in; border: 0; font: inherit; color: var(--ink); }
+  .hero .qr img { display: block; width: 100%; height: auto; }
+  .hero .qr span { display: block; font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .hero.has-qr > :not(.qr) { max-width: calc(100% - 200px); }
+  @media (max-width: 760px) { .hero .qr { display: none; } .hero.has-qr > :not(.qr) { max-width: none; } }
+  .qr-big { position: fixed; inset: 0; z-index: 100; background: #fff; display: none; flex-direction: column; align-items: center; justify-content: center; gap: 18px; cursor: zoom-out; padding: 24px; }
+  .qr-big.on { display: flex; }
+  .qr-big img { width: min(72vh, 86vw); height: auto; }
+  .qr-big p { margin: 0; font-size: clamp(16px, 2.4vw, 26px); font-weight: 700; color: var(--ink); word-break: break-all; text-align: center; }
+  .qr-big small { color: var(--muted); font-size: 14px; }
   footer { text-align: center; color: var(--muted); font-size: 13px; padding: 40px 16px; }
   footer a { color: var(--muted); }
 </style>
 </head>
 <body>
 <main class="wrap">
-  <section class="hero">
+  <section class="hero has-qr">
+    <button type="button" class="qr" id="qrBtn" aria-label="放大 QR code"><img src="assets/qr.svg" alt="課程網站 QR code"><span>手機掃描進入課程・點我放大</span></button>
     <span class="eyebrow">AI 顧問實戰工作坊｜2 小時實作課程</span>
     <h1>AI 應用驗收評估<br>與改善策略</h1>
     <p class="lead">宏岳設備導入內部 AI 客服助手，協助客服處理客戶來電，目標是節省一半處理時間。上線前，我們用一套驗收流程親手驗一次：盤點問題、拆流程、設計驗證條件、實際實測、寫驗收報告。</p>
@@ -140,12 +151,21 @@
     </a>
   </div>
 </main>
+<div class="qr-big" id="qrBig" role="dialog" aria-label="課程網站 QR code">
+  <img src="assets/qr.svg" alt="課程網站 QR code">
+  <p>71next.github.io/ai-acceptance-course</p>
+  <small>點任意處或按 Esc 關閉</small>
+</div>
 <footer>
   黃庭豪（bryant）｜秦毅數位科技有限公司　·　<a href="admin.html">講師後台</a>
 </footer>
 <script type="module">
   import { renderHeader } from './assets/app.js';
   renderHeader('home');
+  const big = document.getElementById('qrBig');
+  document.getElementById('qrBtn').onclick = () => big.classList.add('on');
+  big.onclick = () => big.classList.remove('on');
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') big.classList.remove('on'); });
 </script>
 </body>
 </html>
