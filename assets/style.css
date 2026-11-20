@@ -130,6 +130,10 @@ select { appearance: none; background-image: linear-gradient(45deg, transparent 
 .seg span { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 999px; border: 1px solid var(--line-2); background: #fff; font-size: 14px; font-weight: 600; color: var(--ink-2); transition: all .15s; }
 .seg input:focus-visible + span { box-shadow: 0 0 0 3px rgba(0,113,227,.25); }
 .seg input:checked + span { background: var(--ink); color: #fff; border-color: var(--ink); }
+/* 判定按鈕：未選時也帶各自的顏色 */
+.seg .v-pass span { background: var(--green-soft); border-color: var(--green); color: var(--green); }
+.seg .v-fail span { background: var(--red-soft); border-color: var(--red); color: var(--red); }
+.seg .v-pending span { background: var(--amber-soft); border-color: var(--amber-dot); color: var(--amber); }
 .seg .v-pass input:checked + span, .seg .l-green input:checked + span { background: var(--green); border-color: var(--green); }
 .seg .v-fail input:checked + span, .seg .l-red input:checked + span { background: var(--red); border-color: var(--red); }
 .seg .v-pending input:checked + span, .seg .l-yellow input:checked + span { background: var(--amber-dot); border-color: var(--amber-dot); color: #3A2A00; }
