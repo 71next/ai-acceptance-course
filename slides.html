@@ -185,6 +185,56 @@ img, svg { max-width: 100%; max-height: 100%; }
   .rv { opacity: 1 !important; transform: none !important; }
   .deck-controls, .progress { display: none !important; }
 }
+
+/* 第一單元（晴灣飯店範例） */
+.hotel { display: inline-flex; align-items: center; gap: 10px; font-size: 24px; font-weight: 700; color: var(--teal); background: color-mix(in srgb, var(--teal) 10%, #fff); padding: 6px 18px; border-radius: 999px; }
+.gap-rows { display: grid; gap: 22px; }
+.gap-row { display: grid; grid-template-columns: 1fr 64px 1.15fr 64px 1.15fr; align-items: stretch; }
+.gap-row .arr { display: grid; place-items: center; font-size: 40px; color: var(--muted); }
+.gap-row .c { background: #fff; border-radius: 24px; padding: 24px 30px; box-shadow: 0 2px 6px rgba(0,0,0,.04), 0 12px 32px rgba(0,0,0,.05); font-size: 26px; line-height: 1.5; color: var(--ink-2); }
+.gap-row .c b { display: block; font-size: 28px; color: var(--ink); margin-bottom: 6px; }
+.gap-row .c.q { background: #FFF6F5; color: var(--ink); font-weight: 700; font-size: 28px; display: flex; align-items: center; }
+.gap-row .c.fix { border-left: 8px solid var(--blue); }
+.gap-head { display: grid; grid-template-columns: 1fr 64px 1.15fr 64px 1.15fr; font-size: 24px; font-weight: 800; color: var(--muted); letter-spacing: .04em; margin-bottom: -6px; }
+.gap-head span:nth-child(odd) { padding-left: 8px; }
+.mode .who { font-size: 24px; color: var(--muted); margin-bottom: 14px; }
+.mode .ex { font-size: 26px; line-height: 1.5; background: var(--bg); border-radius: 16px; padding: 16px 20px; margin: 14px 0 18px; color: var(--ink); }
+.mode .chk { font-size: 26px; line-height: 1.5; color: var(--ink-2); }
+.mode .chk b { color: var(--c); }
+.risk4 .card { padding: 34px 38px; }
+.risk4 .card h3 { font-size: 34px; margin-bottom: 10px; }
+.risk4 .card p { font-size: 26px; }
+.risk4 .card .ask { margin-top: 12px; font-weight: 700; color: var(--ink); }
+.quote-line { font-size: 36px; font-weight: 800; line-height: 1.5; color: var(--ink); border-left: 10px solid var(--blue); padding: 6px 0 6px 32px; }
+.scope li { font-size: 26px; line-height: 1.55; color: var(--ink-2); margin: 0 0 10px 1.1em; }
+.scope .card { padding: 34px 38px; }
+.scope .card h3 { font-size: 34px; }
+.task-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 32px; }
+.task-grid .card { padding: 32px 38px; }
+.task-grid .card h3 { font-size: 30px; margin-bottom: 14px; }
+.io { display: grid; gap: 12px; }
+.io .r { display: grid; grid-template-columns: 96px 1fr; gap: 14px; align-items: start; font-size: 25px; line-height: 1.5; color: var(--ink-2); }
+.io .r > span:first-child { font-weight: 800; color: var(--teal); background: color-mix(in srgb, var(--teal) 10%, #fff); border-radius: 10px; text-align: center; padding: 2px 0; font-size: 22px; }
+.io .say { background: var(--bg); border-radius: 14px; padding: 10px 16px; color: var(--ink); }
+.task-grid ul { list-style: none; display: grid; gap: 10px; }
+.task-grid li { font-size: 25px; line-height: 1.5; color: var(--ink-2); padding-left: 38px; position: relative; }
+.task-grid li::before { position: absolute; left: 0; top: 0; font-weight: 900; }
+.task-grid .bad li::before { content: '✕'; color: var(--red); }
+.task-grid .how li::before { content: '✓'; color: var(--blue); }
+.task-grid li b { color: var(--ink); }
+.task-grid .stack { display: grid; gap: 24px; }
+.task-grid > .card { display: flex; flex-direction: column; }
+.task-grid > .card .hotel { align-self: flex-start; }
+.scenes { margin-top: auto; padding-top: 22px; border-top: 1px dashed var(--line); display: flex; flex-wrap: wrap; gap: 10px; }
+.scenes .lb { width: 100%; font-size: 22px; font-weight: 800; color: var(--muted); }
+.scenes span { font-size: 22px; background: var(--bg); color: var(--ink-2); border-radius: 999px; padding: 6px 16px; }
+.principle { margin-top: 26px; font-size: 28px; color: var(--ink-2); }
+.principle b { color: var(--ink); }
+.task5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 18px; }
+.task5 .card { padding: 28px 24px; }
+.task5 .card h3 { font-size: 30px; margin-bottom: 8px; }
+.task5 .card p { font-size: 23px; line-height: 1.5; }
+.task5 .card .hx { margin-top: 12px; font-size: 22px; color: var(--teal); font-weight: 700; }
 </style>
 </head>
 <body>
@@ -227,6 +277,156 @@ img, svg { max-width: 100%; max-height: 100%; }
       </div>
     </div>
   </div>
+</section>
+
+<section class="slide" data-title="範例 晴灣飯店">
+  <div class="head rv"><span class="kicker" style="color:var(--teal)">今天的講解範例（虛構）</span><h2 class="title">晴灣飯店導入了 AI 訂房客服</h2><p class="sub">三家分館、每天上百則旅客訊息，夜間和假日櫃檯忙不過來。<br>主管說：「AI 上線後，櫃檯要少接一半的訊息。」</p></div>
+  <div class="cards c4" style="gap:26px">
+    <div class="card bar rv d1" style="--c:var(--teal);padding:34px 32px"><span class="tag">官網＋LINE</span><h3 style="font-size:32px">回答旅客問題</h3><p style="font-size:26px">早餐時間、停車、寵物、取消政策。</p></div>
+    <div class="card bar rv d2" style="--c:var(--teal);padding:34px 32px"><span class="tag">訂房信</span><h3 style="font-size:32px">擷取訂單資料</h3><p style="font-size:26px">把訂房網站的確認信轉成入住日、房型、人數、金額。</p></div>
+    <div class="card bar rv d3" style="--c:var(--teal);padding:34px 32px"><span class="tag">訂房系統</span><h3 style="font-size:32px">改期與取消</h3><p style="font-size:26px">依旅客要求修改訂單，寄出確認信。</p></div>
+    <div class="card bar rv d4" style="--c:var(--teal);padding:34px 32px"><span class="tag">評論</span><h3 style="font-size:32px">擬評論回覆</h3><p style="font-size:26px">為旅客評論寫回覆草稿，公關覆核後發出。</p></div>
+  </div>
+  <p class="principle rv d5" style="margin-top:44px;font-size:32px">要驗收這個 AI，第一個問題不是「它用了什麼技術」，而是：<b>企業到底要它做到什麼？</b></p>
+</section>
+
+<section class="slide bg-unit" data-title="一 釐清企業需求">
+  <div class="unit-cover">
+    <div class="no rv">第一單元・一</div>
+    <h1 class="rv d1">釐清企業需求</h1>
+    <p class="rv d2">需求落差 → 人機分工 → 風險辨識 → 驗證範圍</p>
+  </div>
+  <div class="big-no">01</div>
+</section>
+
+<section class="slide bg-gray" data-title="1 診斷需求落差">
+  <div class="head rv" style="margin-bottom:34px"><span class="kicker">1｜診斷需求落差</span><h2 class="title">為什麼驗收時，大家都說 AI 不好用？</h2><p class="sub">抱怨是表面現象，背後通常是需求沒說清楚</p></div>
+  <div class="gap-head rv"><span>驗收現場的抱怨</span><span></span><span>背後的需求落差</span><span></span><span>驗收要改成看什麼</span></div>
+  <div class="gap-rows">
+    <div class="gap-row rv d1"><div class="c q">「AI 寫的評論回覆，我還要改好久！」</div><div class="arr">→</div><div class="c"><b>把「省時間」當成「要完美」</b>公關期待免修改直接發，真正需求是不用從零開始寫。</div><div class="arr">→</div><div class="c fix">不看「是否零修改」，看<span class="em" style="color:var(--ink);font-weight:700">完稿總工時有沒有下降</span>、關鍵資訊是否齊全。</div></div>
+    <div class="gap-row rv d2"><div class="c q">「訂單錯一筆我就不敢用，全部重對！」</div><div class="arr">→</div><div class="c"><b>輔助工具被當成最終稽核</b>櫃檯不信任，每筆都再對一次，反而做兩次工。</div><div class="arr">→</div><div class="c fix">重分工：AI 標出<span style="color:var(--ink);font-weight:700">日期衝突、房型不符</span>的訂單，人只複核被標記的。</div></div>
+    <div class="gap-row rv d3"><div class="c q">「AI 把還沒公布的春節房價講出去了！」</div><div class="arr">→</div><div class="c"><b>只說要知識庫問答，沒說哪些能講</b>草稿版和正式版、各分館的資料混在一起。</div><div class="arr">→</div><div class="c fix">先補<span style="color:var(--ink);font-weight:700">資料治理條件</span>（只用正式生效版、分館分開），當作驗收前提。</div></div>
+  </div>
+</section>
+
+<section class="slide" data-title="2 盤點人機分工">
+  <div class="head rv" style="margin-bottom:40px"><span class="kicker">2｜盤點人機分工的現狀</span><h2 class="title">AI 是副駕駛，還是自動駕駛？</h2><p class="sub">AI 不是來取代人，是重新切分責任。人把關哪一段，決定了驗收門檻</p></div>
+  <div class="cards c3 mode" style="gap:28px">
+    <div class="card bar rv d1" style="--c:var(--green);padding:36px 38px"><span class="tag" style="color:#1E8E3E">輔助型</span><h3>AI 給建議，人決定</h3><div class="who">AI 寫 → 人改 → 人送出</div><div class="ex">🏨 評論回覆草稿，公關修改後發出</div><div class="chk">驗收重點：<b style="color:#1E8E3E">人工接手成本</b>。草稿要花 10 分鐘查證才能改，就是失敗。</div></div>
+    <div class="card bar rv d2" style="--c:#C27C00;border-top-color:var(--amber);padding:36px 38px"><span class="tag">把關型</span><h3>AI 先做，人確認才放行</h3><div class="who">AI 處理 → 人按確認 → 系統執行</div><div class="ex">🏨 訂房信擷取成訂單，櫃檯確認後才寫入訂房系統</div><div class="chk">驗收重點：<b>信心度分流</b>。有沒有分出「很確定」和「不確定」？全部都要看，人就變成橡皮圖章。</div></div>
+    <div class="card bar rv d3" style="--c:var(--red);padding:36px 38px"><span class="tag">全自動型</span><h3>AI 獨立完成，人看報表</h3><div class="who">AI 從頭做到尾 → 人事後檢查</div><div class="ex">🏨 官網 24 小時回答早餐、停車、寵物規定</div><div class="chk">驗收重點：<b>熔斷與逃生門</b>。遇到超出能力的問題，會不會停下來轉人工？</div></div>
+  </div>
+</section>
+
+<section class="slide bg-gray" data-title="3 風險辨識">
+  <div class="head rv" style="margin-bottom:36px"><span class="kicker">3｜錯誤後果與風險辨識</span><h2 class="title">AI 出錯，企業會損失什麼？</h2><p class="sub">從四個面向想：這個錯，誰受害、損失多大</p></div>
+  <div class="cards c2 risk4" style="gap:26px">
+    <div class="card bar rv d1" style="--c:var(--red)"><span class="tag">財務與營運</span><h3>改錯日期、重複扣款</h3><p>🏨 把旅客改到客滿的那天，現場沒房只能賠償升等。</p><p class="ask">錯一次賠多少？補救要花幾倍工時？</p></div>
+    <div class="card bar rv d2" style="--c:var(--indigo)"><span class="tag">法規與合規</span><h3>說錯取消規定</h3><p>🏨 告訴旅客「取消不退費」，但消保規定其實要退。</p><p class="ask">會不會被罰、被申訴、違反規範？</p></div>
+    <div class="card bar rv d3" style="--c:var(--teal)"><span class="tag">資安與權限</span><h3>洩漏其他旅客資料</h3><p>🏨 有人問「508 房住的是誰？」AI 就把姓名電話講出來。</p><p class="ask">不該看的人，看到了不該看的資料？</p></div>
+    <div class="card bar rv d4" style="--c:#C27C00;border-top-color:var(--amber)"><span class="tag">品牌商譽</span><h3>亂承諾、語氣差</h3><p>🏨 回負評時承諾「下次免費住一晚」，被截圖貼上網。</p><p class="ask">截圖流出，會不會重創信任？</p></div>
+  </div>
+</section>
+
+<section class="slide" data-title="3 紅黃綠燈">
+  <div class="head rv" style="margin-bottom:40px"><span class="kicker">3｜錯誤後果與風險辨識</span><h2 class="title">分出哪些錯可以容忍，哪些錯賠不起</h2><p class="sub">AI 一定會犯錯。驗收不是消滅所有錯誤，而是依後果分級處理</p></div>
+  <div class="cards c3" style="gap:28px">
+    <div class="card bar rv d1" style="--c:var(--red);padding:38px 40px"><span class="tag">🔴 紅燈｜不可逆、重大損失</span><h3 style="font-size:34px">零容忍，強制人工把關</h3><p style="font-size:27px">🏨 改錯訂單、洩漏旅客資料、承諾免費住宿</p></div>
+    <div class="card bar rv d2" style="--c:#C27C00;border-top-color:var(--amber);padding:38px 40px"><span class="tag">🟡 黃燈｜可補救、影響效率</span><h3 style="font-size:34px">設及格線＋轉人工逃生門</h3><p style="font-size:27px">🏨 訊息分錯類、查不到資料要櫃檯回覆</p></div>
+    <div class="card bar rv d3" style="--c:#1E8E3E;border-top-color:var(--green);padding:38px 40px"><span class="tag">🟢 綠燈｜體驗瑕疵、易修改</span><h3 style="font-size:34px">不擋上線，列入優化清單</h3><p style="font-size:27px">🏨 回覆語氣太制式、排版不好讀</p></div>
+  </div>
+  <p class="quote-line rv d4" style="margin-top:50px">驗收不是在找一個永遠不會錯的 AI，<br>而是確認「當 AI 犯錯時，企業不會翻車」。</p>
+</section>
+
+<section class="slide bg-gray" data-title="4 驗證範圍">
+  <div class="head rv" style="margin-bottom:36px"><span class="kicker">4｜驗證範圍、條件與判定依據</span><h2 class="title">驗什麼、拿什麼考、幾分算過</h2><p class="sub">驗收不能漫無邊際，先依風險把範圍和及格線講清楚</p></div>
+  <div class="cards c3 scope" style="gap:26px">
+    <div class="card bar rv d1"><span class="tag">範圍｜測什麼、不測什麼</span><h3>先鎖定高頻＋紅燈</h3><ul><li>🏨 測：改期與取消、取消政策問答</li><li>🏨 不測：團體訂房報價（寫明不在這次範圍）</li><li>避免拿系統沒承諾的功能來卡關</li></ul></div>
+    <div class="card bar rv d2" style="--c:var(--indigo)"><span class="tag">條件｜三種考題都要有</span><h3>不能只考展示題</h3><ul><li><b style="color:var(--ink)">標準題</b>：「6/12 雙人房改到 6/19」</li><li><b style="color:var(--ink)">邊界題</b>：「下週末幫我改一下」（資訊不全）</li><li><b style="color:var(--ink)">拒答越權題</b>：「幫我查 508 房客的電話」</li></ul></div>
+    <div class="card bar rv d3" style="--c:var(--red)"><span class="tag">判定依據｜分層及格線</span><h3>把「還不錯」變成數字</h3><ul><li>紅燈錯誤（改錯訂單、洩資料）＝ <b style="color:var(--ink)">0 次</b></li><li>訂單欄位準確率 <b style="color:var(--ink)">≥ 95%</b></li><li>評論草稿採用率 <b style="color:var(--ink)">≥ 70%</b></li></ul></div>
+  </div>
+  <p class="quote-line rv d4" style="margin-top:44px;font-size:32px">沒有先定義「幾分算及格」，驗收最後只剩<br>「我覺得還可以」和「我覺得不夠好」的爭論。</p>
+</section>
+
+<section class="slide bg-unit" data-title="二 拆解任務">
+  <div class="unit-cover">
+    <div class="no rv">第一單元・二</div>
+    <h1 class="rv d1">拆解任務</h1>
+    <p class="rv d2">AI 被期待完成什麼工作？每一類任務，常碰到哪些問題？</p>
+  </div>
+  <div class="big-no">02</div>
+</section>
+
+<section class="slide" data-title="五類常見任務">
+  <div class="head rv" style="margin-bottom:40px"><span class="kicker">企業常見的 AI 任務</span><h2 class="title">看 AI 要完成的工作，不是看技術名稱</h2><p class="sub">「我們用了 RAG、Agent」說不出要驗什麼。先分清楚任務類型，驗法才不同</p></div>
+  <div class="task5">
+    <div class="card bar rv d1" style="--c:var(--green)"><span class="tag" style="color:#1E8E3E">1</span><h3>內容生成與整理</h3><p>文案、摘要、回覆草稿</p><div class="hx">🏨 評論回覆草稿</div></div>
+    <div class="card bar rv d2" style="--c:var(--blue)"><span class="tag">2</span><h3>資料判讀與擷取</h3><p>分類、欄位擷取、文件比對</p><div class="hx">🏨 訂房信轉訂單</div></div>
+    <div class="card bar rv d3" style="--c:var(--indigo)"><span class="tag">3</span><h3>知識查詢與回答</h3><p>內規、產品知識、客服問答</p><div class="hx">🏨 取消政策、寵物規定</div></div>
+    <div class="card bar rv d4" style="--c:var(--red)"><span class="tag">4</span><h3>工具操作與執行</h3><p>建單、更新資料、寄信</p><div class="hx">🏨 修改訂房、寄確認信</div></div>
+    <div class="card bar rv d5" style="--c:#C27C00;border-top-color:var(--amber)"><span class="tag">5</span><h3>複合型應用</h3><p>跨任務串成完整流程</p><div class="hx">🏨 颱風改期一條龍</div></div>
+  </div>
+  <p class="principle rv d6" style="margin-top:40px;font-size:30px">越往右，<b>出錯的代價越高</b>：從「寫錯字」到「改錯訂單、扣錯錢」。</p>
+</section>
+
+<section class="slide" data-title="任務 1 內容生成與整理">
+  <div class="head rv" style="margin-bottom:34px"><span class="kicker" style="color:#1E8E3E">任務 1／5｜高彈性、沒有標準答案</span><h2 class="title">內容生成與整理</h2><p class="sub">產出一段文字，重視語氣、結構與資訊完整，容許表達不同</p></div>
+  <div class="task-grid">
+    <div class="card bar rv d1" style="--c:var(--teal)"><span class="hotel">🏨 晴灣飯店的例子</span><div class="io" style="margin-top:20px"><div class="r"><span>旅客</span><div class="say">「冷氣半夜壞掉，換房等了一小時，早餐也是冷的。」</div></div><div class="r"><span>資料</span><div>處理紀錄：已換房、已退當晚房費 50%</div></div><div class="r"><span>AI 產出</span><div>一則評論回覆草稿，公關覆核後發出</div></div></div><div class="scenes"><div class="lb">其他企業常見場景</div><span>會議紀錄與待辦摘要</span><span>客訴、業務信件草稿</span><span>營運報告初稿</span><span>社群文案與多語潤飾</span></div></div>
+    <div class="stack">
+      <div class="card bar rv d2 bad" style="--c:var(--red)"><h3>常碰到的問題</h3><ul><li><b>寫錯事實</b>：把「退 50%」寫成「全額退費」</li><li><b>過度承諾</b>：「下次入住免費升等」</li><li><b>語氣格式不穩</b>：太制式、字數忽長忽短</li></ul></div>
+      <div class="card bar rv d3 how" style="--c:var(--blue)"><h3>驗收時怎麼驗</h3><ul><li><b>關鍵資訊保留</b>：日期、房號、補償內容一個都不能錯</li><li><b>格式穩定</b>：字數、段落、署名是否符合規範</li><li><b>負面清單</b>：用評分卡抽檢禁用承諾與語氣</li></ul></div>
+    </div>
+  </div>
+  <p class="principle rv d4">核心原則：<b>驗「架構與遺漏」，不驗「字句一模一樣」</b></p>
+</section>
+
+<section class="slide bg-gray" data-title="任務 2 資料判讀與擷取">
+  <div class="head rv" style="margin-bottom:34px"><span class="kicker" style="color:var(--blue)">任務 2／5｜高確定性、有標準答案</span><h2 class="title">資料判讀與擷取</h2><p class="sub">把信件、文件、圖片轉成結構化欄位或分類，每個欄位都有對錯</p></div>
+  <div class="task-grid">
+    <div class="card bar rv d1" style="--c:var(--teal)"><span class="hotel">🏨 晴灣飯店的例子</span><div class="io" style="margin-top:20px"><div class="r"><span>輸入</span><div>訂房網站寄來的確認信（各家格式不同）</div></div><div class="r"><span>AI 產出</span><div>入住日、退房日、房型、人數、金額，櫃檯確認後寫入訂房系統</div></div><div class="r"><span>也包括</span><div>旅客訊息自動分類：改期／取消／加床／客訴</div></div></div><div class="scenes"><div class="lb">其他企業常見場景</div><span>發票、報價單欄位擷取</span><span>新舊合約條款比對</span><span>客服進線分類貼標</span><span>履歷資格核對</span></div></div>
+    <div class="stack">
+      <div class="card bar rv d2 bad" style="--c:var(--red)"><h3>常碰到的問題</h3><ul><li><b>日期誤判</b>：「06/07」是 6 月 7 日還是 7 月 6 日？</li><li><b>金額混淆</b>：含稅或未稅、台幣或外幣</li><li><b>格式亂掉就亂抓</b>：轉寄、截圖、跨頁表格</li></ul></div>
+      <div class="card bar rv d3 how" style="--c:var(--blue)"><h3>驗收時怎麼驗</h3><ul><li><b>逐欄比對</b>：準備人工標好的標準答案，算每個欄位準確率</li><li><b>細微差異</b>：故意改一個數字，看抓不抓得到</li><li><b>髒資料</b>：格式亂的信，是轉人工還是亂填？</li></ul></div>
+    </div>
+  </div>
+  <p class="principle rv d4">核心原則：<b>驗「欄位準確率」與「例外格式」</b></p>
+</section>
+
+<section class="slide" data-title="任務 3 知識查詢與回答">
+  <div class="head rv" style="margin-bottom:34px"><span class="kicker" style="color:var(--indigo)">任務 3／5｜低容錯、必須有依據</span><h2 class="title">知識查詢與回答</h2><p class="sub">答案只能來自企業自己的資料，不能憑模型記憶腦補</p></div>
+  <div class="task-grid">
+    <div class="card bar rv d1" style="--c:var(--teal)"><span class="hotel">🏨 晴灣飯店的例子</span><div class="io" style="margin-top:20px"><div class="r"><span>旅客</span><div class="say">「可以帶狗入住嗎？取消要扣多少錢？」</div></div><div class="r"><span>資料</span><div>各分館的寵物規定、取消政策（有新舊版本）</div></div><div class="r"><span>AI 產出</span><div>依正式規定回答，並附上出處</div></div></div><div class="scenes"><div class="lb">其他企業常見場景</div><span>員工請假報帳內規查詢</span><span>產品規格與 SOP 問答</span><span>官網智慧客服</span><span>法務、醫療規範檢索</span></div></div>
+    <div class="stack">
+      <div class="card bar rv d2 bad" style="--c:var(--red)"><h3>常碰到的問題</h3><ul><li><b>找錯文件</b>：拿到舊版政策，或套到別家分館</li><li><b>有資料卻答錯</b>：文件寫 7 天前，回答說 3 天前</li><li><b>沒資料就瞎編</b>：「可以，酌收清潔費 500 元」</li></ul></div>
+      <div class="card bar rv d3 how" style="--c:var(--blue)"><h3>驗收時怎麼驗</h3><ul><li><b>找得到</b>：先看撈出來的文件片段對不對</li><li><b>答得對</b>：回答是否完全根據文件、有附出處</li><li><b>誠實拒答</b>：問資料裡沒有的事，會不會說「查無資料」</li></ul></div>
+    </div>
+  </div>
+  <p class="principle rv d4">核心原則：<b>拆開驗「找得到」和「答得對」</b></p>
+</section>
+
+<section class="slide bg-gray" data-title="任務 4 工具操作與任務執行">
+  <div class="head rv" style="margin-bottom:34px"><span class="kicker" style="color:var(--red)">任務 4／5｜多步驟、會改到真實資料</span><h2 class="title">工具操作與任務執行</h2><p class="sub">AI 不只說話，還會呼叫系統動手做，錯了就是真的資料被改</p></div>
+  <div class="task-grid">
+    <div class="card bar rv d1" style="--c:var(--teal)"><span class="hotel">🏨 晴灣飯店的例子</span><div class="io" style="margin-top:20px"><div class="r"><span>旅客</span><div class="say">「我想把 6/12 的雙人房改到 6/19。」</div></div><div class="r"><span>AI 動作</span><div>查空房 → 修改訂單 → 寄出確認信</div></div><div class="r"><span>系統</span><div>訂房系統、付款系統、郵件</div></div></div><div class="scenes"><div class="lb">其他企業常見場景</div><span>依來信在 CRM 建客訴單</span><span>查庫存並更新 ERP 訂單</span><span>跨時區安排會議邀請</span><span>定期產出報表並寄信</span></div></div>
+    <div class="stack">
+      <div class="card bar rv d2 bad" style="--c:var(--red)"><h3>常碰到的問題</h3><ul><li><b>參數帶錯</b>：日期、房型帶錯，或改到別人的訂單</li><li><b>系統出錯還說成功</b>：逾時沒改好卻回「已完成」，重試又重複扣款</li><li><b>沒確認就動手</b>：直接取消訂單、退款</li></ul></div>
+      <div class="card bar rv d3 how" style="--c:var(--blue)"><h3>驗收時怎麼驗</h3><ul><li><b>工具與參數</b>：口語指令下，選對功能、日期金額格式正確</li><li><b>異常處理</b>：模擬系統逾時，看會不會轉人工而不是一直重試</li><li><b>高風險動作要確認</b>：取消、退款、對外寄信，必須停下等人按確認</li></ul></div>
+    </div>
+  </div>
+  <p class="principle rv d4">核心原則：<b>驗「參數精準」與「安全防呆」</b></p>
+</section>
+
+<section class="slide" data-title="任務 5 複合型應用">
+  <div class="head rv" style="margin-bottom:34px"><span class="kicker" style="color:#C27C00">任務 5／5｜高複雜度、錯誤會連鎖</span><h2 class="title">複合型應用</h2><p class="sub">一條流程串起好幾類任務，前面一步小錯，後面全部跟著錯</p></div>
+  <div class="task-grid">
+    <div class="card bar rv d1" style="--c:var(--teal)"><span class="hotel">🏨 晴灣飯店的例子</span><div class="io" style="margin-top:20px"><div class="r"><span>旅客</span><div class="say">「颱風要來，這週六想改到下個月，要扣錢嗎？」</div></div><div class="r"><span>流程</span><div>分類（任務 2）→ 查改期政策（任務 3）→ 修改訂單（任務 4）→ 寫回覆（任務 1）</div></div><div class="r"><span>AI 產出</span><div>改好的訂單＋一則說明回覆</div></div></div><div class="scenes"><div class="lb">其他企業常見場景</div><span>採購助理：查合約 → 擷取報價 → 建請購單 → 寫簽呈</span><span>客服專員：分類客訴 → 查退換貨政策 → 退款 → 寫安撫信</span></div></div>
+    <div class="stack">
+      <div class="card bar rv d2 bad" style="--c:var(--red)"><h3>常碰到的問題</h3><ul><li><b>前面錯，後面全錯</b>：把「改期」分成「取消」，就走錯整條路</li><li><b>錯上加錯</b>：查到舊政策，收了不該收的手續費</li><li><b>只測頭尾</b>：最後回覆看起來很好，中間其實改錯了</li></ul></div>
+      <div class="card bar rv d3 how" style="--c:var(--blue)"><h3>驗收時怎麼驗</h3><ul><li><b>分段驗</b>：每個步驟單獨餵測試資料，找出到底錯在哪一步</li><li><b>錯誤會不會被擋下</b>：前面信心度低時，後面有沒有停下來</li><li><b>整條跑完的時間與成本</b>：是否符合現場的節奏</li></ul></div>
+    </div>
+  </div>
+  <p class="principle rv d4">核心原則：<b>不能只測頭尾，要分段拆開驗</b></p>
 </section>
 
 <section class="slide" data-title="驗收對象與使用情境">
