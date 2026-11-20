@@ -244,7 +244,7 @@ function sessionView() {
     <div class="card">
       <div class="row-end" style="justify-content:space-between;align-items:flex-start">
         <div><h2 style="margin:0">${esc(cur)}</h2><p class="muted" style="margin:0">${esc(s.name || '')}</p></div>
-        <div class="row-end"><button class="btn small ghost" id="projBtn">${document.body.classList.contains('project') ? '一般字級' : '投影放大'}</button><button class="btn small" id="csvBtn">匯出 CSV</button></div>
+        <div class="row-end"><button class="btn small ghost" id="projBtn">${document.body.classList.contains('project') ? '一般字級' : '投影放大'}</button><button class="btn small" id="csvBtn">匯出 CSV</button><button class="btn small danger" id="dangerBtn">清空／刪除</button></div>
       </div>
       <div class="ctrl-row" style="margin-top:16px">
         <label class="switch"><input type="checkbox" data-open ${s.open !== false ? 'checked' : ''}><span class="tg"></span>開放作答</label>
@@ -261,6 +261,7 @@ function bindSession() {
   app.querySelectorAll('[data-reveal]').forEach((el) => el.onchange = () => setReveal(cur, el.dataset.reveal, el.checked));
   app.querySelector('#projBtn').onclick = () => { document.body.classList.toggle('project'); render(); };
   app.querySelector('#csvBtn').onclick = exportCsv;
+  app.querySelector('#dangerBtn').onclick = () => openDanger(cur);
   app.querySelectorAll('[data-detail]').forEach((b) => b.onclick = () => showDetail(b.dataset.detail));
   if (tab === 'refs') bindRefs();
   if (tab === 'lab') bindLab();
@@ -474,6 +475,70 @@ async function showDetail(key) {
   w.onclick = (e) => { if (e.target === w) w.remove(); };
   const fl = w.querySelector('[data-flow]');
   if (fl && u1) await renderFlow(fl, 'S', u1);
+}
+
+// ---------- 清空學員資料／刪除梯次 ----------
+const SUBS = ['responses', 'feedback', 'labs'];
+async function wipeSession(code, removeSession) {
+  if (!CLOUD) {
+    LS.keys().filter((k) => k.startsWith(`aiw:resp:${code}:`) || k.startsWith(`aiw:ai:${code}:`)).forEach((k) => localStorage.removeItem(k));
+    if (removeSession) { const m = localSessions(); delete m[code]; saveLocalSessions(m); sessions = m; }
+    window.dispatchEvent(new Event('aiw-local'));
+    return;
+  }
+  const f = await fb();
+  const subs = removeSession ? [...SUBS, 'refs'] : SUBS;
+  for (const c of subs) {
+    const qs = await f.fs.getDocs(f.fs.collection(f.db, 'sessions', code, c));
+    await Promise.all(qs.docs.map((d) => f.fs.deleteDoc(d.ref)));
+  }
+  if (removeSession) await f.fs.deleteDoc(f.fs.doc(f.db, 'sessions', code));
+}
+
+async function countSession(code) {
+  if (!CLOUD) return { responses: LS.keys().filter((k) => k.startsWith(`aiw:resp:${code}:`)).length };
+  const f = await fb();
+  const out = {};
+  for (const c of SUBS) out[c] = (await f.fs.getDocs(f.fs.collection(f.db, 'sessions', code, c))).size;
+  return out;
+}
+
+async function openDanger(code) {
+  const w = document.createElement('div');
+  w.className = 'modal-backdrop';
+  w.innerHTML = `<div class="modal"><h2>清空或刪除梯次 ${esc(code)}</h2>
+    <p class="muted" id="dCount">計算資料筆數中…</p>
+    <div class="note gray tiny" style="margin:10px 0">
+      <b>清空學員資料</b>：刪除這個梯次的全部作答、AI 回饋與實測紀錄，梯次與設定保留，學員可以重新作答。<br>
+      <b>刪除梯次</b>：連同梯次本身、開放設定與梯次內的參考答案一起刪除，學員再也無法用這個代碼進入。
+    </div>
+    <label class="field"><span>刪除後無法復原。請輸入梯次代碼 <b>${esc(code)}</b> 確認</span><input id="dCode" autocomplete="off" placeholder="${esc(code)}"></label>
+    <p class="form-error" id="dErr" hidden></p>
+    <div class="row-end" style="margin-top:14px"><button class="btn ghost" data-x>取消</button><button class="btn" id="dClear" disabled>清空學員資料</button><button class="btn primary" id="dDel" disabled style="background:var(--red);border-color:var(--red)">刪除梯次</button></div>
+  </div>`;
+  document.body.appendChild(w);
+  const close = () => w.remove();
+  w.querySelector('[data-x]').onclick = close;
+  w.onclick = (e) => { if (e.target === w) close(); };
+  const input = w.querySelector('#dCode'), bClear = w.querySelector('#dClear'), bDel = w.querySelector('#dDel'), err = w.querySelector('#dErr');
+  input.oninput = () => { const ok = normCode(input.value) === code; bClear.disabled = bDel.disabled = !ok; };
+  input.focus();
+  countSession(code).then((n) => {
+    const t = [['responses', '作答'], ['feedback', 'AI 回饋'], ['labs', '實測紀錄']].filter(([k]) => n[k] != null).map(([k, l]) => `${l} ${n[k]} 筆`).join('、');
+    w.querySelector('#dCount').textContent = `目前資料：${t}`;
+  }).catch(() => { w.querySelector('#dCount').textContent = '無法計算筆數'; });
+  const go = async (removeSession) => {
+    bClear.disabled = bDel.disabled = true; err.hidden = true;
+    try {
+      await wipeSession(code, removeSession);
+      close();
+      if (removeSession) { cur = null; responses = []; unsubR(); }
+      toast(removeSession ? `已刪除梯次 ${code}` : `已清空 ${code} 的學員資料`);
+      render();
+    } catch (e) { err.textContent = '操作失敗：' + e.message; err.hidden = false; bClear.disabled = bDel.disabled = false; }
+  };
+  bClear.onclick = () => go(false);
+  bDel.onclick = () => go(true);
 }
 
 // ---------- CSV ----------
