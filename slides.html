@@ -307,6 +307,24 @@ img, svg { max-width: 100%; max-height: 100%; }
 .scenes span { font-size: 22px; background: var(--bg); color: var(--ink-2); border-radius: 999px; padding: 6px 16px; }
 .principle { margin-top: 26px; font-size: 28px; color: var(--ink-2); }
 .principle b { color: var(--ink); }
+.scene4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 26px; align-items: stretch; }
+.scene4 .card { padding: 40px 34px; opacity: .8; }
+.scene4 .card .en { display: block; font-size: 20px; font-weight: 800; letter-spacing: .1em; color: var(--muted); margin-bottom: 14px; }
+.scene4 .card h3 { font-size: 34px; margin-bottom: 18px; }
+.scene4 .card ul { padding-left: 1.1em; }
+.scene4 .card li { font-size: 25px; line-height: 1.6; }
+.scene4 .card.pick { opacity: 1; border: 4px solid var(--blue); box-shadow: 0 24px 60px rgba(47,79,219,.25); transform: translateY(-14px); }
+.scene4 .card.pick .en { color: var(--blue); }
+.scene4 .badge { position: absolute; top: -22px; left: 30px; background: var(--blue); color: #fff; font-size: 22px; font-weight: 800; padding: 6px 18px; border-radius: 999px; }
+.flow4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; position: relative; }
+.flow4::before { content: ''; position: absolute; top: 60px; left: 12.5%; right: 12.5%; height: 6px; background: linear-gradient(90deg, var(--blue), var(--indigo), var(--red), var(--green)); border-radius: 3px; }
+.flow4 .st { text-align: center; padding: 0 18px; position: relative; }
+.flow4 .n { width: 120px; height: 120px; border-radius: 50%; margin: 0 auto 28px; display: grid; place-items: center; font-size: 56px; font-weight: 900; color: #fff; background: var(--c); position: relative; z-index: 1; box-shadow: 0 14px 36px color-mix(in srgb, var(--c) 35%, transparent); }
+.flow4 h3 { font-size: 40px; font-weight: 800; margin-bottom: 10px; }
+.flow4 p { font-size: 27px; color: var(--ink-2); margin-bottom: 22px; }
+.flow4 .tk { display: inline-block; font-size: 25px; font-weight: 800; color: var(--c); background: color-mix(in srgb, var(--c) 10%, #fff); padding: 8px 22px; border-radius: 999px; }
+.flow4-all { margin: 60px auto 0; text-align: center; font-size: 34px; font-weight: 700; color: var(--ink); }
+.flow4-all b { color: #C27C00; }
 .task5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 18px; }
 .task5 .card { padding: 28px 24px; }
 .task5 .card h3 { font-size: 30px; margin-bottom: 8px; }
@@ -534,16 +552,25 @@ img, svg { max-width: 100%; max-height: 100%; }
   <div class="big-no">02</div>
 </section>
 
-<section class="slide" data-title="五類常見任務">
-  <div class="head rv" style="margin-bottom:40px"><span class="kicker">企業常見的 AI 任務</span><h2 class="title">看 AI 要完成的工作，不是看技術名稱</h2><p class="sub">「我們用了 RAG、Agent」說不出要驗什麼。先分清楚任務類型，驗法才不同</p></div>
-  <div class="task5">
-    <div class="card bar rv d1" style="--c:var(--green)"><span class="tag" style="color:#1E8E3E">1</span><h3>內容生成與整理</h3><p>文案、摘要、回覆草稿</p><div class="hx">🏭 給客戶的說明草稿</div></div>
-    <div class="card bar rv d2" style="--c:var(--blue)"><span class="tag">2</span><h3>資料判讀與擷取</h3><p>分類、欄位擷取、文件比對</p><div class="hx">🏭 從來電描述擷取工單欄位</div></div>
-    <div class="card bar rv d3" style="--c:var(--indigo)"><span class="tag">3</span><h3>知識查詢與回答</h3><p>內規、產品知識、客服問答</p><div class="hx">🏭 查保固條款</div></div>
-    <div class="card bar rv d4" style="--c:var(--red)"><span class="tag">4</span><h3>工具操作與執行</h3><p>建單、更新資料、寄信</p><div class="hx">🏭 建立維修工單</div></div>
-    <div class="card bar rv d5" style="--c:#C27C00;border-top-color:var(--amber)"><span class="tag">5</span><h3>複合型應用</h3><p>跨任務串成完整流程</p><div class="hx">🏭 報修建單一條龍</div></div>
+<section class="slide" data-title="應用場景">
+  <div class="head rv" style="margin-bottom:40px"><span class="kicker">應用場景</span><h2 class="title">AI 在企業裡，常用在這四個場景</h2><p class="sub">宏岳的 AI 客服助手，屬於「客服與工單分流」</p></div>
+  <div class="scene4">
+    <div class="card rv d1"><span class="en">HR</span><h3>人資與人才決策</h3><ul><li>履歷初篩、制度問答</li><li>敏感決策留給人審核</li></ul></div>
+    <div class="card pick rv d2"><span class="badge">宏岳的情境</span><span class="en">CUSTOMER SERVICE</span><h3>客服與工單分流</h3><ul><li>依知識庫回答常見問題</li><li>查保固、建立維修工單</li><li>高風險情境轉人工</li></ul></div>
+    <div class="card rv d3"><span class="en">MANUFACTURING</span><h3>製造與維修知識</h3><ul><li>查故障排除 SOP</li><li>觸發維修派工</li></ul></div>
+    <div class="card rv d4"><span class="en">RETAIL</span><h3>零售與智慧導購</h3><ul><li>整合銷售與促銷資訊</li><li>輔助補貨判讀</li></ul></div>
   </div>
-  <p class="principle rv d6" style="margin-top:40px;font-size:30px">宏岳的兩件核心工作落在 <b style="color:var(--blue)">3 查保固</b>、<b style="color:var(--blue)">4 建工單</b>。越往右，<b>出錯的代價越高</b>：從「寫錯字」到「建錯單、承諾免費維修」。</p>
+</section>
+
+<section class="slide bg-gray" data-title="拆解宏岳流程">
+  <div class="head rv" style="margin-bottom:44px"><span class="kicker">拆解宏岳的流程</span><h2 class="title">一通報修電話，AI 做了四類工作</h2><p class="sub">每一步是不同的任務，驗法也不同</p></div>
+  <div class="flow4">
+    <div class="st rv d1" style="--c:var(--blue)"><span class="n">1</span><h3>聽懂來電</h3><p>抓出序號、故障</p><span class="tk">資料判讀與擷取</span></div>
+    <div class="st rv d2" style="--c:var(--indigo)"><span class="n">2</span><h3>查保固</h3><p>對照保固規範</p><span class="tk">知識查詢與回答</span></div>
+    <div class="st rv d3" style="--c:var(--red)"><span class="n">3</span><h3>建工單</h3><p>客服確認後寫入</p><span class="tk">工具操作與執行</span></div>
+    <div class="st rv d4" style="--c:var(--green)"><span class="n">4</span><h3>回覆客戶</h3><p>擬好說明草稿</p><span class="tk">內容生成與整理</span></div>
+  </div>
+  <div class="flow4-all rv d5">四步串成一條龍 ＝ <b>複合型應用</b></div>
 </section>
 
 <section class="slide" data-title="任務 1 內容生成與整理">
