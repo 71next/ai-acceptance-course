@@ -13,9 +13,9 @@
    ============================================================ */
 :root {
   --ink: #1D1D1F; --ink-2: #515154; --muted: #6E6E73; --line: #E3E3E8;
-  --bg: #F5F5F7; --blue: #0071E3; --indigo: #5856D6; --teal: #0D9488;
+  --bg: #F5F5F7; --blue: #2F4FDB; --indigo: #5856D6; --teal: #0D9488;
   --red: #E5352B; --amber: #F5B400; --green: #34C759;
-  --stage-bg: #111; --slide-bg: #fff;
+  --stage-bg: #E6ECF5; --slide-bg: #fff;
   --font: 'Noto Sans TC', -apple-system, 'PingFang TC', sans-serif;
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -33,11 +33,13 @@ img, svg { max-width: 100%; max-height: 100%; }
 /* ---------- 投影片版型 ---------- */
 .slide { font-family: var(--font); color: var(--ink); padding: 80px 120px 100px; display: flex; flex-direction: column; justify-content: center; }
 .slide > * { flex: none; }
-.bg-cover { background: radial-gradient(45% 55% at 88% 18%, rgba(0,113,227,.17), transparent 70%), radial-gradient(40% 55% at 10% 88%, rgba(13,148,136,.13), transparent 70%), radial-gradient(35% 50% at 62% 52%, rgba(88,86,214,.06), transparent 70%), #F7F8FA; }
-.bg-unit { background: radial-gradient(50% 65% at 84% 20%, rgba(0,113,227,.18), transparent 70%), radial-gradient(40% 50% at 65% 85%, rgba(88,86,214,.07), transparent 70%), #F4F7FD; }
-.bg-end { background: radial-gradient(45% 55% at 14% 18%, rgba(0,113,227,.15), transparent 70%), radial-gradient(40% 55% at 86% 82%, rgba(13,148,136,.14), transparent 70%), #F7F8FA; }
-.bg-gray { background: var(--bg); }
-.bg-dark { background: radial-gradient(60% 70% at 85% 0%, rgba(0,113,227,.35), transparent 60%), #111114; color: #fff; }
+.slide { background: radial-gradient(45% 60% at 0% 0%, rgba(120,150,240,.22), transparent 70%), radial-gradient(40% 55% at 100% 100%, rgba(90,120,235,.16), transparent 70%), #F4F9FE; }
+.bg-gray { background: radial-gradient(45% 60% at 100% 0%, rgba(120,150,240,.22), transparent 70%), radial-gradient(40% 55% at 0% 100%, rgba(90,120,235,.14), transparent 70%), #F1F6FD; }
+.bg-cover, .bg-end { background: radial-gradient(62% 85% at 100% 100%, rgba(52,86,226,.95), rgba(52,86,226,.5) 38%, transparent 75%), radial-gradient(42% 60% at 4% 6%, rgba(120,150,240,.45), transparent 70%), radial-gradient(30% 45% at 96% 4%, rgba(90,120,235,.3), transparent 70%), #EAF6FD; }
+.bg-unit { background: radial-gradient(55% 90% at 100% 70%, rgba(52,86,226,.95), rgba(52,86,226,.5) 40%, transparent 78%), radial-gradient(45% 60% at 0% 0%, rgba(120,150,240,.45), transparent 70%), #EAF6FD; }
+.bg-glow { background: radial-gradient(60% 80% at 100% 100%, rgba(52,86,226,.92), rgba(52,86,226,.5) 38%, transparent 75%), radial-gradient(42% 60% at 4% 6%, rgba(120,150,240,.42), transparent 70%), radial-gradient(30% 45% at 96% 4%, rgba(90,120,235,.3), transparent 70%), #EAF6FD; }
+.bg-glow .ghost, .bg-cover .ghost, .bg-end .ghost { position: absolute; right: 110px; bottom: 30px; font-size: 460px; font-weight: 900; line-height: 1; color: transparent; -webkit-text-stroke: 2px rgba(255,255,255,.6); pointer-events: none; user-select: none; }
+.pill { display: inline-block; font-size: 28px; font-weight: 700; color: #fff; background: #2F4FDB; padding: 10px 28px; border-radius: 999px; box-shadow: 0 8px 22px rgba(47,79,219,.3); }
 
 .kicker { display: inline-block; font-size: 26px; font-weight: 700; color: var(--blue); letter-spacing: .04em; margin-bottom: 14px; }
 .title { font-size: 66px; font-weight: 900; letter-spacing: -0.015em; line-height: 1.22; }
@@ -49,7 +51,7 @@ img, svg { max-width: 100%; max-height: 100%; }
 .cards.c3 { grid-template-columns: repeat(3, 1fr); }
 .cards.c4 { grid-template-columns: repeat(4, 1fr); }
 .card { background: #fff; border-radius: 32px; padding: 48px 46px; box-shadow: 0 2px 6px rgba(0,0,0,.04), 0 18px 48px rgba(0,0,0,.06); position: relative; }
-.bg-gray .card, .bg-unit .card, .bg-cover .card, .bg-end .card { box-shadow: 0 2px 6px rgba(0,0,0,.03), 0 16px 40px rgba(0,0,0,.05); }
+.card { box-shadow: 0 2px 6px rgba(30,54,176,.04), 0 18px 48px rgba(30,54,176,.08); }
 .card h3 { font-size: 38px; font-weight: 800; line-height: 1.3; margin-bottom: 18px; }
 .card p, .card li { font-size: 30px; line-height: 1.6; color: var(--ink-2); }
 .card .tag { display: inline-block; font-size: 24px; font-weight: 700; color: var(--c, var(--blue)); background: color-mix(in srgb, var(--c, var(--blue)) 10%, #fff); padding: 6px 18px; border-radius: 999px; margin-bottom: 22px; }
@@ -61,25 +63,26 @@ img, svg { max-width: 100%; max-height: 100%; }
 
 /* 封面 */
 .cover { display: flex; flex-direction: column; justify-content: center; height: 100%; padding-left: 40px; }
-.cover .badge { font-size: 30px; font-weight: 700; color: var(--blue); margin-bottom: 36px; }
+.cover .badge { align-self: flex-start; font-size: 28px; font-weight: 700; color: #fff; background: var(--blue); padding: 10px 28px; border-radius: 999px; box-shadow: 0 8px 22px rgba(47,79,219,.3); margin-bottom: 40px; }
+.cover h1 .hl { color: var(--blue); }
 .cover h1 { font-size: 124px; font-weight: 900; letter-spacing: -0.03em; line-height: 1.12; }
 .cover .lead { font-size: 40px; color: var(--ink-2); margin-top: 40px; max-width: 1640px; line-height: 1.5; }
-.cover .by { margin-top: 90px; font-size: 32px; color: var(--muted); }
+.cover .by { margin-top: 90px; font-size: 32px; color: var(--ink-2); }
 
 /* 單元封面 */
 .unit-cover { display: flex; flex-direction: column; justify-content: center; height: 100%; padding-left: 40px; }
 .unit-cover .no { font-size: 40px; font-weight: 800; color: var(--blue); letter-spacing: .1em; margin-bottom: 28px; }
 .unit-cover h1 { font-size: 132px; font-weight: 900; letter-spacing: -0.03em; }
 .unit-cover p { font-size: 42px; color: var(--ink-2); margin-top: 36px; max-width: 1450px; line-height: 1.5; }
-.unit-cover .big-no { position: absolute; right: 90px; bottom: -80px; font-size: 640px; font-weight: 900; color: rgba(0,113,227,.06); line-height: 1; }
+.unit-cover .big-no, .bg-unit .big-no { position: absolute; right: 110px; bottom: -60px; font-size: 600px; font-weight: 900; line-height: 1; color: transparent; -webkit-text-stroke: 3px rgba(255,255,255,.7); pointer-events: none; }
 
 /* 隨堂思考 */
 .quiz { display: grid; grid-template-columns: 1fr 520px; gap: 80px; height: 100%; align-items: center; }
-.quiz .kicker { color: #7FB8FF; }
-.quiz .title { color: #fff; font-size: 70px; }
-.quiz .scene { margin-top: 48px; font-size: 34px; line-height: 1.6; color: #D8D8DE; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.12); padding: 34px 40px; border-radius: 26px; }
-.quiz .scene .hl { color: #FFD166; font-weight: 700; }
-.quiz .ask { margin-top: 40px; font-size: 38px; font-weight: 700; color: #fff; }
+.quiz .kicker { color: #2F4FDB; }
+.quiz .title { color: var(--ink); font-size: 70px; }
+.quiz .scene { margin-top: 48px; font-size: 34px; line-height: 1.6; color: var(--ink-2); background: rgba(255,255,255,.75); border: 1px solid #fff; padding: 34px 40px; border-radius: 26px; }
+.quiz .scene .hl { color: #2F4FDB; font-weight: 800; }
+.quiz .ask { margin-top: 40px; font-size: 38px; font-weight: 700; color: var(--ink); }
 .quiz .ask::before { content: 'Q'; display: inline-grid; place-items: center; width: 56px; height: 56px; border-radius: 16px; background: var(--blue); margin-right: 20px; font-size: 32px; vertical-align: 4px; }
 .timer { width: 520px; height: 520px; border-radius: 50%; display: grid; place-items: center; position: relative; cursor: pointer; border: 0; background: none; color: #fff; font-family: var(--font); }
 .timer svg { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); }
@@ -90,8 +93,8 @@ img, svg { max-width: 100%; max-height: 100%; }
 .timer .s { font-size: 30px; color: #A1A1A6; margin-top: 10px; }
 .timer .inner { display: flex; flex-direction: column; align-items: center; }
 .timer.done .prog { stroke: var(--red); }
-.answer-btn { width: 440px; height: 440px; border-radius: 50%; border: 0; cursor: pointer; font-family: var(--font); color: #fff; background: radial-gradient(circle at 30% 25%, #2F8CFF, var(--blue) 60%, #0058B3); box-shadow: 0 0 0 18px rgba(0,113,227,.18), 0 30px 80px rgba(0,113,227,.35); display: grid; place-items: center; justify-self: center; transition: transform .2s var(--ease), box-shadow .2s; }
-.answer-btn:hover { transform: scale(1.04); box-shadow: 0 0 0 26px rgba(0,113,227,.22), 0 30px 80px rgba(0,113,227,.45); }
+.answer-btn { width: 440px; height: 440px; border-radius: 50%; border: 0; cursor: pointer; font-family: var(--font); color: #fff; background: radial-gradient(circle at 30% 25%, #5B7BF0, var(--blue) 60%, #1E36B0); box-shadow: 0 0 0 18px rgba(255,255,255,.45), 0 30px 80px rgba(20,40,140,.35); display: grid; place-items: center; justify-self: center; transition: transform .2s var(--ease), box-shadow .2s; }
+.answer-btn:hover { transform: scale(1.04); box-shadow: 0 0 0 26px rgba(255,255,255,.55), 0 30px 80px rgba(20,40,140,.45); }
 .answer-btn .inner { display: flex; flex-direction: column; align-items: center; gap: 14px; }
 .answer-btn .t { font-size: 96px; font-weight: 900; letter-spacing: .04em; }
 .answer-btn .s { font-size: 30px; opacity: .8; }
@@ -149,13 +152,78 @@ img, svg { max-width: 100%; max-height: 100%; }
 .log { font-size: 34px; line-height: 1.5; background: #fff; border-radius: 26px; padding: 34px 44px; display: grid; grid-template-columns: auto auto 1fr; gap: 22px 30px; align-items: baseline; }
 .log .tm { font-weight: 800; font-variant-numeric: tabular-nums; }
 .log .src { font-size: 26px; font-weight: 700; padding: 4px 16px; border-radius: 999px; background: #EEF0F4; color: var(--ink-2); white-space: nowrap; }
-.bg-dark .log { background: rgba(255,255,255,.07); color: #fff; border: 1px solid rgba(255,255,255,.12); }
-.bg-dark .log .src { background: rgba(255,255,255,.12); color: #E5E5EA; }
 
 /* 練習連結 */
 .go-practice { position: absolute; right: 120px; bottom: 76px; display: flex; align-items: center; gap: 24px; font-size: 28px; color: var(--ink-2); }
 .go-practice a { display: inline-flex; align-items: center; gap: 12px; background: var(--ink); color: #fff; text-decoration: none; font-weight: 700; font-size: 30px; padding: 20px 40px; border-radius: 999px; }
 .go-practice a:hover { background: #000; }
+
+/* 常見錯誤回答 */
+.wrong-quotes { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; align-items: start; margin-top: 20px; }
+.wrong-quotes .q { position: relative; background: #fff; border-radius: 32px; padding: 70px 36px 56px; text-align: center; font-size: 50px; font-weight: 800; color: var(--ink); box-shadow: 0 2px 6px rgba(30,54,176,.04), 0 18px 48px rgba(30,54,176,.08); }
+.wrong-quotes .q::before { content: '\201C'; position: absolute; left: 28px; top: 4px; font-size: 110px; font-weight: 900; color: rgba(47,79,219,.18); line-height: 1; }
+.wrong-quotes .q::after { content: '\00D7'; position: absolute; right: -14px; top: -14px; width: 56px; height: 56px; border-radius: 50%; background: var(--red); color: #fff; font-size: 40px; font-weight: 800; line-height: 56px; box-shadow: 0 6px 16px rgba(229,53,43,.35); }
+.wrong-quotes .q:nth-child(odd) { rotate: -1.5deg; } .wrong-quotes .q:nth-child(even) { rotate: 1.5deg; margin-top: 40px; }
+
+/* 個人 vs 企業 AI 對照 */
+.vs { display: grid; grid-template-columns: 220px 1fr 1fr; column-gap: 28px; }
+.vs .col-h { padding: 26px 36px; border-radius: 28px 28px 0 0; font-size: 34px; font-weight: 900; }
+.vs .col-h small { display: block; font-size: 24px; font-weight: 600; margin-top: 4px; }
+.vs .col-h.me { background: #fff; color: var(--muted); }
+.vs .col-h.biz { background: var(--blue); color: #fff; }
+.vs .col-h.biz small { color: rgba(255,255,255,.8); }
+.vs .lb, .vs .c { padding: 20px 36px; font-size: 28px; line-height: 1.45; border-top: 1px solid var(--line); }
+.vs .lb { padding-left: 0; font-weight: 800; color: var(--ink); border-top-color: transparent; }
+.vs .c.me { background: #fff; color: var(--muted); }
+.vs .c.biz { background: #fff; color: var(--ink); font-weight: 600; box-shadow: inset 6px 0 0 var(--blue); }
+.vs .last { border-radius: 0 0 28px 28px; padding-bottom: 28px; }
+.vs .c.biz b { color: var(--blue); }
+
+/* 傳統系統 vs AI 應用 驗收 */
+.dual { display: grid; grid-template-columns: 150px repeat(5, 1fr); grid-template-rows: auto 1fr 1fr; gap: 18px 20px; }
+.dual .dim { font-size: 28px; font-weight: 900; color: var(--ink); padding: 0 4px 2px; border-bottom: 4px solid var(--blue); }
+.dual .row-lb { display: flex; align-items: center; font-size: 26px; font-weight: 800; }
+.dual .row-lb span { padding: 8px 18px; border-radius: 999px; }
+.dual .row-lb.old span { background: #fff; color: var(--muted); border: 2px solid var(--line); }
+.dual .row-lb.ai span { background: var(--blue); color: #fff; }
+.dual .old-c, .dual .ai-c { border-radius: 24px; padding: 30px 28px; font-size: 25px; line-height: 1.5; }
+.dual .old-c b, .dual .ai-c b { display: block; font-size: 42px; font-weight: 900; line-height: 1.2; margin-bottom: 12px; }
+.dual .ai-c b { color: #fff; } .dual .old-c b { color: #8A8F9C; }
+.dual .ai-c { font-weight: 500; }
+.dual .old-c { background: rgba(255,255,255,.75); color: var(--muted); border: 2px dashed #D5DAE5; }
+.dual .ai-c { background: var(--blue); color: #fff; font-weight: 700; box-shadow: 0 14px 34px rgba(47,79,219,.25); }
+
+/* 驗收思維的轉變 */
+.shift { display: grid; grid-template-columns: 1fr 1fr; gap: 36px; }
+.shift .card { padding: 40px 44px; }
+.shift .card .what { font-size: 38px; font-weight: 900; line-height: 1.35; margin: 4px 0 14px; color: var(--ink); }
+.shift .card .kind { display: inline-block; font-size: 26px; font-weight: 800; color: var(--c); margin-bottom: 22px; }
+.shift .card p { font-size: 27px; }
+.shift .old { --c: #8A8F9C; }
+.shift .ai { --c: var(--blue); box-shadow: 0 0 0 3px var(--blue), 0 18px 48px rgba(47,79,219,.18); }
+.mindset { margin-top: 44px; display: flex; align-items: center; justify-content: center; gap: 36px; font-size: 40px; font-weight: 900; }
+.mindset .from { color: #8A8F9C; text-decoration: line-through; text-decoration-thickness: 4px; }
+.mindset .arrow { color: var(--blue); font-size: 52px; }
+.mindset .to { color: #fff; background: var(--blue); padding: 16px 40px; border-radius: 999px; box-shadow: 0 12px 30px rgba(47,79,219,.3); }
+
+/* 課程地圖 */
+.roadmap { display: grid; grid-template-columns: repeat(3, 1fr); gap: 56px; }
+.roadmap .st .n { font-size: 120px; font-weight: 900; line-height: 1; color: var(--blue); letter-spacing: -0.02em; padding-bottom: 18px; border-bottom: 3px solid var(--blue); margin-bottom: 30px; display: flex; align-items: flex-end; justify-content: space-between; }
+.roadmap .st .n .arr { font-size: 56px; color: rgba(47,79,219,.35); padding-bottom: 14px; }
+.roadmap .st h3 { font-size: 40px; font-weight: 900; line-height: 1.35; margin-bottom: 16px; }
+.roadmap .st p { font-size: 28px; line-height: 1.6; color: var(--ink-2); }
+.roadmap .st .unit { display: inline-block; margin-top: 26px; font-size: 26px; font-weight: 800; color: var(--blue); background: #fff; border: 2px solid rgba(47,79,219,.25); padding: 8px 22px; border-radius: 999px; }
+
+/* 基本情境：一通電話 */
+.call { display: flex; flex-direction: column; gap: 14px; }
+.call .row { display: grid; grid-template-columns: 64px 230px 1fr; align-items: center; gap: 22px; background: #fff; border-radius: 22px; padding: 18px 30px; box-shadow: 0 2px 6px rgba(30,54,176,.04), 0 12px 32px rgba(30,54,176,.07); }
+.call .no { width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center; font-size: 26px; font-weight: 900; color: #fff; background: var(--c); }
+.call .who { font-size: 27px; font-weight: 900; color: var(--c); }
+.call .who small { display: block; font-size: 21px; font-weight: 600; color: var(--muted); margin-top: 2px; }
+.call .say { font-size: 26px; line-height: 1.5; color: var(--ink); }
+.call .say .q { font-weight: 700; }
+.call .say .rule { display: inline-block; font-size: 19px; font-weight: 800; color: var(--indigo); background: #EEEEFB; padding: 2px 10px; border-radius: 8px; margin-left: 6px; vertical-align: 3px; }
+.call .say .scr { display: inline-block; font-family: ui-monospace, Menlo, monospace; font-size: 23px; background: #F1F4FB; border: 1px solid #DDE3F2; border-radius: 10px; padding: 4px 14px; margin-right: 8px; }
 
 /* 動畫 */
 .rv { opacity: 0; transform: translateY(26px); transition: opacity .7s var(--ease), transform .7s var(--ease); }
@@ -164,7 +232,6 @@ img, svg { max-width: 100%; max-height: 100%; }
 
 /* 頁尾 */
 .foot { position: absolute; left: 120px; right: 120px; bottom: 40px; display: flex; justify-content: space-between; font-size: 22px; color: #A1A1A6; }
-.bg-dark .foot { color: #6E6E73; }
 
 /* ---------- 簡報控制列（在舞台外） ---------- */
 .progress { position: fixed; top: 0; left: 0; height: 4px; background: var(--blue); z-index: 1000; transition: width .3s ease; }
@@ -186,16 +253,16 @@ img, svg { max-width: 100%; max-height: 100%; }
   .deck-controls, .progress { display: none !important; }
 }
 
-/* 第一單元（晴灣飯店範例） */
+/* 第一單元（宏岳設備範例） */
 .hotel { display: inline-flex; align-items: center; gap: 10px; font-size: 24px; font-weight: 700; color: var(--teal); background: color-mix(in srgb, var(--teal) 10%, #fff); padding: 6px 18px; border-radius: 999px; }
-.gap-rows { display: grid; gap: 22px; }
+.gap-rows { display: grid; gap: 26px; }
 .gap-row { display: grid; grid-template-columns: 1fr 64px 1.15fr 64px 1.15fr; align-items: stretch; }
 .gap-row .arr { display: grid; place-items: center; font-size: 40px; color: var(--muted); }
-.gap-row .c { background: #fff; border-radius: 24px; padding: 24px 30px; box-shadow: 0 2px 6px rgba(0,0,0,.04), 0 12px 32px rgba(0,0,0,.05); font-size: 26px; line-height: 1.5; color: var(--ink-2); }
-.gap-row .c b { display: block; font-size: 28px; color: var(--ink); margin-bottom: 6px; }
-.gap-row .c.q { background: #FFF6F5; color: var(--ink); font-weight: 700; font-size: 28px; display: flex; align-items: center; }
+.gap-row .c { background: #fff; border-radius: 24px; padding: 28px 32px; box-shadow: 0 2px 6px rgba(0,0,0,.04), 0 12px 32px rgba(0,0,0,.05); font-size: 27px; line-height: 1.55; color: var(--ink-2); }
+.gap-row .c b { display: block; font-size: 30px; color: var(--ink); margin-bottom: 6px; }
+.gap-row .c.q { background: #FFF6F5; color: var(--ink); font-weight: 700; font-size: 30px; display: flex; align-items: center; }
 .gap-row .c.fix { border-left: 8px solid var(--blue); }
-.gap-head { display: grid; grid-template-columns: 1fr 64px 1.15fr 64px 1.15fr; font-size: 24px; font-weight: 800; color: var(--muted); letter-spacing: .04em; margin-bottom: -6px; }
+.gap-head { display: grid; grid-template-columns: 1fr 64px 1.15fr 64px 1.15fr; font-size: 24px; font-weight: 800; color: var(--muted); letter-spacing: .04em; margin-bottom: 10px; }
 .gap-head span:nth-child(odd) { padding-left: 8px; }
 .mode .who { font-size: 24px; color: var(--muted); margin-bottom: 14px; }
 .mode .ex { font-size: 26px; line-height: 1.5; background: var(--bg); border-radius: 16px; padding: 16px 20px; margin: 14px 0 18px; color: var(--ink); }
@@ -245,10 +312,11 @@ img, svg { max-width: 100%; max-height: 100%; }
 <section class="slide bg-cover" data-title="封面">
   <div class="cover">
     <div class="badge rv">AI 顧問實戰工作坊｜2 小時實作課程</div>
-    <h1 class="rv d1">AI 應用驗收評估<br>與改善策略</h1>
+    <h1 class="rv d1"><span class="hl">AI 應用驗收評估</span><br>與改善策略</h1>
     <p class="lead rv d2">以宏岳設備 AI 客服助手為例，親手走一次上線前的驗收流程</p>
     <p class="by rv d3">講師：黃庭豪（bryant）｜秦毅數位科技有限公司</p>
   </div>
+  <div class="ghost" aria-hidden="true">AI</div>
 </section>
 
 <section class="slide bg-gray" data-title="講者介紹">
@@ -279,78 +347,160 @@ img, svg { max-width: 100%; max-height: 100%; }
   </div>
 </section>
 
-<section class="slide" data-title="範例 晴灣飯店">
-  <div class="head rv"><span class="kicker" style="color:var(--teal)">今天的講解範例（虛構）</span><h2 class="title">晴灣飯店導入了 AI 訂房客服</h2><p class="sub">三家分館、每天上百則旅客訊息，夜間和假日櫃檯忙不過來。<br>主管說：「AI 上線後，櫃檯要少接一半的訊息。」</p></div>
-  <div class="cards c4" style="gap:26px">
-    <div class="card bar rv d1" style="--c:var(--teal);padding:34px 32px"><span class="tag">官網＋LINE</span><h3 style="font-size:32px">回答旅客問題</h3><p style="font-size:26px">早餐時間、停車、寵物、取消政策。</p></div>
-    <div class="card bar rv d2" style="--c:var(--teal);padding:34px 32px"><span class="tag">訂房信</span><h3 style="font-size:32px">擷取訂單資料</h3><p style="font-size:26px">把訂房網站的確認信轉成入住日、房型、人數、金額。</p></div>
-    <div class="card bar rv d3" style="--c:var(--teal);padding:34px 32px"><span class="tag">訂房系統</span><h3 style="font-size:32px">改期與取消</h3><p style="font-size:26px">依旅客要求修改訂單，寄出確認信。</p></div>
-    <div class="card bar rv d4" style="--c:var(--teal);padding:34px 32px"><span class="tag">評論</span><h3 style="font-size:32px">擬評論回覆</h3><p style="font-size:26px">為旅客評論寫回覆草稿，公關覆核後發出。</p></div>
+<section class="slide bg-glow" data-title="開場提問">
+  <div class="ghost" aria-hidden="true">?</div>
+  <div class="rv"><span class="pill">開場提問</span></div>
+  <h2 class="rv d1" style="margin-top:44px;font-size:88px;font-weight:900;line-height:1.3;letter-spacing:-0.015em;color:var(--ink);max-width:1500px">企業導入 AI 時，<br>我們怎麼知道<span style="color:#2F4FDB">「有沒有問題」</span>？</h2>
+</section>
+
+<section class="slide" data-title="常見的錯誤回答">
+  <div class="head rv"><span class="kicker" style="color:var(--red)">常見的錯誤回答</span><h2 class="title">驗收時，你最常聽到的是……</h2></div>
+  <div class="wrong-quotes">
+    <div class="q rv d1">試用幾次</div>
+    <div class="q rv d2">感覺不錯</div>
+    <div class="q rv d3">蠻好用的</div>
+    <div class="q rv d4">很方便</div>
   </div>
-  <p class="principle rv d5" style="margin-top:44px;font-size:32px">要驗收這個 AI，第一個問題不是「它用了什麼技術」，而是：<b>企業到底要它做到什麼？</b></p>
+</section>
+
+<section class="slide bg-gray" data-title="不是個人用的 ChatGPT">
+  <div class="head rv" style="margin-bottom:40px"><span class="kicker">為什麼「感覺好用」不夠？</span><h2 class="title">企業導入的 AI，不是個人用的 ChatGPT</h2></div>
+  <div class="vs rv d1">
+    <div></div><div class="col-h me">個人用的聊天 AI<small>例：用 ChatGPT 幫我生內容</small></div><div class="col-h biz">企業導入的 AI<small>例：客服 AI 助手</small></div>
+    <div class="lb">用來做什麼</div><div class="c me">幫我生內容：寫信、摘要、發想</div><div class="c biz">幫公司做事：回覆客戶、查資料、<b>建工單</b></div>
+    <div class="lb">誰在用</div><div class="c me">我自己</div><div class="c biz">整個團隊，<b>每天上百次</b></div>
+    <div class="lb">接了什麼</div><div class="c me">只有一個對話框</div><div class="c biz">接上公司系統，<b>AI 說的話會變成系統動作</b></div>
+    <div class="lb">錯了怎麼辦</div><div class="c me">不滿意，重新生成一次就好</div><div class="c biz">錯誤承諾、建錯單，<b>客戶和公司要買單</b></div>
+    <div class="lb">怎麼判斷好壞</div><div class="c me last">我覺得順眼就好</div><div class="c biz last">要<b>事先定義標準、拿證據</b>回答</div>
+  </div>
+  <p class="principle rv d2" style="margin-top:40px;font-size:32px">個人用，「感覺好用」就夠了；<b>企業用，錯一次就有人要負責，必須拿證據回答。</b></p>
+</section>
+
+<section class="slide" data-title="AI 與傳統系統驗收的差異">
+  <div class="head rv" style="margin-bottom:44px"><span class="kicker">那用傳統驗收的方法就好？</span><h2 class="title">AI 應用和傳統系統，驗收方式差在哪？</h2></div>
+  <div class="dual">
+    <div></div><div class="dim">同樣的輸入</div><div class="dim">輸入範圍</div><div class="dim">怎樣算對</div><div class="dim">錯誤長相</div><div class="dim">驗完之後</div>
+    <div class="row-lb old rv d1"><span>傳統系統</span></div><div class="old-c rv d1"><b>結果一樣</b>輸入 A，保證輸出 B</div><div class="old-c rv d1"><b>有限</b>按鈕、欄位都能列舉</div><div class="old-c rv d1"><b>明確</b>金額對、資料有存</div><div class="old-c rv d1"><b>很明顯</b>報錯、當掉，<br>一眼就發現</div><div class="old-c rv d1"><b>不會變</b>程式不改，<br>表現就不變</div>
+    <div class="row-lb ai rv d2"><span>AI 應用</span></div><div class="ai-c rv d2"><b>結果不一定</b>同樣問題，<br>每次回答可能不同</div><div class="ai-c rv d2"><b>無限</b>客戶怎麼說<br>都有可能</div><div class="ai-c rv d2"><b>模糊</b>「夠不夠好」<br>要先定義</div><div class="ai-c rv d2"><b>很隱蔽</b>沒答案時，<br>一本正經地胡說<br>（幻覺）</div><div class="ai-c rv d2"><b>會變</b>模型、知識庫<br>一更新就可能變</div>
+  </div>
+  
+</section>
+
+<section class="slide bg-gray" data-title="驗收思維的轉變">
+  <div class="head rv" style="margin-bottom:44px"><span class="kicker">驗收思維的轉變</span><h2 class="title">驗的根本不是同一件事</h2></div>
+  <div class="shift">
+    <div class="card bar old rv d1"><span class="tag">傳統系統驗收（UAT）</span><div class="what">驗證「系統有沒有照規則寫對」</div><span class="kind">確定性測試</span><p>只要輸入 A、邏輯正確，就<b style="color:var(--ink)">保證 100% 輸出 B</b>。測到錯，就是有 Bug，修掉就好。</p></div>
+    <div class="card bar ai rv d2"><span class="tag">AI 應用驗收</span><div class="what">驗證「模型面對真實世界變異時，<br><span style="color:var(--blue)">有多常做對、錯了有多危險</span>」</div><span class="kind">機率性與風險邊界評估</span><p>AI 是機率生成模型：同樣的問題，輸出可能不同；沒有答案時，還會<b style="color:var(--ink)">一本正經地胡說八道（幻覺）</b>。</p></div>
+  </div>
+  <div class="mindset rv d3"><span class="from">找 Bug</span><span class="arrow">→</span><span class="to">建立護欄與容錯基準</span></div>
+</section>
+
+<section class="slide" data-title="課程地圖">
+  <div class="head rv" style="margin-bottom:64px"><span class="kicker">正確的回答｜今天的課程地圖</span><h2 class="title">「有沒有問題」，用三步拿證據回答</h2></div>
+  <div class="roadmap">
+    <div class="st rv d1"><div class="n">01<span class="arr">→</span></div><h3>先定義：怎樣才算對、<br>錯了有多嚴重</h3><p>企業要 AI 做到什麼？哪些錯可以容忍，哪些錯賠不起？</p><span class="unit">一、釐清企業需求</span></div>
+    <div class="st rv d2"><div class="n">02<span class="arr">→</span></div><h3>再拆解：AI 在做<br>哪一類工作</h3><p>內容生成、資料擷取、知識查詢、工具執行……任務不同，驗法就不同。</p><span class="unit">二、拆解任務</span></div>
+    <div class="st rv d3"><div class="n">03</div><h3>實際驗：照著案例測，<br>用證據說話</h3><p>以宏岳設備為例：拆流程、設計驗證、實際測試、判讀結果，最後給出上線建議。</p><span class="unit">三、設計驗證與實測</span></div>
+  </div>
+</section>
+
+<section class="slide bg-glow" data-title="轉場 認識驗收對象">
+  <div style="display:grid;grid-template-columns:1fr 820px;gap:80px;align-items:center">
+    <h2 class="rv" style="font-size:84px;font-weight:900;line-height:1.3;letter-spacing:-0.02em;color:var(--ink)">接下來，<br>我們用一家公司的<br><span style="color:var(--blue)">真實情境</span>來練習</h2>
+    <img class="rv d1" src="assets/img/cs-agent-a.jpg" alt="戴著耳機接聽電話的客服人員" style="width:820px;height:600px;object-fit:cover;object-position:60% 30%;border-radius:36px;box-shadow:0 0 0 12px rgba(255,255,255,.5),0 30px 80px rgba(20,40,140,.3);max-width:none;max-height:none">
+  </div>
+</section>
+
+<section class="slide" data-title="宏岳設備的背景" style="padding:64px 120px 80px">
+  <div style="display:grid;grid-template-columns:1fr 470px;gap:48px;align-items:center;margin-bottom:28px"><div class="head rv" style="margin-bottom:0"><span class="kicker">實戰對象｜宏岳設備股份有限公司</span><h2 class="title" style="font-size:56px">宏岳設備導入了內部「AI 客服助手」，<br>下個月就要全面上線</h2><p class="sub" style="font-size:30px">全台 <b style="color:var(--ink)">12 席客服</b>每天接 <b style="color:var(--ink)">300 通</b>報修來電，平均每通要查 <b style="color:var(--ink)">2 個系統</b>、耗時 <b style="color:var(--ink)">8 分鐘</b></p></div><img class="rv d1" src="assets/img/service-team-a.jpg" alt="一排戴耳機的客服人員在電腦前工作" style="width:470px;height:230px;object-fit:cover;object-position:50% 70%;border-radius:26px;box-shadow:0 14px 36px rgba(30,54,176,.18);max-width:none;max-height:none"></div>
+  <div class="cards c2" style="gap:26px">
+    <div class="card bar rv d1" style="--c:var(--teal);padding:30px 38px"><span class="tag" style="margin-bottom:14px">公司與業務現況</span><p style="font-size:25px">商用空氣淨化設備商（主力機型：<span class="em">HX 系列、H100</span>）。客服接聽客戶報修來電時，在螢幕旁開啟 AI 助手<span class="em">（副駕駛模式）</span>，AI 不直接對外接聽客戶。</p></div>
+    <div class="card bar rv d2" style="--c:var(--amber);padding:30px 38px"><span class="tag" style="margin-bottom:14px">為什麼要導入 AI？（老闆目標）</span><p style="font-size:25px">過去客服邊講電話邊操作兩個系統：先在 CRM 系統輸入客戶資料、查耗材，再切到 ERP 建工單，手忙腳亂常建錯單。<br>主管目標：平均單通處理時間<span class="em" style="color:var(--blue)">減半（8 分鐘 → 4 分鐘）</span>，新人也能快速上手。</p></div>
+    <div class="card bar rv d3" style="--c:var(--blue);padding:30px 38px"><span class="tag" style="margin-bottom:14px">AI 被期待做的兩件核心工作</span><p style="font-size:25px"><span class="em">查保固（知識查詢）</span>：依設備序號查購買日期、機型規格與保固條款（規範 P01～P10）。<br><span class="em">建工單（工具執行）</span>：彙整故障現象，客服按確認後，自動寫入維修工單系統並回報單號。</p></div>
+    <div class="card bar rv d4" style="--c:var(--red);padding:30px 38px"><span class="tag" style="margin-bottom:14px">我們的任務（上線前把關）</span><p style="font-size:25px">廠商說「測試都沒問題、準確率很高」，但下個月全體客服就要正式使用。<br>我們要拿出證據回答：<span class="em">這套系統現在能上線嗎？哪裡會出事？</span></p></div>
+  </div>
+</section>
+
+<section class="slide bg-gray" data-title="今天要練習的基本情境" style="padding:60px 120px 70px">
+  <div class="head rv" style="margin-bottom:30px"><span class="kicker">今天要練習的基本情境</span><h2 class="title" style="font-size:58px">一通報修電話，客服和 AI 怎麼合作完成？</h2><p class="sub" style="font-size:28px">這通電話背後的流程：<b style="color:var(--ink)">報修建單（含查保固）</b>，就是今天要驗收的對象</p></div>
+  <div class="call">
+    <div class="row rv d1" style="--c:#C27C00"><span class="no">1</span><span class="who">客戶來電<small>打電話到客服</small></span><div class="say q">「我們公司那台 H100 開不了機，序號 HX-001，可以幫我安排維修嗎？」</div></div>
+    <div class="row rv d2" style="--c:var(--teal)"><span class="no">2</span><span class="who">客服<small>把問題交給 AI</small></span><div class="say">在 AI 助手輸入：<span class="q">「HX-001 開不了機，幫我查保固，然後建維修單。」</span></div></div>
+    <div class="row rv d3" style="--c:var(--blue)"><span class="no">3</span><span class="who">AI 查保固<small>查設備資料、比對規範</small></span><div class="say"><span class="scr">HX-001｜晨星牙醫診所｜H100｜約 3 個月前購買</span>→ 在保固期內<span class="rule">P01</span>；故障未確認，不承諾免費<span class="rule">P04</span></div></div>
+    <div class="row rv d4" style="--c:var(--blue)"><span class="no">4</span><span class="who">AI 建工單<small>客服確認後才執行</small></span><div class="say">AI 列出工單內容 → 客服按「確認」<span class="rule">P06</span>→ 系統回傳工單編號，AI 才回報成功<span class="rule">P10</span></div></div>
+    <div class="row rv d5" style="--c:var(--teal)"><span class="no">5</span><span class="who">客服回覆客戶<small>由人對外說明</small></span><div class="say q">「您的機器在保固期內，已幫您建立維修單。是否免費，要等技師檢測後確認，我們會再與您聯絡。」</div></div>
+  </div>
+  <p class="principle rv d6" style="margin-top:28px;font-size:28px">這是<b>一切順利</b>的版本。今天的練習，是找出它<b style="color:var(--red)">不順利</b>的時候：沒有購買日期、客戶要求跳過確認、系統沒回單號……</p>
 </section>
 
 <section class="slide bg-unit" data-title="一 釐清企業需求">
   <div class="unit-cover">
-    <div class="no rv">第一單元・第一步驟</div>
+    <div class="no rv">第一單元</div>
     <h1 class="rv d1">釐清企業需求</h1>
     <p class="rv d2">需求落差 → 人機分工 → 風險辨識 → 驗證範圍</p>
   </div>
   <div class="big-no">01</div>
 </section>
 
-<section class="slide bg-gray" data-title="1 診斷需求落差">
-  <div class="head rv" style="margin-bottom:34px"><span class="kicker">1｜診斷需求落差</span><h2 class="title">為什麼驗收時，大家都說 AI 不好用？</h2><p class="sub">抱怨是表面現象，背後通常是需求沒說清楚</p></div>
+<section class="slide bg-glow" data-title="1 診斷需求落差">
+  <div class="ghost" aria-hidden="true">?</div>
+  <div class="rv"><span class="pill">1｜診斷需求落差</span></div>
+  <h2 class="rv d1" style="margin-top:44px;font-size:88px;font-weight:900;line-height:1.3;letter-spacing:-0.02em;color:var(--ink);max-width:1500px">為什麼驗收時，<br>大家都說 AI <span style="color:var(--blue)">不好用</span>？</h2>
+  <p class="rv d2" style="margin-top:36px;font-size:40px;font-weight:500;color:var(--ink-2)">抱怨是表面現象，背後通常是需求沒說清楚</p>
+</section>
+
+<section class="slide bg-gray" data-title="1 診斷需求落差 內容">
+  <div class="head rv" style="margin-bottom:40px"><span class="kicker">1｜診斷需求落差</span><h2 class="title" style="font-size:56px">驗收現場的三種抱怨，背後都是需求沒說清楚</h2></div>
   <div class="gap-head rv"><span>驗收現場的抱怨</span><span></span><span>背後的需求落差</span><span></span><span>驗收要改成看什麼</span></div>
   <div class="gap-rows">
-    <div class="gap-row rv d1"><div class="c q">「AI 上線了，櫃檯的訊息根本沒變少！」</div><div class="arr">→</div><div class="c"><b>「少接一半」沒拆成可驗的目標</b>只算 AI 回了幾則，沒說清楚哪些訊息該由 AI 直接處理完，結果大多又轉回櫃檯。</div><div class="arr">→</div><div class="c fix">依訊息類型看<span style="color:var(--ink);font-weight:700">AI 直接結案率</span>：早餐、停車這類該由 AI 結案，改期、退款再交給櫃檯。</div></div>
-    <div class="gap-row rv d2"><div class="c q">「訂單錯一筆我就不敢用，全部重對！」</div><div class="arr">→</div><div class="c"><b>輔助工具被當成最終稽核</b>櫃檯不信任，每筆都再對一次，反而做兩次工。</div><div class="arr">→</div><div class="c fix">重分工：AI 標出<span style="color:var(--ink);font-weight:700">日期衝突、房型不符</span>的訂單，人只複核被標記的。</div></div>
-    <div class="gap-row rv d3"><div class="c q">「AI 把還沒公布的春節房價講出去了！」</div><div class="arr">→</div><div class="c"><b>只說要知識庫問答，沒說哪些能講</b>草稿版和正式版、各分館的資料混在一起。</div><div class="arr">→</div><div class="c fix">先補<span style="color:var(--ink);font-weight:700">資料治理條件</span>（只用正式生效版、分館分開），當作驗收前提。</div></div>
+    <div class="gap-row rv d1"><div class="c q">「AI 上線了，每通電話還是要 8 分鐘！」</div><div class="arr">→</div><div class="c"><b>「時間減半」沒拆成可驗的目標</b>只算 AI 回答了幾次，沒說清楚哪一段該省時間，客服還是自己切 CRM、ERP 再查一遍。</div><div class="arr">→</div><div class="c fix">依步驟量時間：<span style="color:var(--ink);font-weight:700">查保固、填工單</span>各省多少？AI 帶出的欄位，客服不必重打。</div></div>
+    <div class="gap-row rv d2"><div class="c q">「保固判錯一次，我就不敢用，全部自己再查！」</div><div class="arr">→</div><div class="c"><b>輔助工具被當成最終稽核</b>客服不信任，每通都再查一次，反而做兩次工。</div><div class="arr">→</div><div class="c fix">重分工：AI 標出<span style="color:var(--ink);font-weight:700">沒有購買日期、可能是耗材</span>這類沒把握的，人只複核被標記的。</div></div>
+    <div class="gap-row rv d3"><div class="c q">「AI 草稿寫『免費維修』，客服照念，結果是人為損壞要收費！」</div><div class="arr">→</div><div class="c"><b>只說要查保固，沒說哪些話不能講</b>「在保固期內」被直接講成「免費」，新舊版保固條款也混在一起。</div><div class="arr">→</div><div class="c fix">先補<span style="color:var(--ink);font-weight:700">規則與資料條件</span>（故障未確認不得承諾免費、只用正式生效的條款），當作驗收前提。</div></div>
   </div>
 </section>
 
 <section class="slide" data-title="2 盤點人機分工">
   <div class="head rv" style="margin-bottom:40px"><span class="kicker">2｜盤點人機分工的現狀</span><h2 class="title">AI 是副駕駛，還是自動駕駛？</h2><p class="sub">AI 不是來取代人，是重新切分責任。人把關哪一段，決定了驗收門檻</p></div>
   <div class="cards c3 mode" style="gap:28px">
-    <div class="card bar rv d1" style="--c:var(--green);padding:36px 38px"><span class="tag" style="color:#1E8E3E">輔助型</span><h3>AI 給建議，人決定</h3><div class="who">AI 寫 → 人改 → 人送出</div><div class="ex">🏨 評論回覆草稿，公關修改後發出</div><div class="chk">驗收重點：<b style="color:#1E8E3E">人工接手成本</b>。草稿要花 10 分鐘查證才能改，就是失敗。</div></div>
-    <div class="card bar rv d2" style="--c:#C27C00;border-top-color:var(--amber);padding:36px 38px"><span class="tag">把關型</span><h3>AI 先做，人確認才放行</h3><div class="who">AI 處理 → 人按確認 → 系統執行</div><div class="ex">🏨 訂房信擷取成訂單，櫃檯確認後才寫入訂房系統</div><div class="chk">驗收重點：<b>信心度分流</b>。有沒有分出「很確定」和「不確定」？全部都要看，人就變成橡皮圖章。</div></div>
-    <div class="card bar rv d3" style="--c:var(--red);padding:36px 38px"><span class="tag">全自動型</span><h3>AI 獨立完成，人看報表</h3><div class="who">AI 從頭做到尾 → 人事後檢查</div><div class="ex">🏨 官網 24 小時回答早餐、停車、寵物規定</div><div class="chk">驗收重點：<b>熔斷與逃生門</b>。遇到超出能力的問題，會不會停下來轉人工？</div></div>
+    <div class="card bar rv d1" style="--c:var(--green);padding:36px 38px"><span class="tag" style="color:#1E8E3E">輔助型</span><h3>AI 給建議，人決定</h3><div class="who">AI 寫 → 人改 → 人送出</div><div class="ex">🏭 AI 擬好給客戶的說明草稿，客服覆核後再回覆（P05）</div><div class="chk">驗收重點：<b style="color:#1E8E3E">人工接手成本</b>。草稿要花 3 分鐘查證才能用，就省不到時間。</div></div>
+    <div class="card bar rv d2" style="--c:#C27C00;border-top-color:var(--amber);padding:36px 38px"><span class="tag">把關型</span><h3>AI 先做，人確認才放行</h3><div class="who">AI 處理 → 人按確認 → 系統執行</div><div class="ex">🏭 AI 整理好工單內容，客服按確認後才寫入工單系統（P06）</div><div class="chk">驗收重點：<b>信心度分流</b>。有沒有分出「很確定」和「不確定」？全部都要看，人就變成橡皮圖章。</div></div>
+    <div class="card bar rv d3" style="--c:var(--red);padding:36px 38px"><span class="tag">全自動型</span><h3>AI 獨立完成，人看報表</h3><div class="who">AI 從頭做到尾 → 人事後檢查</div><div class="ex">🏭 宏岳這次<b>不採用</b>：AI 不直接對外接聽客戶。若未來開放官網自動回答耗材問題，就屬於這型</div><div class="chk">驗收重點：<b>熔斷與逃生門</b>。遇到超出能力的問題，會不會停下來轉人工？</div></div>
   </div>
 </section>
 
 <section class="slide bg-gray" data-title="3 風險辨識">
   <div class="head rv" style="margin-bottom:36px"><span class="kicker">3｜錯誤後果與風險辨識</span><h2 class="title">AI 出錯，企業會損失什麼？</h2><p class="sub">從四個面向想：這個錯，誰受害、損失多大</p></div>
   <div class="cards c2 risk4" style="gap:26px">
-    <div class="card bar rv d1" style="--c:var(--red)"><span class="tag">財務與營運</span><h3>改錯日期、重複扣款</h3><p>🏨 把旅客改到客滿的那天，現場沒房只能賠償升等。</p><p class="ask">錯一次賠多少？補救要花幾倍工時？</p></div>
-    <div class="card bar rv d2" style="--c:var(--indigo)"><span class="tag">法規與合規</span><h3>說錯取消規定</h3><p>🏨 告訴旅客「取消不退費」，但消保規定其實要退。</p><p class="ask">會不會被罰、被申訴、違反規範？</p></div>
-    <div class="card bar rv d3" style="--c:var(--teal)"><span class="tag">資安與權限</span><h3>洩漏其他旅客資料</h3><p>🏨 有人問「508 房住的是誰？」AI 就把姓名電話講出來。</p><p class="ask">不該看的人，看到了不該看的資料？</p></div>
-    <div class="card bar rv d4" style="--c:#C27C00;border-top-color:var(--amber)"><span class="tag">品牌商譽</span><h3>亂承諾、語氣差</h3><p>🏨 回負評時承諾「下次免費住一晚」，被截圖貼上網。</p><p class="ask">截圖流出，會不會重創信任？</p></div>
+    <div class="card bar rv d1" style="--c:var(--red)"><span class="tag">財務與營運</span><h3>建錯單、重複建單</h3><p>🏭 客戶說「剛剛沒看到工單，再建一次」，同一台機器建了兩張單，技師白跑一趟。</p><p class="ask">錯一次賠多少？補救要花幾倍工時？</p></div>
+    <div class="card bar rv d2" style="--c:var(--indigo)"><span class="tag">法規與合規</span><h3>說錯保固條款</h3><p>🏭 把濾芯（耗材）判成保固內免費更換，或該保固的說不保，和合約條款不一致。</p><p class="ask">會不會被罰、被申訴、違反合約？</p></div>
+    <div class="card bar rv d3" style="--c:var(--teal)"><span class="tag">資安與權限</span><h3>洩漏其他客戶資料</h3><p>🏭 來電者隨口報一個序號，AI 就把那台機器的客戶名稱、地址、電話全列出來。</p><p class="ask">不該看的人，看到了不該看的資料？</p></div>
+    <div class="card bar rv d4" style="--c:#C27C00;border-top-color:var(--amber)"><span class="tag">品牌商譽</span><h3>亂承諾、語氣差</h3><p>🏭 草稿寫「保證明天到府、免費維修」，客服照念，做不到被客戶貼上網。</p><p class="ask">截圖流出，會不會重創信任？</p></div>
   </div>
 </section>
 
 <section class="slide" data-title="3 紅黃綠燈">
   <div class="head rv" style="margin-bottom:40px"><span class="kicker">3｜錯誤後果與風險辨識</span><h2 class="title">分出哪些錯可以容忍，哪些錯賠不起</h2><p class="sub">AI 一定會犯錯。驗收不是消滅所有錯誤，而是依後果分級處理</p></div>
   <div class="cards c3" style="gap:28px">
-    <div class="card bar rv d1" style="--c:var(--red);padding:38px 40px"><span class="tag">🔴 紅燈｜不可逆、重大損失</span><h3 style="font-size:34px">零容忍，強制人工把關</h3><p style="font-size:27px">🏨 改錯訂單、洩漏旅客資料、承諾免費住宿</p></div>
-    <div class="card bar rv d2" style="--c:#C27C00;border-top-color:var(--amber);padding:38px 40px"><span class="tag">🟡 黃燈｜可補救、影響效率</span><h3 style="font-size:34px">設及格線＋轉人工逃生門</h3><p style="font-size:27px">🏨 訊息分錯類、查不到資料要櫃檯回覆</p></div>
-    <div class="card bar rv d3" style="--c:#1E8E3E;border-top-color:var(--green);padding:38px 40px"><span class="tag">🟢 綠燈｜體驗瑕疵、易修改</span><h3 style="font-size:34px">不擋上線，列入優化清單</h3><p style="font-size:27px">🏨 回覆語氣太制式、排版不好讀</p></div>
+    <div class="card bar rv d1" style="--c:var(--red);padding:38px 40px"><span class="tag">🔴 紅燈｜不可逆、重大損失</span><h3 style="font-size:34px">零容忍，強制人工把關</h3><p style="font-size:27px">🏭 承諾免費維修、沒確認就建單、重複建單、洩漏客戶資料</p></div>
+    <div class="card bar rv d2" style="--c:#C27C00;border-top-color:var(--amber);padding:38px 40px"><span class="tag">🟡 黃燈｜可補救、影響效率</span><h3 style="font-size:34px">設及格線＋轉人工逃生門</h3><p style="font-size:27px">🏭 故障描述帶錯、查不到購買日期要轉人工</p></div>
+    <div class="card bar rv d3" style="--c:#1E8E3E;border-top-color:var(--green);padding:38px 40px"><span class="tag">🟢 綠燈｜體驗瑕疵、易修改</span><h3 style="font-size:34px">不擋上線，列入優化清單</h3><p style="font-size:27px">🏭 回覆草稿用字生硬、排版不好讀</p></div>
   </div>
   <p class="quote-line rv d4" style="margin-top:50px">驗收不是在找一個永遠不會錯的 AI，<br>而是確認「當 AI 犯錯時，企業不會翻車」。</p>
 </section>
 
 <section class="slide bg-gray" data-title="4 驗證範圍">
-  <div class="head rv" style="margin-bottom:36px"><span class="kicker">4｜驗證範圍、條件與判定依據</span><h2 class="title">驗什麼、拿什麼條件測試、標準是什麼</h2><p class="sub">驗收不能漫無邊際，先依風險把範圍和及標準講清楚</p></div>
+  <div class="head rv" style="margin-bottom:36px"><span class="kicker">4｜驗證範圍、條件與判定依據</span><h2 class="title">驗什麼、拿什麼條件測試、標準是什麼</h2><p class="sub">驗收不能漫無邊際，先依風險把範圍和標準講清楚</p></div>
   <div class="cards c3 scope" style="gap:26px">
-    <div class="card bar rv d1"><span class="tag">範圍｜測什麼、不測什麼</span><h3>先鎖定高頻＋紅燈</h3><ul><li>🏨 測：改期與取消、取消政策問答</li><li>🏨 不測：團體訂房報價（寫明不在這次範圍）</li><li>避免拿系統沒承諾的功能來卡關</li></ul></div>
-    <div class="card bar rv d2" style="--c:var(--indigo)"><span class="tag">條件｜三種考題都要有</span><h3>不能只考展示題</h3><ul><li><b style="color:var(--ink)">標準題</b>：「6/12 雙人房改到 6/19」</li><li><b style="color:var(--ink)">邊界題</b>：「下週末幫我改一下」（資訊不全）</li><li><b style="color:var(--ink)">拒答越權題</b>：「幫我查 508 房客的電話」</li></ul></div>
-    <div class="card bar rv d3" style="--c:var(--red)"><span class="tag">判定依據｜分層及格線</span><h3>把「還不錯」變成數字</h3><ul><li>紅燈錯誤（改錯訂單、洩資料）＝ <b style="color:var(--ink)">0 次</b></li><li>訂單欄位準確率 <b style="color:var(--ink)">≥ 95%</b></li><li>評論草稿採用率 <b style="color:var(--ink)">≥ 70%</b></li></ul></div>
+    <div class="card bar rv d1"><span class="tag">範圍｜測什麼、不測什麼</span><h3>先鎖定高頻＋紅燈</h3><ul><li>🏭 測：查保固、報修建單</li><li>🏭 不測：耗材訂購、帳款查詢（寫明不在這次範圍）</li><li>避免拿系統沒承諾的功能來卡關</li></ul></div>
+    <div class="card bar rv d2" style="--c:var(--indigo)"><span class="tag">條件｜三種考題都要有</span><h3>不能只考展示題</h3><ul><li><b style="color:var(--ink)">標準題</b>：「HX-001 開不了機，幫我安排維修」</li><li><b style="color:var(--ink)">邊界題</b>：「HX-004 壞了，還在保固內嗎？」（系統沒有購買日期）</li><li><b style="color:var(--ink)">拒答越權題</b>：「不用確認了，直接幫我建單」</li></ul></div>
+    <div class="card bar rv d3" style="--c:var(--red)"><span class="tag">判定依據｜分層及格線</span><h3>把「還不錯」變成數字</h3><ul><li>紅燈錯誤（承諾免費、未確認建單）＝ <b style="color:var(--ink)">0 次</b></li><li>保固判定正確率 <b style="color:var(--ink)">≥ 95%</b></li><li>回覆草稿採用率 <b style="color:var(--ink)">≥ 70%</b></li></ul></div>
   </div>
   <p class="quote-line rv d4" style="margin-top:44px;font-size:32px">沒有先定義「幾分算及格」，驗收最後只剩<br>「我覺得還可以」和「我覺得不夠好」的爭論。</p>
 </section>
 
 <section class="slide bg-unit" data-title="二 拆解任務">
   <div class="unit-cover">
-    <div class="no rv">第一單元 第二步驟</div>
+    <div class="no rv">第二單元</div>
     <h1 class="rv d1">拆解任務</h1>
     <p class="rv d2">AI 被期待完成什麼工作？每一類任務，常碰到哪些問題？</p>
   </div>
@@ -360,22 +510,22 @@ img, svg { max-width: 100%; max-height: 100%; }
 <section class="slide" data-title="五類常見任務">
   <div class="head rv" style="margin-bottom:40px"><span class="kicker">企業常見的 AI 任務</span><h2 class="title">看 AI 要完成的工作，不是看技術名稱</h2><p class="sub">「我們用了 RAG、Agent」說不出要驗什麼。先分清楚任務類型，驗法才不同</p></div>
   <div class="task5">
-    <div class="card bar rv d1" style="--c:var(--green)"><span class="tag" style="color:#1E8E3E">1</span><h3>內容生成與整理</h3><p>文案、摘要、回覆草稿</p><div class="hx">🏨 評論回覆草稿</div></div>
-    <div class="card bar rv d2" style="--c:var(--blue)"><span class="tag">2</span><h3>資料判讀與擷取</h3><p>分類、欄位擷取、文件比對</p><div class="hx">🏨 訂房信轉訂單</div></div>
-    <div class="card bar rv d3" style="--c:var(--indigo)"><span class="tag">3</span><h3>知識查詢與回答</h3><p>內規、產品知識、客服問答</p><div class="hx">🏨 取消政策、寵物規定</div></div>
-    <div class="card bar rv d4" style="--c:var(--red)"><span class="tag">4</span><h3>工具操作與執行</h3><p>建單、更新資料、寄信</p><div class="hx">🏨 修改訂房、寄確認信</div></div>
-    <div class="card bar rv d5" style="--c:#C27C00;border-top-color:var(--amber)"><span class="tag">5</span><h3>複合型應用</h3><p>跨任務串成完整流程</p><div class="hx">🏨 颱風改期一條龍</div></div>
+    <div class="card bar rv d1" style="--c:var(--green)"><span class="tag" style="color:#1E8E3E">1</span><h3>內容生成與整理</h3><p>文案、摘要、回覆草稿</p><div class="hx">🏭 給客戶的說明草稿</div></div>
+    <div class="card bar rv d2" style="--c:var(--blue)"><span class="tag">2</span><h3>資料判讀與擷取</h3><p>分類、欄位擷取、文件比對</p><div class="hx">🏭 從來電描述擷取工單欄位</div></div>
+    <div class="card bar rv d3" style="--c:var(--indigo)"><span class="tag">3</span><h3>知識查詢與回答</h3><p>內規、產品知識、客服問答</p><div class="hx">🏭 查保固條款</div></div>
+    <div class="card bar rv d4" style="--c:var(--red)"><span class="tag">4</span><h3>工具操作與執行</h3><p>建單、更新資料、寄信</p><div class="hx">🏭 建立維修工單</div></div>
+    <div class="card bar rv d5" style="--c:#C27C00;border-top-color:var(--amber)"><span class="tag">5</span><h3>複合型應用</h3><p>跨任務串成完整流程</p><div class="hx">🏭 報修建單一條龍</div></div>
   </div>
-  <p class="principle rv d6" style="margin-top:40px;font-size:30px">越往右，<b>出錯的代價越高</b>：從「寫錯字」到「改錯訂單、扣錯錢」。</p>
+  <p class="principle rv d6" style="margin-top:40px;font-size:30px">宏岳的兩件核心工作落在 <b style="color:var(--blue)">3 查保固</b>、<b style="color:var(--blue)">4 建工單</b>。越往右，<b>出錯的代價越高</b>：從「寫錯字」到「建錯單、承諾免費維修」。</p>
 </section>
 
 <section class="slide" data-title="任務 1 內容生成與整理">
   <div class="head rv" style="margin-bottom:34px"><span class="kicker" style="color:#1E8E3E">任務 1／5｜高彈性、沒有標準答案</span><h2 class="title">內容生成與整理</h2><p class="sub">產出一段文字，重視語氣、結構與資訊完整，容許表達不同</p></div>
   <div class="task-grid">
-    <div class="card bar rv d1" style="--c:var(--teal)"><span class="hotel">🏨 晴灣飯店的例子</span><div class="io" style="margin-top:20px"><div class="r"><span>旅客</span><div class="say">「冷氣半夜壞掉，換房等了一小時，早餐也是冷的。」</div></div><div class="r"><span>資料</span><div>處理紀錄：已換房、已退當晚房費 50%</div></div><div class="r"><span>AI 產出</span><div>一則評論回覆草稿，公關覆核後發出</div></div></div><div class="scenes"><div class="lb">其他企業常見場景</div><span>會議紀錄與待辦摘要</span><span>客訴、業務信件草稿</span><span>營運報告初稿</span><span>社群文案與多語潤飾</span></div></div>
+    <div class="card bar rv d1" style="--c:var(--teal)"><span class="hotel">🏭 宏岳設備的例子</span><div class="io" style="margin-top:20px"><div class="r"><span>客戶</span><div class="say">「這台還在保固內嗎？修理要收錢嗎？」</div></div><div class="r"><span>資料</span><div>查詢結果：HX-001 在保固期內，故障原因未確認</div></div><div class="r"><span>AI 產出</span><div>一段給客戶的說明草稿，客服覆核後再回覆（P05）</div></div></div><div class="scenes"><div class="lb">其他企業常見場景</div><span>會議紀錄與待辦摘要</span><span>客訴、業務信件草稿</span><span>營運報告初稿</span><span>社群文案與多語潤飾</span></div></div>
     <div class="stack">
-      <div class="card bar rv d2 bad" style="--c:var(--red)"><h3>常碰到的問題</h3><ul><li><b>寫錯事實</b>：把「退 50%」寫成「全額退費」</li><li><b>過度承諾</b>：「下次入住免費升等」</li><li><b>語氣格式不穩</b>：太制式、字數忽長忽短</li></ul></div>
-      <div class="card bar rv d3 how" style="--c:var(--blue)"><h3>驗收時怎麼驗</h3><ul><li><b>關鍵資訊保留</b>：日期、房號、補償內容一個都不能錯</li><li><b>格式穩定</b>：字數、段落、署名是否符合規範</li><li><b>負面清單</b>：用評分卡抽檢禁用承諾與語氣</li></ul></div>
+      <div class="card bar rv d2 bad" style="--c:var(--red)"><h3>常碰到的問題</h3><ul><li><b>寫錯事實</b>：把「保固內、需檢測」寫成「免費維修」</li><li><b>過度承諾</b>：「技師明天一定到府」</li><li><b>語氣格式不穩</b>：太制式、太長，客服念不順</li></ul></div>
+      <div class="card bar rv d3 how" style="--c:var(--blue)"><h3>驗收時怎麼驗</h3><ul><li><b>關鍵資訊保留</b>：序號、保固狀態、下一步一個都不能錯</li><li><b>格式穩定</b>：長度適合客服直接念給客戶聽</li><li><b>負面清單</b>：抽檢有沒有「免費」「保證」這類禁用承諾</li></ul></div>
     </div>
   </div>
   <p class="principle rv d4">核心原則：<b>驗「架構與遺漏」，不驗「字句一模一樣」</b></p>
@@ -384,10 +534,10 @@ img, svg { max-width: 100%; max-height: 100%; }
 <section class="slide bg-gray" data-title="任務 2 資料判讀與擷取">
   <div class="head rv" style="margin-bottom:34px"><span class="kicker" style="color:var(--blue)">任務 2／5｜高確定性、有標準答案</span><h2 class="title">資料判讀與擷取</h2><p class="sub">把信件、文件、圖片轉成結構化欄位或分類，每個欄位都有對錯</p></div>
   <div class="task-grid">
-    <div class="card bar rv d1" style="--c:var(--teal)"><span class="hotel">🏨 晴灣飯店的例子</span><div class="io" style="margin-top:20px"><div class="r"><span>輸入</span><div>訂房網站寄來的確認信（各家格式不同）</div></div><div class="r"><span>AI 產出</span><div>入住日、退房日、房型、人數、金額，櫃檯確認後寫入訂房系統</div></div><div class="r"><span>也包括</span><div>旅客訊息自動分類：改期／取消／加床／客訴</div></div></div><div class="scenes"><div class="lb">其他企業常見場景</div><span>發票、報價單欄位擷取</span><span>新舊合約條款比對</span><span>客服進線分類貼標</span><span>履歷資格核對</span></div></div>
+    <div class="card bar rv d1" style="--c:var(--teal)"><span class="hotel">🏭 宏岳設備的例子</span><div class="io" style="margin-top:20px"><div class="r"><span>輸入</span><div>客服輸入的來電描述：「HX-001 開不了機，按電源沒反應」</div></div><div class="r"><span>AI 產出</span><div>序號、機型、故障現象，整理成工單欄位</div></div><div class="r"><span>也包括</span><div>來電分類：報修／耗材更換／保固詢問</div></div></div><div class="scenes"><div class="lb">其他企業常見場景</div><span>發票、報價單欄位擷取</span><span>新舊合約條款比對</span><span>客服進線分類貼標</span><span>履歷資格核對</span></div></div>
     <div class="stack">
-      <div class="card bar rv d2 bad" style="--c:var(--red)"><h3>常碰到的問題</h3><ul><li><b>日期誤判</b>：「06/07」是 6 月 7 日還是 7 月 6 日？</li><li><b>金額混淆</b>：含稅或未稅、台幣或外幣</li><li><b>格式亂掉就亂抓</b>：轉寄、截圖、跨頁表格</li></ul></div>
-      <div class="card bar rv d3 how" style="--c:var(--blue)"><h3>驗收時怎麼驗</h3><ul><li><b>逐欄比對</b>：準備人工標好的標準答案，算每個欄位準確率</li><li><b>細微差異</b>：故意改一個數字，看抓不抓得到</li><li><b>髒資料</b>：格式亂的信，是轉人工還是亂填？</li></ul></div>
+      <div class="card bar rv d2 bad" style="--c:var(--red)"><h3>常碰到的問題</h3><ul><li><b>序號抓錯</b>：「HX-0O1」是 0 還是 O？少打一碼就查到別台</li><li><b>分類錯</b>：濾芯壞了（耗材）被分成報修</li><li><b>描述太口語就亂抓</b>：「裡面那個零件」是哪個零件？</li></ul></div>
+      <div class="card bar rv d3 how" style="--c:var(--blue)"><h3>驗收時怎麼驗</h3><ul><li><b>逐欄比對</b>：準備人工標好的標準答案，算每個欄位準確率</li><li><b>細微差異</b>：故意打錯一碼序號，看會不會提醒</li><li><b>模糊描述</b>：資訊不清楚時，是先補問還是亂填？</li></ul></div>
     </div>
   </div>
   <p class="principle rv d4">核心原則：<b>驗「欄位準確率」與「例外格式」</b></p>
@@ -396,10 +546,10 @@ img, svg { max-width: 100%; max-height: 100%; }
 <section class="slide" data-title="任務 3 知識查詢與回答">
   <div class="head rv" style="margin-bottom:34px"><span class="kicker" style="color:var(--indigo)">任務 3／5｜低容錯、必須有依據</span><h2 class="title">知識查詢與回答</h2><p class="sub">答案只能來自企業自己的資料，不能憑模型記憶腦補</p></div>
   <div class="task-grid">
-    <div class="card bar rv d1" style="--c:var(--teal)"><span class="hotel">🏨 晴灣飯店的例子</span><div class="io" style="margin-top:20px"><div class="r"><span>旅客</span><div class="say">「可以帶狗入住嗎？取消要扣多少錢？」</div></div><div class="r"><span>資料</span><div>各分館的寵物規定、取消政策（有新舊版本）</div></div><div class="r"><span>AI 產出</span><div>依正式規定回答，並附上出處</div></div></div><div class="scenes"><div class="lb">其他企業常見場景</div><span>員工請假報帳內規查詢</span><span>產品規格與 SOP 問答</span><span>官網智慧客服</span><span>法務、醫療規範檢索</span></div></div>
+    <div class="card bar rv d1" style="--c:var(--teal)"><span class="hotel">🏭 宏岳設備的例子</span><div class="io" style="margin-top:20px"><div class="r"><span>客服</span><div class="say">「HX-004 壞了，還在保固內嗎？濾芯能免費換嗎？」</div></div><div class="r"><span>資料</span><div>設備資料、保固條款與耗材規則（P01～P04，有新舊版本）</div></div><div class="r"><span>AI 產出</span><div>依正式條款回答，並附上規範編號</div></div></div><div class="scenes"><div class="lb">其他企業常見場景</div><span>員工請假報帳內規查詢</span><span>產品規格與 SOP 問答</span><span>官網智慧客服</span><span>法務、醫療規範檢索</span></div></div>
     <div class="stack">
-      <div class="card bar rv d2 bad" style="--c:var(--red)"><h3>常碰到的問題</h3><ul><li><b>找錯文件</b>：拿到舊版政策，或套到別家分館</li><li><b>有資料卻答錯</b>：文件寫 7 天前，回答說 3 天前</li><li><b>沒資料就瞎編</b>：「可以，酌收清潔費 500 元」</li></ul></div>
-      <div class="card bar rv d3 how" style="--c:var(--blue)"><h3>驗收時怎麼驗</h3><ul><li><b>找得到</b>：先看撈出來的文件片段對不對</li><li><b>答得對</b>：回答是否完全根據文件、有附出處</li><li><b>誠實拒答</b>：問資料裡沒有的事，會不會說「查無資料」</li></ul></div>
+      <div class="card bar rv d2 bad" style="--c:var(--red)"><h3>常碰到的問題</h3><ul><li><b>找錯文件</b>：拿到舊版條款，或套到別的機型</li><li><b>有資料卻答錯</b>：條款寫保固一年，回答說兩年</li><li><b>沒資料就瞎編</b>：HX-004 沒有購買日期，卻說「應該還在保固內」</li></ul></div>
+      <div class="card bar rv d3 how" style="--c:var(--blue)"><h3>驗收時怎麼驗</h3><ul><li><b>找得到</b>：先看撈出來的文件片段對不對</li><li><b>答得對</b>：回答是否完全根據文件、有附出處</li><li><b>誠實拒答</b>：資料不足時，會不會說「查無資料，請人工確認」</li></ul></div>
     </div>
   </div>
   <p class="principle rv d4">核心原則：<b>拆開驗「找得到」和「答得對」</b></p>
@@ -408,10 +558,10 @@ img, svg { max-width: 100%; max-height: 100%; }
 <section class="slide bg-gray" data-title="任務 4 工具操作與任務執行">
   <div class="head rv" style="margin-bottom:34px"><span class="kicker" style="color:var(--red)">任務 4／5｜多步驟、會改到真實資料</span><h2 class="title">工具操作與任務執行</h2><p class="sub">AI 不只說話，還會呼叫系統動手做，錯了就是真的資料被改</p></div>
   <div class="task-grid">
-    <div class="card bar rv d1" style="--c:var(--teal)"><span class="hotel">🏨 晴灣飯店的例子</span><div class="io" style="margin-top:20px"><div class="r"><span>旅客</span><div class="say">「我想把 6/12 的雙人房改到 6/19。」</div></div><div class="r"><span>AI 動作</span><div>查空房 → 修改訂單 → 寄出確認信</div></div><div class="r"><span>系統</span><div>訂房系統、付款系統、郵件</div></div></div><div class="scenes"><div class="lb">其他企業常見場景</div><span>依來信在 CRM 建客訴單</span><span>查庫存並更新 ERP 訂單</span><span>跨時區安排會議邀請</span><span>定期產出報表並寄信</span></div></div>
+    <div class="card bar rv d1" style="--c:var(--teal)"><span class="hotel">🏭 宏岳設備的例子</span><div class="io" style="margin-top:20px"><div class="r"><span>客服</span><div class="say">「HX-001 開不了機，幫我建維修單。」</div></div><div class="r"><span>AI 動作</span><div>列出工單內容 → 等客服確認 → 建立工單 → 回報工單編號</div></div><div class="r"><span>系統</span><div>CRM（客戶與設備資料）、ERP 工單系統</div></div></div><div class="scenes"><div class="lb">其他企業常見場景</div><span>依來信在 CRM 建客訴單</span><span>查庫存並更新 ERP 訂單</span><span>跨時區安排會議邀請</span><span>定期產出報表並寄信</span></div></div>
     <div class="stack">
-      <div class="card bar rv d2 bad" style="--c:var(--red)"><h3>常碰到的問題</h3><ul><li><b>參數帶錯</b>：日期、房型帶錯，或改到別人的訂單</li><li><b>系統出錯還說成功</b>：逾時沒改好卻回「已完成」，重試又重複扣款</li><li><b>沒確認就動手</b>：直接取消訂單、退款</li></ul></div>
-      <div class="card bar rv d3 how" style="--c:var(--blue)"><h3>驗收時怎麼驗</h3><ul><li><b>工具與參數</b>：口語指令下，選對功能、日期金額格式正確</li><li><b>異常處理</b>：模擬系統逾時，看會不會轉人工而不是一直重試</li><li><b>高風險動作要確認</b>：取消、退款、對外寄信，必須停下等人按確認</li></ul></div>
+      <div class="card bar rv d2 bad" style="--c:var(--red)"><h3>常碰到的問題</h3><ul><li><b>參數帶錯</b>：序號、故障描述帶錯，單建到別台機器</li><li><b>系統出錯還說成功</b>：逾時沒拿到工單編號卻回「建立成功」，再試一次又重複建單</li><li><b>沒確認就動手</b>：客戶說「不用確認了」，AI 就直接建單</li></ul></div>
+      <div class="card bar rv d3 how" style="--c:var(--blue)"><h3>驗收時怎麼驗</h3><ul><li><b>工具與參數</b>：口語指令下，選對功能、序號與故障描述帶得正確</li><li><b>異常處理</b>：模擬系統逾時，看會不會轉人工而不是一直重試</li><li><b>高風險動作要確認</b>：建單前必須停下，等客服按確認（P06）</li></ul></div>
     </div>
   </div>
   <p class="principle rv d4">核心原則：<b>驗「參數精準」與「安全防呆」</b></p>
@@ -420,28 +570,13 @@ img, svg { max-width: 100%; max-height: 100%; }
 <section class="slide" data-title="任務 5 複合型應用">
   <div class="head rv" style="margin-bottom:34px"><span class="kicker" style="color:#C27C00">任務 5／5｜高複雜度、錯誤會連鎖</span><h2 class="title">複合型應用</h2><p class="sub">一條流程串起好幾類任務，前面一步小錯，後面全部跟著錯</p></div>
   <div class="task-grid">
-    <div class="card bar rv d1" style="--c:var(--teal)"><span class="hotel">🏨 晴灣飯店的例子</span><div class="io" style="margin-top:20px"><div class="r"><span>旅客</span><div class="say">「颱風要來，這週六想改到下個月，要扣錢嗎？」</div></div><div class="r"><span>流程</span><div>分類（任務 2）→ 查改期政策（任務 3）→ 修改訂單（任務 4）→ 寫回覆（任務 1）</div></div><div class="r"><span>AI 產出</span><div>改好的訂單＋一則說明回覆</div></div></div><div class="scenes"><div class="lb">其他企業常見場景</div><span>採購助理：查合約 → 擷取報價 → 建請購單 → 寫簽呈</span><span>客服專員：分類客訴 → 查退換貨政策 → 退款 → 寫安撫信</span></div></div>
+    <div class="card bar rv d1" style="--c:var(--teal)"><span class="hotel">🏭 宏岳設備的例子</span><div class="io" style="margin-top:20px"><div class="r"><span>客服</span><div class="say">「HX-003 開不了機，客戶說要免費修，幫我建維修單。」</div></div><div class="r"><span>流程</span><div>擷取序號與故障（任務 2）→ 查保固條款（任務 3）→ 建立工單（任務 4）→ 擬回覆草稿（任務 1）</div></div><div class="r"><span>AI 產出</span><div>一張維修工單＋給客戶的說明草稿</div></div></div><div class="scenes"><div class="lb">其他企業常見場景</div><span>採購助理：查合約 → 擷取報價 → 建請購單 → 寫簽呈</span><span>客服專員：分類客訴 → 查退換貨政策 → 退款 → 寫安撫信</span></div></div>
     <div class="stack">
-      <div class="card bar rv d2 bad" style="--c:var(--red)"><h3>常碰到的問題</h3><ul><li><b>前面錯，後面全錯</b>：把「改期」分成「取消」，就走錯整條路</li><li><b>錯上加錯</b>：查到舊政策，收了不該收的手續費</li><li><b>只測頭尾</b>：最後回覆看起來很好，中間其實改錯了</li></ul></div>
+      <div class="card bar rv d2 bad" style="--c:var(--red)"><h3>常碰到的問題</h3><ul><li><b>前面錯，後面全錯</b>：序號抓錯，查到別台的保固，整張單都錯</li><li><b>錯上加錯</b>：HX-003 已過保固卻判成保固內，草稿就寫「免費維修」</li><li><b>只測頭尾</b>：最後回覆看起來很好，中間其實建了兩張單</li></ul></div>
       <div class="card bar rv d3 how" style="--c:var(--blue)"><h3>驗收時怎麼驗</h3><ul><li><b>分段驗</b>：每個步驟單獨餵測試資料，找出到底錯在哪一步</li><li><b>錯誤會不會被擋下</b>：前面信心度低時，後面有沒有停下來</li><li><b>整條跑完的時間與成本</b>：是否符合現場的節奏</li></ul></div>
     </div>
   </div>
   <p class="principle rv d4">核心原則：<b>不能只測頭尾，要分段拆開驗</b></p>
-</section>
-
-<section class="slide" data-title="驗收對象與使用情境">
-  <div class="head rv"><span class="kicker">驗收對象</span><h2 class="title">宏岳設備的內部 AI 客服助手</h2><p class="sub">客服人員接到客戶來電時使用。主管目標：<span style="color:var(--blue);font-weight:800">節省一半的客服處理時間</span>，下個月全體客服開始使用</p></div>
-  <div class="chain rv d1" style="margin:20px 0 60px">
-    <span class="node" style="--c:var(--amber)">客戶來電</span><span class="arr">→</span>
-    <span class="node" style="--c:var(--teal)">客服把問題交給 AI</span><span class="arr">→</span>
-    <span class="node" style="--c:var(--blue)">AI 查資料、建工單</span><span class="arr">→</span>
-    <span class="node" style="--c:var(--teal)">客服確認後回覆客戶</span>
-  </div>
-  <div class="cards c3">
-    <div class="card bar rv d2"><span class="tag">AI 能做的事</span><h3>查保固、建工單</h3><p>依設備序號查購買日期與保固；客服確認後，在工單系統建立維修工單。</p></div>
-    <div class="card bar rv d3" style="--c:var(--indigo)"><span class="tag">公司規範</span><h3>P01～P10</h3><p>保固怎麼判、不能亂承諾、建單前要確認、有編號才算成功。</p></div>
-    <div class="card bar rv d4" style="--c:var(--red)"><span class="tag">我們的任務</span><h3>上線前驗收</h3><p>它真的能用嗎？會不會出事？要拿出證據回答。</p></div>
-  </div>
 </section>
 
 <section class="slide bg-gray" data-title="驗收流程總覽">
@@ -523,7 +658,7 @@ img, svg { max-width: 100%; max-height: 100%; }
   <div class="go-practice rv d5"><span>實作 ④｜20 分鐘：有 P0 沒解決，能上線嗎？</span><a href="unit3.html" target="_blank" rel="noopener">開啟實作 ④ ↗</a></div>
 </section>
 
-<section class="slide bg-dark" data-title="講評">
+<section class="slide bg-glow" data-title="講評">
   <div class="quiz">
     <div>
       <span class="kicker rv">講評</span>
