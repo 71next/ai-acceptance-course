@@ -326,6 +326,12 @@ img, svg { max-width: 100%; max-height: 100%; }
 .flow4 .tk { display: inline-block; font-size: 25px; font-weight: 800; color: var(--c); background: color-mix(in srgb, var(--c) 10%, #fff); padding: 8px 22px; border-radius: 999px; }
 .flow4-all { margin: 60px auto 0; text-align: center; font-size: 34px; font-weight: 700; color: var(--ink); }
 .flow4-all b { color: #C27C00; }
+.type5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 22px; }
+.type5 .card { padding: 34px 28px; display: flex; flex-direction: column; }
+.type5 .n { font-size: 56px; font-weight: 900; line-height: 1; color: var(--c); margin-bottom: 18px; }
+.type5 h3 { font-size: 36px; margin-bottom: 10px; }
+.type5 p { font-size: 27px; margin-bottom: 22px; }
+.type5 .chk { margin-top: auto; padding-top: 18px; border-top: 2px solid var(--line); font-size: 26px; line-height: 1.5; font-weight: 700; color: var(--ink); }
 .task5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 18px; }
 .task5 .card { padding: 28px 24px; }
 .task5 .card h3 { font-size: 30px; margin-bottom: 8px; }
@@ -572,6 +578,18 @@ img, svg { max-width: 100%; max-height: 100%; }
     <div class="st rv d4" style="--c:var(--green)"><span class="n">4</span><h3>回覆客戶</h3><p>擬好說明草稿</p><span class="tk">內容生成與整理</span></div>
   </div>
   <div class="flow4-all rv d5">四步串成一條龍 ＝ <b>複合型應用</b></div>
+</section>
+
+<section class="slide" data-title="五種任務類型">
+  <div class="head rv" style="margin-bottom:44px"><span class="kicker">任務類型</span><h2 class="title">AI 的工作，大致分成五種</h2><p class="sub">類型不同，驗的重點就不同</p></div>
+  <div class="type5">
+    <div class="card bar rv d1" style="--c:var(--green)"><span class="n">1</span><h3>內容生成</h3><p>寫摘要、寫草稿</p><div class="chk">驗：有沒有漏重點、亂承諾</div></div>
+    <div class="card bar rv d2" style="--c:var(--blue)"><span class="n">2</span><h3>資料擷取</h3><p>從文字抓出欄位</p><div class="chk">驗：欄位抓得對不對</div></div>
+    <div class="card bar rv d3" style="--c:var(--indigo)"><span class="n">3</span><h3>知識查詢</h3><p>依公司資料回答</p><div class="chk">驗：有根據嗎？查不到會說不知道嗎</div></div>
+    <div class="card bar rv d4" style="--c:var(--red)"><span class="n">4</span><h3>工具操作</h3><p>幫人操作系統</p><div class="chk">驗：有先確認嗎？失敗會說實話嗎</div></div>
+    <div class="card bar rv d5" style="--c:#C27C00;border-top-color:var(--amber)"><span class="n">5</span><h3>複合型</h3><p>把前面幾種串起來</p><div class="chk">驗：一步出錯，會不會一路錯下去</div></div>
+  </div>
+  <p class="principle rv d6" style="margin-top:48px">越往右，<b>出錯的代價越高</b></p>
 </section>
 
 <section class="slide" data-title="任務 1 內容生成與整理" data-hidden>
