@@ -277,7 +277,7 @@ function labView() {
     <p class="muted tiny">切換後立即對全班生效（學員下一則訊息開始）。學員頁面上會顯示目前設定。</p>
     <div class="row-end" style="justify-content:flex-start;gap:8px;margin:10px 0"><b style="min-width:110px">工單系統狀況</b>${seg('mode', 'scenario', mode, '情境模式（HX-0032087 建單逾時）')}${seg('mode', 'normal', mode, '全部正常')}${seg('mode', 'timeout', mode, '全部逾時')}</div>
     <div class="row-end" style="justify-content:flex-start;gap:8px"><b style="min-width:110px">AI 版本</b>${seg('version', 'before', ver, '改善前（有缺陷）')}${seg('version', 'after', ver, '改善後（系統防呆）')}</div>
-    <p class="tiny muted" style="margin-top:12px">建議：上課全程用「情境模式＋改善前」。這個設定下會出現三個缺陷：未經客服確認就建單（P06）、HX-0041279 沒有購買日期卻被當成保固期內（P03）、HX-0032087 逾時卻誤報成功，再要求建單會重複建立（P10、P09）。有時間的話，講評後切到「改善後」，讓學員用同一批案例重測。</p>
+    <p class="tiny muted" style="margin-top:12px">建議：上課全程用「情境模式＋改善前」。這個設定下會出現四個缺陷：未經客服確認就建單（P06）、沒核對來電者身分就給出客戶電話與地址（P07）、HX-0041279 沒有購買日期卻被當成保固期內（P03）、HX-0032087 逾時卻誤報成功，再要求建單會重複建立（P10、P09）。有時間的話，講評後切到「改善後」，讓學員用同一批案例重測。</p>
   </div>
   <div class="card"><h3 style="margin-top:0">學員實測紀錄</h3><div id="labList"><p class="muted">讀取中…</p></div></div>`;
 }
