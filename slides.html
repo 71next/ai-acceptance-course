@@ -256,6 +256,16 @@ img, svg { max-width: 100%; max-height: 100%; }
 /* 第一單元（宏岳設備範例） */
 .hotel { display: inline-flex; align-items: center; gap: 10px; font-size: 24px; font-weight: 700; color: var(--teal); background: color-mix(in srgb, var(--teal) 10%, #fff); padding: 6px 18px; border-radius: 999px; }
 .gap-rows { display: grid; gap: 26px; }
+.gap1 { display: grid; gap: 36px; }
+.gap1 .lb { display: block; font-size: 24px; font-weight: 800; letter-spacing: .04em; color: var(--muted); margin-bottom: 14px; }
+.gap1 .q { background: #FFF6F5; border-radius: 28px; padding: 40px 48px; font-size: 46px; font-weight: 800; line-height: 1.4; color: var(--ink); border-left: 12px solid var(--red); }
+.gap1 .q .lb { color: var(--red); }
+.gap1 .pair { display: grid; grid-template-columns: 1fr 80px 1fr; align-items: stretch; }
+.gap1 .arr { display: grid; place-items: center; font-size: 52px; color: var(--muted); }
+.gap1 .c { background: #fff; border-radius: 28px; padding: 40px 44px; box-shadow: 0 2px 6px rgba(30,54,176,.04), 0 18px 48px rgba(30,54,176,.08); font-size: 32px; line-height: 1.6; color: var(--ink-2); }
+.gap1 .c b { color: var(--ink); }
+.gap1 .c.fix { border-left: 12px solid var(--blue); }
+.gap1 .c.fix .lb { color: var(--blue); }
 .gap-row { display: grid; grid-template-columns: 1fr 64px 1.15fr 64px 1.15fr; align-items: stretch; }
 .gap-row .arr { display: grid; place-items: center; font-size: 40px; color: var(--muted); }
 .gap-row .c { background: #fff; border-radius: 24px; padding: 28px 32px; box-shadow: 0 2px 6px rgba(0,0,0,.04), 0 12px 32px rgba(0,0,0,.05); font-size: 27px; line-height: 1.55; color: var(--ink-2); }
@@ -449,13 +459,39 @@ img, svg { max-width: 100%; max-height: 100%; }
   <p class="rv d2" style="margin-top:36px;font-size:40px;font-weight:500;color:var(--ink-2)">抱怨是表面現象，背後通常是需求沒說清楚</p>
 </section>
 
-<section class="slide bg-gray" data-title="1 診斷需求落差 內容">
-  <div class="head rv" style="margin-bottom:40px"><span class="kicker">1｜診斷需求落差</span><h2 class="title" style="font-size:56px">驗收現場的三種抱怨，背後都是需求沒說清楚</h2></div>
-  <div class="gap-head rv"><span>驗收現場的抱怨</span><span></span><span>背後的需求落差</span><span></span><span>驗收要改成看什麼</span></div>
-  <div class="gap-rows">
-    <div class="gap-row rv d1"><div class="c q">「AI 上線了，每通電話還是要 8 分鐘！」</div><div class="arr">→</div><div class="c"><b>「時間減半」沒拆成可驗的目標</b>只算 AI 回答了幾次，沒說清楚哪一段該省時間，客服還是自己切 CRM、ERP 再查一遍。</div><div class="arr">→</div><div class="c fix">依步驟量時間：<span style="color:var(--ink);font-weight:700">查保固、填工單</span>各省多少？AI 帶出的欄位，客服不必重打。</div></div>
-    <div class="gap-row rv d2"><div class="c q">「保固判錯一次，我就不敢用，全部自己再查！」</div><div class="arr">→</div><div class="c"><b>輔助工具被當成最終稽核</b>客服不信任，每通都再查一次，反而做兩次工。</div><div class="arr">→</div><div class="c fix">重分工：AI 標出<span style="color:var(--ink);font-weight:700">沒有購買日期、可能是耗材</span>這類沒把握的，人只複核被標記的。</div></div>
-    <div class="gap-row rv d3"><div class="c q">「AI 草稿寫『免費維修』，客服照念，結果是人為損壞要收費！」</div><div class="arr">→</div><div class="c"><b>只說要查保固，沒說哪些話不能講</b>「在保固期內」被直接講成「免費」，新舊版保固條款也混在一起。</div><div class="arr">→</div><div class="c fix">先補<span style="color:var(--ink);font-weight:700">規則與資料條件</span>（故障未確認不得承諾免費、只用正式生效的條款），當作驗收前提。</div></div>
+<section class="slide bg-gray" data-title="1 診斷需求落差 1/3">
+  <div class="head rv" style="margin-bottom:44px"><span class="kicker">1｜診斷需求落差・抱怨 1/3</span><h2 class="title">「時間減半」沒拆成可驗的目標</h2></div>
+  <div class="gap1">
+    <div class="q rv d1"><span class="lb">驗收現場的抱怨</span>「AI 上線了，每通電話還是要 8 分鐘！」</div>
+    <div class="pair">
+      <div class="c rv d2"><span class="lb">背後的需求落差</span>只算 AI 回答了幾次，沒說清楚哪一段該省時間，客服還是自己切 CRM、ERP 再查一遍。</div>
+      <div class="arr rv d2">→</div>
+      <div class="c fix rv d3"><span class="lb">驗收要改成看什麼</span>依步驟量時間：<b>查保固、填工單</b>各省多少？AI 帶出的欄位，客服不必重打。</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide bg-gray" data-title="1 診斷需求落差 2/3">
+  <div class="head rv" style="margin-bottom:44px"><span class="kicker">1｜診斷需求落差・抱怨 2/3</span><h2 class="title">輔助工具被當成最終稽核</h2></div>
+  <div class="gap1">
+    <div class="q rv d1"><span class="lb">驗收現場的抱怨</span>「保固判錯一次，我就不敢用，全部自己再查！」</div>
+    <div class="pair">
+      <div class="c rv d2"><span class="lb">背後的需求落差</span>客服不信任 AI，每通都再查一次，反而做兩次工。</div>
+      <div class="arr rv d2">→</div>
+      <div class="c fix rv d3"><span class="lb">驗收要改成看什麼</span>重新分工：AI 標出<b>沒有購買日期、可能是耗材</b>這類沒把握的，人只複核被標記的。</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide bg-gray" data-title="1 診斷需求落差 3/3">
+  <div class="head rv" style="margin-bottom:44px"><span class="kicker">1｜診斷需求落差・抱怨 3/3</span><h2 class="title">只說要查保固，沒說哪些話不能講</h2></div>
+  <div class="gap1">
+    <div class="q rv d1"><span class="lb">驗收現場的抱怨</span>「AI 草稿寫『免費維修』，客服照念，結果是人為損壞要收費！」</div>
+    <div class="pair">
+      <div class="c rv d2"><span class="lb">背後的需求落差</span>「在保固期內」被直接講成「免費」，新舊版保固條款也混在一起。</div>
+      <div class="arr rv d2">→</div>
+      <div class="c fix rv d3"><span class="lb">驗收要改成看什麼</span>先補<b>規則與資料條件</b>（故障未確認不得承諾免費、只用正式生效的條款），當作驗收前提。</div>
+    </div>
   </div>
 </section>
 
