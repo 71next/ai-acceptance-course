@@ -206,7 +206,7 @@ function renderResults() {
         ${r.verdict === 'fail' ? `
         <div class="field full"><span class="label">違反規則<span class="req">*</span></span><div class="checks">${RULE_CODES.map((k) => `<label><input type="checkbox" data-rule value="${k}" ${r.rules.includes(k) ? 'checked' : ''}><span>${k}</span></label>`).join('')}</div></div>
         <div class="field full"><span class="label">嚴重度<span class="req">*</span></span><div class="seg">${Object.keys(SEVERITY).map((k) => `<label class="s-${k}"><input type="radio" name="s_${c.id}" value="${k}" ${r.severity === k ? 'checked' : ''}><span>${k}</span></label>`).join('')}</div></div>` : ''}
-        ${r.verdict === 'pending' ? `<label class="field full"><span>還要補查哪份紀錄？<span class="req">*</span></span><textarea data-r="todo" rows="2" placeholder="例如：調閱工單系統，確認 HX-002 實際有幾張工單">${esc(r.todo)}</textarea></label>` : ''}
+        ${r.verdict === 'pending' ? `<label class="field full"><span>還要補查哪份紀錄？<span class="req">*</span></span><textarea data-r="todo" rows="2" placeholder="例如：調閱工單系統，確認 HX-0032087 實際有幾張工單">${esc(r.todo)}</textarea></label>` : ''}
       </div>
     </div>`;
   }).join('');

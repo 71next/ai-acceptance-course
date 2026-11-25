@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>① 拆流程｜宏岳設備 H100 報修流程</title>
+<title>① 拆流程｜宏岳設備 AP-300 報修流程</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -44,6 +44,12 @@
   details.ref[open] summary::after { content: '收合 －'; }
   details.ref .inner { padding: 0 22px 20px; }
   .rule-code { font-weight: 800; color: var(--blue); white-space: nowrap; }
+  .idbox { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 12px 0 4px; }
+  .idbox > div { border: 1px solid var(--line); border-radius: 14px; padding: 10px 14px; background: #F5F8FF; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
+  .idbox .k { font-size: 12px; font-weight: 800; color: #fff; background: var(--ink); border-radius: 999px; padding: 2px 10px; }
+  .idbox b { font-size: 17px; font-family: ui-monospace, Menlo, monospace; }
+  .idbox .d { flex-basis: 100%; font-size: 13px; color: var(--muted); }
+  @media (max-width: 640px) { .idbox { grid-template-columns: 1fr; } }
   .brief p { margin: 0 0 10px; color: var(--ink-2); line-height: 1.75; }
   .deliver { list-style: none; counter-reset: d; padding: 0; margin: 14px 0 0; display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
   .deliver li { counter-increment: d; position: relative; padding: 12px 14px 12px 46px; border: 1px solid var(--line); border-radius: 14px; background: #FAFAFC; }
@@ -66,7 +72,11 @@
   </div>
 
   <section class="card brief">
-    <p><b>使用情境：</b>宏岳設備的客服人員接到客戶來電時，把問題交給內部 AI 客服助手。AI 可以依設備序號<b>查詢保固</b>，並在客服確認後<b>建立維修工單</b>。主管的目標是<b>節省一半的客服處理時間</b>，希望下個月全體客服開始使用。上線前，你要幫公司驗收這個 AI 助手。</p>
+    <p><b>使用情境：</b>宏岳設備是商用空氣淨化設備商，全台 <b>12 席客服</b>、每天接 <b>300 通</b>報修來電。客服每通都要切換 <b>CRM 系統和 ERP</b> 兩個系統，平均 <b>8 分鐘</b>。公司導入內部 AI 客服助手：客服接電話時把問題交給 AI，AI 依設備序號<b>查保固</b>，客服確認後再<b>建立維修工單</b>。主管目標是每通<b>從 8 分鐘降到 4 分鐘</b>，下個月全體客服開始使用。上線前，你要幫公司驗收這個 AI 助手。</p>
+    <div class="idbox">
+      <div><span class="k">機型</span><b>AP-300</b><span class="d">產品型號，同一款機器都一樣</span></div>
+      <div><span class="k">序號</span><b>HX-0032014</b><span class="d">每台機器自己的編號，像身分證字號。查保固、建工單都要用序號</span></div>
+    </div>
     <ol class="deliver">
       <li><b>A. 依六種情境設想來電</b><span>正常、例外、有風險的客戶來電各會怎麼說？</span></li>
       <li><b>B. 拆報修流程</b><span>誰做、做什麼；右側自動畫出流程圖</span></li>
