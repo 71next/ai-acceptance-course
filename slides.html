@@ -25,6 +25,7 @@
 html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: var(--stage-bg); }
 .deck-viewport { position: fixed; inset: 0; overflow: hidden; background: var(--stage-bg); }
 .deck-stage { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: hidden; transform-origin: 0 0; background: var(--slide-bg); }
+.slide[data-hidden] { display: none !important; }
 .slide { position: absolute; inset: 0; width: 1920px; height: 1080px; overflow: hidden; display: block; visibility: hidden; opacity: 0; pointer-events: none; background: var(--slide-bg); transition: opacity .35s ease, visibility 0s linear .35s; }
 .slide.active { visibility: visible; opacity: 1; pointer-events: auto; z-index: 1; transition: opacity .35s ease; }
 img, svg { max-width: 100%; max-height: 100%; }
@@ -573,7 +574,7 @@ img, svg { max-width: 100%; max-height: 100%; }
   <div class="flow4-all rv d5">四步串成一條龍 ＝ <b>複合型應用</b></div>
 </section>
 
-<section class="slide" data-title="任務 1 內容生成與整理">
+<section class="slide" data-title="任務 1 內容生成與整理" data-hidden>
   <div class="head rv" style="margin-bottom:34px"><span class="kicker" style="color:#1E8E3E">任務 1／5｜高彈性、沒有標準答案</span><h2 class="title">內容生成與整理</h2><p class="sub">產出一段文字，重視語氣、結構與資訊完整，容許表達不同</p></div>
   <div class="task-grid">
     <div class="card bar rv d1" style="--c:var(--teal)"><span class="hotel">🏭 宏岳設備的例子</span><div class="io" style="margin-top:20px"><div class="r"><span>客戶</span><div class="say">「這台還在保固內嗎？修理要收錢嗎？」</div></div><div class="r"><span>資料</span><div>查詢結果：HX-001 在保固期內，故障原因未確認</div></div><div class="r"><span>AI 產出</span><div>一段給客戶的說明草稿，客服覆核後再回覆（P05）</div></div></div><div class="scenes"><div class="lb">其他企業常見場景</div><span>會議紀錄與待辦摘要</span><span>客訴、業務信件草稿</span><span>營運報告初稿</span><span>社群文案與多語潤飾</span></div></div>
@@ -585,7 +586,7 @@ img, svg { max-width: 100%; max-height: 100%; }
   <p class="principle rv d4">核心原則：<b>驗「架構與遺漏」，不驗「字句一模一樣」</b></p>
 </section>
 
-<section class="slide bg-gray" data-title="任務 2 資料判讀與擷取">
+<section class="slide bg-gray" data-title="任務 2 資料判讀與擷取" data-hidden>
   <div class="head rv" style="margin-bottom:34px"><span class="kicker" style="color:var(--blue)">任務 2／5｜高確定性、有標準答案</span><h2 class="title">資料判讀與擷取</h2><p class="sub">把信件、文件、圖片轉成結構化欄位或分類，每個欄位都有對錯</p></div>
   <div class="task-grid">
     <div class="card bar rv d1" style="--c:var(--teal)"><span class="hotel">🏭 宏岳設備的例子</span><div class="io" style="margin-top:20px"><div class="r"><span>輸入</span><div>客服輸入的來電描述：「HX-001 開不了機，按電源沒反應」</div></div><div class="r"><span>AI 產出</span><div>序號、機型、故障現象，整理成工單欄位</div></div><div class="r"><span>也包括</span><div>來電分類：報修／耗材更換／保固詢問</div></div></div><div class="scenes"><div class="lb">其他企業常見場景</div><span>發票、報價單欄位擷取</span><span>新舊合約條款比對</span><span>客服進線分類貼標</span><span>履歷資格核對</span></div></div>
@@ -597,7 +598,7 @@ img, svg { max-width: 100%; max-height: 100%; }
   <p class="principle rv d4">核心原則：<b>驗「欄位準確率」與「例外格式」</b></p>
 </section>
 
-<section class="slide" data-title="任務 3 知識查詢與回答">
+<section class="slide" data-title="任務 3 知識查詢與回答" data-hidden>
   <div class="head rv" style="margin-bottom:34px"><span class="kicker" style="color:var(--indigo)">任務 3／5｜低容錯、必須有依據</span><h2 class="title">知識查詢與回答</h2><p class="sub">答案只能來自企業自己的資料，不能憑模型記憶腦補</p></div>
   <div class="task-grid">
     <div class="card bar rv d1" style="--c:var(--teal)"><span class="hotel">🏭 宏岳設備的例子</span><div class="io" style="margin-top:20px"><div class="r"><span>客服</span><div class="say">「HX-004 壞了，還在保固內嗎？濾芯能免費換嗎？」</div></div><div class="r"><span>資料</span><div>設備資料、保固條款與耗材規則（P01～P04，有新舊版本）</div></div><div class="r"><span>AI 產出</span><div>依正式條款回答，並附上規範編號</div></div></div><div class="scenes"><div class="lb">其他企業常見場景</div><span>員工請假報帳內規查詢</span><span>產品規格與 SOP 問答</span><span>官網智慧客服</span><span>法務、醫療規範檢索</span></div></div>
@@ -609,7 +610,7 @@ img, svg { max-width: 100%; max-height: 100%; }
   <p class="principle rv d4">核心原則：<b>拆開驗「找得到」和「答得對」</b></p>
 </section>
 
-<section class="slide bg-gray" data-title="任務 4 工具操作與任務執行">
+<section class="slide bg-gray" data-title="任務 4 工具操作與任務執行" data-hidden>
   <div class="head rv" style="margin-bottom:34px"><span class="kicker" style="color:var(--red)">任務 4／5｜多步驟、會改到真實資料</span><h2 class="title">工具操作與任務執行</h2><p class="sub">AI 不只說話，還會呼叫系統動手做，錯了就是真的資料被改</p></div>
   <div class="task-grid">
     <div class="card bar rv d1" style="--c:var(--teal)"><span class="hotel">🏭 宏岳設備的例子</span><div class="io" style="margin-top:20px"><div class="r"><span>客服</span><div class="say">「HX-001 開不了機，幫我建維修單。」</div></div><div class="r"><span>AI 動作</span><div>列出工單內容 → 等客服確認 → 建立工單 → 回報工單編號</div></div><div class="r"><span>系統</span><div>CRM（客戶與設備資料）、ERP 工單系統</div></div></div><div class="scenes"><div class="lb">其他企業常見場景</div><span>依來信在 CRM 建客訴單</span><span>查庫存並更新 ERP 訂單</span><span>跨時區安排會議邀請</span><span>定期產出報表並寄信</span></div></div>
@@ -621,7 +622,7 @@ img, svg { max-width: 100%; max-height: 100%; }
   <p class="principle rv d4">核心原則：<b>驗「參數精準」與「安全防呆」</b></p>
 </section>
 
-<section class="slide" data-title="任務 5 複合型應用">
+<section class="slide" data-title="任務 5 複合型應用" data-hidden>
   <div class="head rv" style="margin-bottom:34px"><span class="kicker" style="color:#C27C00">任務 5／5｜高複雜度、錯誤會連鎖</span><h2 class="title">複合型應用</h2><p class="sub">一條流程串起好幾類任務，前面一步小錯，後面全部跟著錯</p></div>
   <div class="task-grid">
     <div class="card bar rv d1" style="--c:var(--teal)"><span class="hotel">🏭 宏岳設備的例子</span><div class="io" style="margin-top:20px"><div class="r"><span>客服</span><div class="say">「HX-003 開不了機，客戶說要免費修，幫我建維修單。」</div></div><div class="r"><span>流程</span><div>擷取序號與故障（任務 2）→ 查保固條款（任務 3）→ 建立工單（任務 4）→ 擬回覆草稿（任務 1）</div></div><div class="r"><span>AI 產出</span><div>一張維修工單＋給客戶的說明草稿</div></div></div><div class="scenes"><div class="lb">其他企業常見場景</div><span>採購助理：查合約 → 擷取報價 → 建請購單 → 寫簽呈</span><span>客服專員：分類客訴 → 查退換貨政策 → 退款 → 寫安撫信</span></div></div>
@@ -770,7 +771,7 @@ img, svg { max-width: 100%; max-height: 100%; }
    ============================================================ */
 class SlidePresentation {
   constructor() {
-    this.slides = [...document.querySelectorAll('.slide')];
+    this.slides = [...document.querySelectorAll('.slide:not([data-hidden])')];
     this.stage = document.getElementById('deckStage');
     this.count = document.getElementById('count');
     this.progress = document.getElementById('progress');
