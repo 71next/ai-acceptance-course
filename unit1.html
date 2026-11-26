@@ -80,8 +80,8 @@
     </div>
     <ol class="deliver">
       <li><b>A. 依六種情境設想來電</b><span>正常、例外、有風險的客戶來電各會怎麼說？</span></li>
-      <li><b>B. 拆報修流程</b><span>誰做、做什麼；右側自動畫出流程圖</span></li>
-      <li><b>每一步標紅／黃／綠燈</b><span>紅燈步驟會帶到 ② 設計測試</span></li>
+      <li><b>B. 畫出藏寶圖</b><span>補完報修流程，右側自動畫出流程圖</span></li>
+      <li><b>標出嫌疑步驟</b><span>最可能藏缺陷的標紅燈，會帶到 ② 設計測試</span></li>
     </ol>
   </section>
 
@@ -98,7 +98,7 @@
   <div class="card" id="qtypes"></div>
 
   <div class="card">
-    <span class="pill blue">B. 本次驗收的流程：報修建單</span>
+    <span class="pill blue">B. 畫出藏寶圖：報修建單流程</span>
     <h2 style="margin:10px 0" id="caseTitle"></h2>
     <blockquote class="quote" id="caseQuote"></blockquote>
     <p style="margin:0" id="caseDesc"></p>
@@ -140,7 +140,7 @@ import { mountMission } from './assets/mission.js';
 mountMission('u1');
 import { renderHeader, ensureIdentity, showIdentity, loadResponse, autosaver, watchReveal, esc, toast, uid8, stepperHtml } from './assets/app.js';
 import { mountFeedback, AI_ON } from './assets/ai-feedback.js';
-import { TRACK, RULES, LIGHTS, CASE, ROLES, OPTIONS, SCENARIOS, HANDLE } from './assets/simple-data.js';
+import { TRACK, RULES, LIGHTS, CASE, ROLES, OPTIONS, PREFILL, SCENARIOS, HANDLE } from './assets/simple-data.js';
 import { renderFlow, END, ROLE_LEGEND } from './assets/flow.js';
 if (!AI_ON) { document.getElementById('submitBtn').textContent = document.getElementById('submitBtn').textContent.replace('，請 AI 批改', ''); document.getElementById('submitHint').hidden = true; }
 
@@ -161,6 +161,8 @@ let ai = { run() {} };
 const blankStep = () => ({ id: uid8(), action: '', role: '', light: '', issue: '', next: [] });
 function blankState() {
   const steps = Array.from({ length: CASE.rows }, blankStep);
+  Object.assign(steps[0], PREFILL.first);
+  Object.assign(steps[steps.length - 1], PREFILL.last);
   return { track: TRACK, scen: blankScen(), steps, start: steps[0].id };
 }
 const blankScen = () => SCENARIOS.map(([k]) => ({ id: k, say: '', handle: '' }));
