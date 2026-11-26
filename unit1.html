@@ -93,9 +93,8 @@
 
   <div class="card">
     <span class="pill blue">報修建單流程（已經幫你拆好）</span>
-    <h2 style="margin:10px 0" id="caseTitle"></h2>
+    <h2 style="margin:10px 0"><span id="caseTitle"></span><span class="tip left" tabindex="0" aria-label="說明">i<span class="tip-box">一通報修電話會照這條流程走。你標成紅燈的步驟會變紅，那就是藏寶圖上的「嫌疑步驟」。</span></span></h2>
     <blockquote class="quote" id="caseQuote"></blockquote>
-    <p class="muted" style="margin:0">一通報修電話會照這條流程走。你標成紅燈的步驟會變紅，那就是藏寶圖上的「嫌疑步驟」。</p>
     <div class="flowstrip" id="flowStrip"></div>
   </div>
 
@@ -197,11 +196,10 @@ function renderStrip() {
 function renderTable() {
   const el = document.getElementById('qtypes');
   el.innerHTML = `<span class="pill blue">六種情境，各走一遍流程</span>
-    <h2 style="margin:10px 0 4px">每種情境：客戶會怎麼說？最可能在哪一步出事？</h2>
-    <p class="muted" style="margin:0 0 14px">一列一種情境，依序填四格：① 寫一句客戶可能怎麼說 ② 選它最可能在流程的哪一步出事 ③ 選會怎麼出錯 ④ 依上方「評估依據」標紅／黃／綠燈。卡住時按「💡 AI 小助手」看例子。</p>
+    <h2 style="margin:10px 0 14px">每種情境：客戶會怎麼說？最可能在哪一步出事？<span class="tip left" tabindex="0" aria-label="說明">i<span class="tip-box">一列一種情境，依序填四格：① 寫一句客戶可能怎麼說 ② 選它最可能在流程的哪一步出事 ③ 選會怎麼出錯 ④ 依上方「評估依據」標紅／黃／綠燈。卡住時按「💡 AI 小助手」看例子。</span></span></h2>
     <div class="scen-list">${SCENARIOS.map(([k, n, dir, ex]) => { const t = rowOf(k); return `
       <div class="scen" data-sid="${k}" data-light="${t.light}">
-        <div class="scen-h"><b>${n}</b><span class="muted tiny">${dir}</span><button type="button" class="hint-btn" data-ex>💡 AI 小助手</button></div>
+        <div class="scen-h"><b>${n}<span class="tip left" tabindex="0" aria-label="說明">i<span class="tip-box">${esc(dir)}</span></span></b><button type="button" class="hint-btn" data-ex>💡 AI 小助手</button></div>
         <p class="think">🤔 想一想：${esc(THINK[k] || '')}</p>
         <div class="hint" data-exbox hidden>例如：「${esc(ex)}」</div>
         <div class="s-grid">
@@ -233,8 +231,8 @@ qEl.addEventListener('click', (e) => {
 const SNAME = Object.fromEntries(SCENARIOS.map(([k, n]) => [k, n]));
 function renderSus() {
   const red = state.scen.filter((t) => t.light === 'red' && t.step && t.step !== NONE);
-  document.getElementById('susBox').innerHTML = `<h3 style="margin-top:0">🔎 你的嫌疑步驟清單</h3>
-    ${red.length ? `<p class="muted tiny" style="margin:0">這些紅燈會帶到 ② 設計驗證條件，為每一個設計測試，把缺陷逼出來。</p>
+  document.getElementById('susBox').innerHTML = `<h3 style="margin-top:0">🔎 你的嫌疑步驟清單<span class="tip left" tabindex="0" aria-label="說明">i<span class="tip-box">這些紅燈會帶到 ② 設計驗證條件，為每一個設計測試，把缺陷逼出來。</span></span></h3>
+    ${red.length ? `
       <div class="sus-list">${red.map((t) => `<div class="sus-item"><b>${t.step} ${esc(FLOW_NAME[t.step])}</b><span>${esc(SNAME[t.id])}${t.issue ? `：${esc(t.issue)}` : ''}</span></div>`).join('')}</div>`
     : '<p class="muted" style="margin:0">還沒有紅燈。把出事會很嚴重的情境標成紅燈，它就會出現在這裡。</p>'}`;
 }

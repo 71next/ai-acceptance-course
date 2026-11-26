@@ -281,3 +281,10 @@ blockquote.quote { margin: 0 0 14px; padding: 14px 18px; border-left: 4px solid 
 .m-goal { margin: 14px 0 0; font-size: 15px; color: #fff; }
 .m-goal b { color: #FFD166; }
 @media (max-width: 720px) { .m-bugs, .m-route { grid-template-columns: repeat(2, 1fr); } .mission h2 { font-size: 21px; } }
+
+/* ---------- ⓘ 說明提示（滑過或點一下顯示） ---------- */
+.tip { position: relative; display: inline-grid; place-items: center; width: 20px; height: 20px; margin-left: 6px; border-radius: 50%; border: 1.5px solid var(--line-2); color: var(--muted); font-size: 12px; font-weight: 800; font-style: normal; line-height: 1; cursor: help; vertical-align: middle; background: #fff; }
+.tip:hover, .tip:focus { border-color: var(--blue); color: var(--blue); outline: none; }
+.tip .tip-box { position: absolute; left: 50%; top: calc(100% + 8px); transform: translateX(-50%); z-index: 30; width: max-content; max-width: min(320px, 80vw); padding: 10px 12px; border-radius: 12px; background: var(--ink); color: #fff; font-size: 13px; font-weight: 400; line-height: 1.6; text-align: left; letter-spacing: 0; box-shadow: 0 10px 28px rgba(0,0,0,.18); opacity: 0; visibility: hidden; transition: opacity .15s; pointer-events: none; }
+.tip:hover .tip-box, .tip:focus .tip-box { opacity: 1; visibility: visible; }
+.tip.left .tip-box { left: 0; transform: none; }
