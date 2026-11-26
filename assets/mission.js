@@ -12,6 +12,13 @@ const GOAL = {
   u3: '用證據判定每個案例：你抓到了幾個缺陷？這套系統現在能不能上線？'
 };
 
+const LEARN = {
+  u1: '驗收不可能全測。先找出「哪種情況 × 哪一步」出事會賠不起，優先測那裡。',
+  u2: '測之前先寫下「怎樣才算對」。預期結果和通過標準要具體到看紀錄就能判斷，不能測完再憑感覺。',
+  lab: 'AI 說的不等於系統做的。判斷對錯要看證據紀錄，不是看 AI 怎麼說。',
+  u3: '驗收結論要有證據撐腰。每個判定都引用紀錄，依嚴重度決定能不能上線，並指出要改哪一層。'
+};
+
 export function missionHtml(k) {
   return `<section class="mission">
     <div class="m-top">
@@ -22,6 +29,7 @@ export function missionHtml(k) {
     <div class="m-bugs" aria-label="待找出的缺陷">${[1, 2, 3, 4].map((n) => `<div class="bug"><span class="lock">🔒</span><b>缺陷 ${n}</b><span>待找出</span></div>`).join('')}</div>
     <ol class="m-route">${ROUTE.map(([key, name, desc]) => `<li class="${key === k ? 'now' : ''}"><b>${name}</b><span>${desc}</span>${key === k ? '<i>你在這裡</i>' : ''}</li>`).join('')}</ol>
     <p class="m-goal"><b>本關目標：</b>${GOAL[k]}</p>
+    <p class="m-learn"><b>📘 本關要學會</b>${LEARN[k]}</p>
   </section>`;
 }
 
