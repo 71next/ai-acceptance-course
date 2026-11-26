@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/style.css?v=20261126c">
+<link rel="stylesheet" href="assets/style.css?v=20261126d">
 <style>
   .lab-status { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 4px 0 18px; }
   .lab-status .st { display: inline-flex; gap: 8px; align-items: center; padding: 6px 12px; border-radius: 999px; background: #fff; box-shadow: var(--shadow); font-size: 14px; }
@@ -114,11 +114,11 @@
 </main>
 
 <script type="module">
-import { mountMission } from './assets/mission.js?v=20261126c';
+import { mountMission } from './assets/mission.js?v=20261126d';
 mountMission('lab');
 import { renderHeader, ensureIdentity, showIdentity, watchSession, currentUser, fb, CLOUD, esc, toast, loadResponse, stepperHtml } from './assets/app.js';
 import { graderUrl } from './assets/grader-config.js';
-import { TRACK, allCases, TYPE_NAME } from './assets/simple-data.js?v=20261126c';
+import { TRACK, allCases, TYPE_NAME } from './assets/simple-data.js?v=20261126d';
 
 renderHeader('lab');
 document.getElementById('stepper').innerHTML = stepperHtml('lab');

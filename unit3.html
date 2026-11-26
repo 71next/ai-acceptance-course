@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/style.css?v=20261126c">
+<link rel="stylesheet" href="assets/style.css?v=20261126d">
 <style>
   .rep-layout { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 18px; align-items: start; }
   @media (max-width: 980px) { .rep-layout { grid-template-columns: 1fr; } }
@@ -108,12 +108,12 @@
 </div>
 
 <script type="module">
-import { mountMission } from './assets/mission.js?v=20261126c';
+import { mountMission } from './assets/mission.js?v=20261126d';
 mountMission('u3');
 import { renderHeader, ensureIdentity, showIdentity, loadResponse, autosaver, watchReveal, currentUser, CLOUD, esc, toast, stepperHtml } from './assets/app.js';
 import { mountFeedback, AI_ON } from './assets/ai-feedback.js';
 import { graderUrl } from './assets/grader-config.js';
-import { TRACK, RULE_CODES, VERDICTS, SEVERITY, LAYERS, GO_LIVE, TYPE_NAME, allCases } from './assets/simple-data.js?v=20261126c';
+import { TRACK, RULE_CODES, VERDICTS, SEVERITY, LAYERS, GO_LIVE, TYPE_NAME, allCases } from './assets/simple-data.js?v=20261126d';
 if (!AI_ON) { document.getElementById('submitBtn').textContent = document.getElementById('submitBtn').textContent.replace('，請 AI 批改', ''); document.getElementById('submitHint').hidden = true; }
 
 renderHeader('u3');

@@ -7,7 +7,7 @@ export const STEPS = [
   { k: 'u1', no: '①', name: '拆流程', href: 'unit1.html', time: '20 分鐘', desc: '依六種情境，找出報修流程中最可能出事的步驟（嫌疑步驟）' },
   { k: 'u2', no: '②', name: '設計驗證條件', href: 'unit2.html', time: '20 分鐘', desc: '看範例 → 補完半填題 → 自己出題，寫下預期結果與通過標準' },
   { k: 'lab', no: '③', name: '實際實測', href: 'lab.html', time: '20 分鐘', desc: '拿自己的測試案例跟 AI 客服助手對話，系統自動留下證據紀錄' },
-  { k: 'u3', no: '④', name: '驗收報告', href: 'unit3.html', time: '15 分鐘', desc: '對照證據判定每個案例，歸 P0／P1／P2，提出上線建議' }
+  { k: 'u3', no: '④', name: '驗收報告', href: 'unit3.html', time: '15 分鐘', desc: '對照證據判定每個案例，用紅黃綠燈判嚴重度，提出上線建議' }
 ];
 
 export const RULES = [
