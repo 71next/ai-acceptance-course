@@ -48,6 +48,7 @@
   .scen[data-light=green] { border-left-color: var(--green-dot); }
   .scen-h { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
   .scen-h b { font-size: 17px; }
+  .think { margin: -4px 0 10px; font-size: 14px; color: var(--ink-2); background: var(--blue-soft); border-radius: 10px; padding: 6px 12px; }
   .scen textarea { min-height: 44px; }
   .s-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 10px 12px; }
   .s-grid .full { grid-column: 1 / -1; }
@@ -120,7 +121,7 @@ import { mountMission } from './assets/mission.js';
 mountMission('u1');
 import { renderHeader, ensureIdentity, showIdentity, loadResponse, autosaver, watchReveal, esc, toast, uid8, stepperHtml } from './assets/app.js';
 import { mountFeedback, AI_ON } from './assets/ai-feedback.js';
-import { TRACK, RULES, LIGHTS, CASE, FLOW, FLOW_NAME, OPTIONS, SCENARIOS } from './assets/simple-data.js';
+import { TRACK, RULES, LIGHTS, CASE, FLOW, FLOW_NAME, OPTIONS, SCENARIOS, THINK } from './assets/simple-data.js';
 if (!AI_ON) { document.getElementById('submitBtn').textContent = document.getElementById('submitBtn').textContent.replace('，請 AI 批改', ''); document.getElementById('submitHint').hidden = true; }
 
 renderHeader('u1');
@@ -196,15 +197,16 @@ function renderStrip() {
 function renderTable() {
   const el = document.getElementById('qtypes');
   el.innerHTML = `<span class="pill blue">六種情境，各走一遍流程</span>
-    <h2 style="margin:10px 0 4px">每種情境：客戶會怎麼說？會卡在哪一步？</h2>
-    <p class="muted" style="margin:0 0 14px">一列一種情境，依序填四格：① 寫一句客戶可能怎麼說 ② 選它最可能卡在流程的哪一步 ③ 選會怎麼出錯 ④ 依上方「評估依據」標紅／黃／綠燈。卡住時按「💡 AI 小助手」看例子。</p>
+    <h2 style="margin:10px 0 4px">每種情境：客戶會怎麼說？最可能在哪一步出事？</h2>
+    <p class="muted" style="margin:0 0 14px">一列一種情境，依序填四格：① 寫一句客戶可能怎麼說 ② 選它最可能在流程的哪一步出事 ③ 選會怎麼出錯 ④ 依上方「評估依據」標紅／黃／綠燈。卡住時按「💡 AI 小助手」看例子。</p>
     <div class="scen-list">${SCENARIOS.map(([k, n, dir, ex]) => { const t = rowOf(k); return `
       <div class="scen" data-sid="${k}" data-light="${t.light}">
         <div class="scen-h"><b>${n}</b><span class="muted tiny">${dir}</span><button type="button" class="hint-btn" data-ex>💡 AI 小助手</button></div>
+        <p class="think">🤔 想一想：${esc(THINK[k] || '')}</p>
         <div class="hint" data-exbox hidden>例如：「${esc(ex)}」</div>
         <div class="s-grid">
           <label class="field full"><span>① 客戶可能這樣說</span><textarea data-st="say" rows="2">${esc(t.say)}</textarea></label>
-          <label class="field"><span>② 會卡在哪一步？</span><select data-st="step"><option value="">選擇步驟</option>${FLOW.map(([fk, fn]) => `<option value="${fk}" ${t.step === fk ? 'selected' : ''}>${fk}　${fn}</option>`).join('')}<option value="${NONE}" ${t.step === NONE ? 'selected' : ''}>這個情境不會出錯</option></select></label>
+          <label class="field"><span>② 最可能在哪一步出事？</span><select data-st="step"><option value="">選擇步驟</option>${FLOW.map(([fk, fn]) => `<option value="${fk}" ${t.step === fk ? 'selected' : ''}>${fk}　${fn}</option>`).join('')}<option value="${NONE}" ${t.step === NONE ? 'selected' : ''}>這個情境不會出錯</option></select></label>
           <div class="field"><span class="label">③ 最可能怎麼出錯？</span>${pick('issue', t.issue, OPTIONS.issue, '選擇或自行輸入')}</div>
           <div class="field full"><span class="label">④ 出錯的話，嚴重嗎？</span>
             <div class="seg" role="radiogroup">${Object.entries(LIGHTS).map(([lk, [ln]]) => `<label class="l-${lk}"><input type="radio" name="l_${k}" data-st="light" value="${lk}" ${t.light === lk ? 'checked' : ''}><span><i class="dot ${lk}"></i>${ln}</span></label>`).join('')}</div>
@@ -242,7 +244,7 @@ function missing() {
   const out = [];
   const n = (f) => state.scen.filter((t) => !String(t[f] || '').trim()).length;
   if (n('say')) out.push(`還有 ${n('say')} 種情境沒寫客戶說法`);
-  if (n('step')) out.push(`還有 ${n('step')} 種情境沒選會卡在哪一步`);
+  if (n('step')) out.push(`還有 ${n('step')} 種情境沒選最可能在哪一步出事`);
   if (n('light')) out.push(`還有 ${n('light')} 種情境沒標紅／黃／綠燈`);
   if (!state.scen.some((t) => t.light === 'red')) out.push('至少要有一個紅燈（嫌疑步驟會帶到 ② 設計測試）');
   if (state.scen.some((t) => t.light === 'red' && !t.issue.trim())) out.push('紅燈的情境要選出最可能怎麼出錯');

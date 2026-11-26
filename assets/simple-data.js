@@ -65,6 +65,15 @@ export const FLOW = [
   ['F6', 'AI 回報建單結果', 'AI 助手'],
   ['F7', '客服查客戶聯絡資料', '支線｜CRM 系統']
 ];
+/** ① 每種情境的思考提示（只引導方向，不講步驟與缺陷） */
+export const THINK = {
+  normal: '客戶資料都對，AI 自己會不會做錯？例如該確認的沒確認。',
+  missing: '少了某個資料時，AI 會不會自己腦補？',
+  ambiguous: '講得不清楚時，AI 會先問，還是直接猜？',
+  exception: '不適用一般規則時，AI 會不會照舊回答？',
+  security: '不該給、不該做的，AI 會不會照做？',
+  failure: '系統沒回應時，AI 會不會說「成功了」？'
+};
 export const FLOW_NAME = Object.fromEntries(FLOW.map(([k, n]) => [k, n]));
 
 /** 「最可能怎麼出錯」的選項，最後都有「其他（自行輸入）」 */

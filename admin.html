@@ -376,7 +376,7 @@ function u1View() {
       <ul class="ans-list">${list.map(({ r, t }) => `<li><span class="who">${esc(r.name)}</span>${okLight(t.light) ? `<span class="pill ${okLight(t.light)}">${LNAME[okLight(t.light)]}</span> ` : ''}<b>${t.step === 'none' ? '不會出錯' : esc(t.step ? `${t.step} ${FLOW_NAME[t.step] || ''}` : '（未選步驟）')}</b>${t.issue ? `｜${esc(t.issue)}` : ''}${t.say ? `<br><span class="muted">客戶：「${esc(t.say)}」</span>` : ''}</li>`).join('')}</ul></div>`;
   }).join('');
   const old = rs.length - v2.length;
-  return `<div class="card">${oldNote(all)}${old ? `<p class="muted tiny">另有 ${old} 份是改版前的舊格式作答（A 段＋拆流程），這裡不列出。</p>` : ''}${strip}<h3 style="margin:0 0 6px">六種情境 × 卡在哪一步</h3>${rows}</div>`;
+  return `<div class="card">${oldNote(all)}${old ? `<p class="muted tiny">另有 ${old} 份是改版前的舊格式作答（A 段＋拆流程），這裡不列出。</p>` : ''}${strip}<h3 style="margin:0 0 6px">六種情境 × 最可能出事的步驟</h3>${rows}</div>`;
 }
 
 // ---------- ② 驗證條件 ----------
