@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/style.css?v=20261126d">
+<link rel="stylesheet" href="assets/style.css?v=20261126e">
 <style>
   .pick { display: grid; gap: 6px; }
   .pick select, .pick input { width: 100%; }
@@ -106,6 +106,8 @@
   </div>
   <div class="row-end" id="nextRow"><a class="btn dark" href="unit2.html">下一步：② 設計驗證條件 →</a></div>
   <section id="refPanel" class="ref-panel" hidden></section>
+
+  <section class="fp" id="flowPractice"></section>
 </main>
 
 <div class="save-bar">
@@ -115,6 +117,7 @@
 
 <script type="module">
 import { mountMission } from './assets/mission.js?v=20261126d';
+import { mountFlowPractice } from './assets/flow-practice.js?v=20261126e';
 mountMission('u1');
 import { renderHeader, ensureIdentity, showIdentity, loadResponse, autosaver, watchReveal, esc, toast, uid8, stepperHtml } from './assets/app.js';
 import { mountFeedback, AI_ON } from './assets/ai-feedback.js';
@@ -122,6 +125,7 @@ import { TRACK, RULES, PRIO, CASE, FLOW, FLOW_NAME, OPTIONS, SCENARIOS, THINK } 
 if (!AI_ON) { document.getElementById('submitBtn').textContent = document.getElementById('submitBtn').textContent.replace('，請 AI 批改', ''); document.getElementById('submitHint').hidden = true; }
 
 renderHeader('u1');
+mountFlowPractice(document.getElementById('flowPractice'));
 document.getElementById('stepper').innerHTML = stepperHtml('u1');
 document.getElementById('rulesBody').innerHTML = RULES.map(([k, v]) => `<tr><td class="rule-code">${k}</td><td>${v}</td></tr>`).join('');
 document.getElementById('caseTitle').textContent = CASE.title;
