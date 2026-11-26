@@ -26,6 +26,7 @@ html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background:
 .deck-viewport { position: fixed; inset: 0; overflow: hidden; background: var(--stage-bg); }
 .deck-stage { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: hidden; transform-origin: 0 0; background: var(--slide-bg); }
 .slide[data-hidden] { display: none !important; }
+[data-gate-btn][hidden], [data-gate-wait][hidden] { display: none !important; }
 .slide { position: absolute; inset: 0; width: 1920px; height: 1080px; overflow: hidden; display: block; visibility: hidden; opacity: 0; pointer-events: none; background: var(--slide-bg); transition: opacity .35s ease, visibility 0s linear .35s; }
 .slide.active { visibility: visible; opacity: 1; pointer-events: auto; z-index: 1; transition: opacity .35s ease; }
 img, svg { max-width: 100%; max-height: 100%; }
@@ -748,11 +749,12 @@ img, svg { max-width: 100%; max-height: 100%; }
       <div class="scene rv d2">提示：一個在<span class="hl">保固查詢</span>，一個在<span class="hl">客戶資料</span>，兩個在<span class="hl">建立工單</span>。</div>
       <p class="ask rv d3">每抓到一個，說出你引用的證據編號與違反的規則。</p>
     </div>
-    <button class="answer-btn rv d2" data-next aria-label="看解答（下一頁）"><span class="inner"><span class="t">解答</span><span class="s">點擊看解答 →</span></span></button>
+    <p class="ask rv d3" data-gate-wait style="opacity:.75">解答會在講師公布後出現。</p>
+    <button class="answer-btn rv d2" data-next data-gate-btn hidden aria-label="看解答（下一頁）"><span class="inner"><span class="t">解答</span><span class="s">點擊看解答 →</span></span></button>
   </div>
 </section>
 
-<section class="slide answer" data-title="講評 解答">
+<section class="slide answer" data-title="講評 解答" data-hidden data-gate="answer">
   <div class="head rv"><span class="kicker">講評｜解答</span><h2 class="title"><span class="verdict">🔴 四個都是 P0</span>：修好之前，暫不可上線</h2><p class="sub">其中三個不是 AI 答錯，而是系統把錯誤的結果傳給 AI，或沒有把關：只改提示詞修不好</p></div>
   <div class="cards c4" style="gap:22px">
     <div class="card bar rv d1" style="--c:var(--red);padding:32px 36px"><span class="tag">HX-0041279｜違反 P03</span><h3>沒有購買日期，卻說在保固期內</h3><p>證據：保固查詢寫「購買日期 無紀錄」，AI 卻說保固期內。<br><span class="em">改：缺日期一律回「無法判定」</span></p></div>
@@ -838,6 +840,13 @@ class SlidePresentation {
     }, { passive: true });
     addEventListener('hashchange', () => { const n = parseInt(location.hash.slice(1), 10); if (Number.isFinite(n) && n - 1 !== this.current) this.show(n - 1); });
   }
+  /** 講師在後台公布／收回解答後，重新整理可播放的頁面，停在原本那一頁 */
+  refresh() {
+    const cur = this.slides[this.current];
+    this.slides = [...document.querySelectorAll('.slide:not([data-hidden])')];
+    const i = Math.max(0, this.slides.indexOf(cur));
+    this.current = -1; this.show(i);
+  }
   next() { this.show(this.current + 1); }
   prev() { this.show(this.current - 1); }
   show(i) {
@@ -874,7 +883,21 @@ class SlidePresentation {
     });
   }
 }
-new SlidePresentation();
+window.deck = new SlidePresentation();
+</script>
+<script type="module">
+// 講評解答頁：講師在後台開啟「公布簡報解答」才會出現（Firestore config/slides.answer）
+import { fb } from './assets/app.js';
+const setAnswer = (on) => {
+  document.querySelectorAll('[data-gate="answer"]').forEach((s) => s.toggleAttribute('data-hidden', !on));
+  document.querySelectorAll('[data-gate-btn]').forEach((b) => { b.hidden = !on; });
+  document.querySelectorAll('[data-gate-wait]').forEach((p) => { p.hidden = on; });
+  window.deck?.refresh();
+};
+try {
+  const f = await fb();
+  if (f) f.fs.onSnapshot(f.fs.doc(f.db, 'config', 'slides'), (d) => setAnswer(!!d.data()?.answer), () => setAnswer(false));
+} catch (e) { console.warn('讀不到簡報解答設定', e); }
 </script>
 </body>
 </html>

@@ -115,7 +115,7 @@ async function start() {
     const snaps = await Promise.all(['u1', 'u2', 'u3'].map((k) => f.fs.getDoc(f.fs.doc(f.db, 'refs', k))));
     snaps.forEach((s, i) => { if (s.exists()) refs[['u1', 'u2', 'u3'][i]] = s.data().md || ''; });
   } catch (e) { console.warn(e); }
-  watchSessions();
+  watchSessions(); watchSlideAnswer();
 }
 
 function renderLogin() {
@@ -161,6 +161,21 @@ async function patchSession(code, patch) {
     else upd[k] = v;
   }
   await f.fs.updateDoc(f.fs.doc(f.db, 'sessions', code), upd);
+}
+
+// 簡報「講評｜解答」頁：所有梯次共用一個開關（Firestore config/slides）
+let slideAnswer = false;
+async function watchSlideAnswer() {
+  const f = await fb(); if (!f) return;
+  f.fs.onSnapshot(f.fs.doc(f.db, 'config', 'slides'), (d) => { slideAnswer = !!d.data()?.answer; render(); }, (e) => console.warn(e));
+}
+async function setSlideAnswer(on) {
+  if (!CLOUD) { toast('本機模式無法切換簡報解答', 'err'); return; }
+  try {
+    const f = await fb();
+    await f.fs.setDoc(f.fs.doc(f.db, 'config', 'slides'), { answer: on, at: Date.now() }, { merge: true });
+    toast(on ? '已公布簡報解答，簡報會即時出現解答頁' : '已收回簡報解答');
+  } catch (e) { console.error(e); toast('切換失敗：請確認 Firestore 規則已加上 config 集合', 'err'); render(); }
 }
 
 async function setReveal(code, unit, on) {
@@ -249,6 +264,7 @@ function sessionView() {
       <div class="ctrl-row" style="margin-top:16px">
         <label class="switch"><input type="checkbox" data-open ${s.open !== false ? 'checked' : ''}><span class="tg"></span>開放作答</label>
         ${['u1', 'u2', 'u3'].map((u) => `<label class="switch"><input type="checkbox" data-reveal="${u}" ${s.reveal?.[u] ? 'checked' : ''}><span class="tg"></span>${UNITS[u]}參考答案</label>`).join('')}
+        <label class="switch" title="所有梯次共用：開啟後，簡報的「講評｜解答」頁才會出現"><input type="checkbox" data-slide-answer ${slideAnswer ? 'checked' : ''}><span class="tg"></span>公布簡報解答（四個缺陷）</label>
       </div>
     </div>
     <div class="tabs">${tabs.map(([k, n]) => `<button data-tab="${k}" class="${tab === k ? 'on' : ''}">${n}${['u1', 'u2', 'u3'].includes(k) ? `<span class="count">${cnt(k)}</span>` : ''}</button>`).join('')}</div>
@@ -259,6 +275,7 @@ function bindSession() {
   app.querySelectorAll('[data-tab]').forEach((b) => b.onclick = () => { tab = b.dataset.tab; render(); });
   app.querySelector('[data-open]').onchange = (e) => patchSession(cur, { open: e.target.checked });
   app.querySelectorAll('[data-reveal]').forEach((el) => el.onchange = () => setReveal(cur, el.dataset.reveal, el.checked));
+  app.querySelector('[data-slide-answer]')?.addEventListener('change', (e) => setSlideAnswer(e.target.checked));
   app.querySelector('#projBtn').onclick = () => { document.body.classList.toggle('project'); render(); };
   app.querySelector('#csvBtn').onclick = exportCsv;
   app.querySelector('#dangerBtn').onclick = () => openDanger(cur);
