@@ -56,6 +56,7 @@
     <span class="eyebrow">實作 ②｜設計驗證條件（約 20 分鐘）</span>
     <h1>為宏岳 AI 客服助手設計測試案例</h1>
   </div>
+  <div id="mission"></div>
 
   <section class="card">
     <p style="margin:0">測試之前，先把「怎樣才算對」寫下來。每一個測試案例都要有四個部分，實測時照著做，驗收報告時照著判。</p>
@@ -102,6 +103,8 @@
 </div>
 
 <script type="module">
+import { mountMission } from './assets/mission.js';
+mountMission('u2');
 import { renderHeader, ensureIdentity, showIdentity, loadResponse, autosaver, watchReveal, esc, toast, uid8, stepperHtml } from './assets/app.js';
 import { mountFeedback, AI_ON } from './assets/ai-feedback.js';
 import { TRACK, RULES, RULE_CODES, DEVICES, EXAMPLE, HALF, HINTS, TEST_TYPES, TYPE_NAME, TYPE_HINTS, caseNo } from './assets/simple-data.js';

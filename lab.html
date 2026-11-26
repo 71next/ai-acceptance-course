@@ -58,6 +58,7 @@
     <h1>拿你的測試案例，實際測一次 AI 客服助手</h1>
     <p class="lead">你是宏岳設備的客服人員。照著 ② 設計的測試案例，一題一題對 AI 助手說。右邊會自動留下<strong>證據紀錄</strong>：AI 說了什麼、系統實際做了什麼會分開記錄。④ 驗收報告要引用這裡的編號（例如 L5）。</p>
   </div>
+  <div id="mission"></div>
 
   <div class="lab-status" id="status"></div>
 
@@ -113,6 +114,8 @@
 </main>
 
 <script type="module">
+import { mountMission } from './assets/mission.js';
+mountMission('lab');
 import { renderHeader, ensureIdentity, showIdentity, watchSession, currentUser, fb, CLOUD, esc, toast, loadResponse, stepperHtml } from './assets/app.js';
 import { graderUrl } from './assets/grader-config.js';
 import { TRACK, allCases, TYPE_NAME } from './assets/simple-data.js';

@@ -50,26 +50,6 @@
   .idbox b { font-size: 17px; font-family: ui-monospace, Menlo, monospace; }
   .idbox .d { flex-basis: 100%; font-size: 13px; color: var(--muted); }
   @media (max-width: 640px) { .idbox { grid-template-columns: 1fr; } }
-  .mission { position: relative; overflow: hidden; border-radius: 22px; padding: 28px 30px 24px; margin-bottom: 18px; color: #fff; background: radial-gradient(120% 140% at 100% 100%, #2F4FDB 0%, #1E36B0 45%, #14257D 100%); box-shadow: 0 18px 44px rgba(30,54,176,.28); }
-  .mission .m-tag { display: inline-block; font-size: 13px; font-weight: 800; letter-spacing: .06em; background: rgba(255,255,255,.16); border: 1px solid rgba(255,255,255,.3); padding: 4px 12px; border-radius: 999px; }
-  .mission h2 { margin: 12px 0 8px; font-size: 26px; line-height: 1.45; color: #fff; }
-  .mission h2 em { font-style: normal; color: #FFD166; }
-  .mission .m-top p { margin: 0; color: rgba(255,255,255,.82); line-height: 1.7; font-size: 15px; }
-  .m-bugs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 18px 0; }
-  .m-bugs .bug { background: rgba(255,255,255,.1); border: 1.5px dashed rgba(255,255,255,.45); border-radius: 14px; padding: 12px; text-align: center; display: grid; gap: 2px; }
-  .m-bugs .lock { font-size: 22px; }
-  .m-bugs .bug b { font-size: 15px; }
-  .m-bugs .bug span:last-child { font-size: 12px; color: rgba(255,255,255,.7); }
-  .m-route { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-  .m-route li { position: relative; background: rgba(255,255,255,.08); border-radius: 12px; padding: 10px 12px; display: grid; gap: 2px; }
-  .m-route li b { font-size: 14px; }
-  .m-route li span { font-size: 12.5px; color: rgba(255,255,255,.75); line-height: 1.5; }
-  .m-route li.now { background: #fff; color: var(--ink); }
-  .m-route li.now span { color: var(--ink-2); }
-  .m-route li i { position: absolute; top: -9px; right: 10px; font-style: normal; font-size: 11px; font-weight: 800; background: #FFD166; color: #5A3B00; padding: 2px 8px; border-radius: 999px; }
-  .m-goal { margin: 14px 0 0; font-size: 15px; color: #fff; }
-  .m-goal b { color: #FFD166; }
-  @media (max-width: 720px) { .m-bugs, .m-route { grid-template-columns: repeat(2, 1fr); } .mission h2 { font-size: 21px; } }
   .brief p { margin: 0 0 10px; color: var(--ink-2); line-height: 1.75; }
   .deliver { list-style: none; counter-reset: d; padding: 0; margin: 14px 0 0; display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
   .deliver li { counter-increment: d; position: relative; padding: 12px 14px 12px 46px; border: 1px solid var(--line); border-radius: 14px; background: #FAFAFC; }
@@ -90,27 +70,7 @@
     <span class="eyebrow">實作 ①｜拆流程（約 20 分鐘）</span>
     <h1>從客戶來電的問題開始，拆解宏岳客服助手的流程</h1>
   </div>
-
-  <section class="mission">
-    <div class="m-top">
-      <span class="m-tag">🎯 你的任務</span>
-      <h2>下個月就要上線，這個 AI 客服助手卻藏了 <em>4 個缺陷</em>。<br>上線前，把它們全部抓出來！</h2>
-      <p>每個缺陷都可能讓公司賠錢、被客訴，或洩漏客戶資料。你是驗收人員，要用證據說服主管：這套系統現在能不能上線。</p>
-    </div>
-    <div class="m-bugs" aria-label="待找出的缺陷">
-      <div class="bug"><span class="lock">🔒</span><b>缺陷 1</b><span>待找出</span></div>
-      <div class="bug"><span class="lock">🔒</span><b>缺陷 2</b><span>待找出</span></div>
-      <div class="bug"><span class="lock">🔒</span><b>缺陷 3</b><span>待找出</span></div>
-      <div class="bug"><span class="lock">🔒</span><b>缺陷 4</b><span>待找出</span></div>
-    </div>
-    <ol class="m-route">
-      <li class="now"><b>① 拆流程</b><span>畫出藏寶圖：標出最可能出事的步驟</span><i>你在這裡</i></li>
-      <li><b>② 設計驗證</b><span>設計能逼缺陷現身的測試</span></li>
-      <li><b>③ 實測</b><span>真的抓到它，留下證據</span></li>
-      <li><b>④ 驗收報告</b><span>用證據判定能不能上線</span></li>
-    </ol>
-    <p class="m-goal"><b>本關目標：</b>找出「嫌疑步驟」。紅燈標得越準，後面越好抓。</p>
-  </section>
+  <div id="mission"></div>
 
   <section class="card brief">
     <p><b>使用情境：</b>宏岳設備是商用空氣淨化設備商，全台 <b>12 席客服</b>、每天接 <b>300 通</b>報修來電。客服每通都要切換 <b>CRM 系統和 ERP</b> 兩個系統，平均 <b>8 分鐘</b>。公司導入內部 AI 客服助手：客服接電話時把問題交給 AI，AI 依設備序號<b>查保固</b>，客服確認後再<b>建立維修工單</b>。主管目標是每通<b>從 8 分鐘降到 4 分鐘</b>，下個月全體客服開始使用。上線前，你要幫公司驗收這個 AI 助手。</p>
@@ -176,6 +136,8 @@
 </div>
 
 <script type="module">
+import { mountMission } from './assets/mission.js';
+mountMission('u1');
 import { renderHeader, ensureIdentity, showIdentity, loadResponse, autosaver, watchReveal, esc, toast, uid8, stepperHtml } from './assets/app.js';
 import { mountFeedback, AI_ON } from './assets/ai-feedback.js';
 import { TRACK, RULES, LIGHTS, CASE, ROLES, OPTIONS, SCENARIOS, HANDLE } from './assets/simple-data.js';

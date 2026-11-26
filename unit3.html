@@ -61,6 +61,7 @@
     <span class="eyebrow">實作 ④｜驗收報告（約 15 分鐘）</span>
     <h1>對照證據，寫出宏岳 AI 客服助手的驗收報告</h1>
   </div>
+  <div id="mission"></div>
 
   <section class="card">
     <p style="margin:0 0 10px">左邊是你在 ② 設計的測試案例，右邊是 ③ 實測留下的證據紀錄。每個案例都要：</p>
@@ -107,6 +108,8 @@
 </div>
 
 <script type="module">
+import { mountMission } from './assets/mission.js';
+mountMission('u3');
 import { renderHeader, ensureIdentity, showIdentity, loadResponse, autosaver, watchReveal, currentUser, CLOUD, esc, toast, stepperHtml } from './assets/app.js';
 import { mountFeedback, AI_ON } from './assets/ai-feedback.js';
 import { graderUrl } from './assets/grader-config.js';

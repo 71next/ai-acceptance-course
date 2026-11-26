@@ -259,3 +259,25 @@ blockquote.quote { margin: 0 0 14px; padding: 14px 18px; border-left: 4px solid 
 .submit-zone { margin: 28px 0 16px; padding: 20px; border: 1px dashed var(--line, #d0d7e2); border-radius: 14px; text-align: center; }
 .submit-zone .btn.big { font-size: 17px; padding: 14px 28px; }
 .submit-zone p { margin: 10px 0 0; }
+
+/* ---------- 抓錯任務卡（①②③④ 共用，assets/mission.js） ---------- */
+.mission { position: relative; overflow: hidden; border-radius: 22px; padding: 28px 30px 24px; margin-bottom: 18px; color: #fff; background: radial-gradient(120% 140% at 100% 100%, #2F4FDB 0%, #1E36B0 45%, #14257D 100%); box-shadow: 0 18px 44px rgba(30,54,176,.28); }
+.mission .m-tag { display: inline-block; font-size: 13px; font-weight: 800; letter-spacing: .06em; background: rgba(255,255,255,.16); border: 1px solid rgba(255,255,255,.3); padding: 4px 12px; border-radius: 999px; }
+.mission h2 { margin: 12px 0 8px; font-size: 26px; line-height: 1.45; color: #fff; }
+.mission h2 em { font-style: normal; color: #FFD166; }
+.mission .m-top p { margin: 0; color: rgba(255,255,255,.82); line-height: 1.7; font-size: 15px; }
+.m-bugs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 18px 0; }
+.m-bugs .bug { background: rgba(255,255,255,.1); border: 1.5px dashed rgba(255,255,255,.45); border-radius: 14px; padding: 12px; text-align: center; display: grid; gap: 2px; }
+.m-bugs .lock { font-size: 22px; }
+.m-bugs .bug b { font-size: 15px; }
+.m-bugs .bug span:last-child { font-size: 12px; color: rgba(255,255,255,.7); }
+.m-route { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.m-route li { position: relative; background: rgba(255,255,255,.08); border-radius: 12px; padding: 10px 12px; display: grid; gap: 2px; }
+.m-route li b { font-size: 14px; }
+.m-route li span { font-size: 12.5px; color: rgba(255,255,255,.75); line-height: 1.5; }
+.m-route li.now { background: #fff; color: var(--ink); }
+.m-route li.now span { color: var(--ink-2); }
+.m-route li i { position: absolute; top: -9px; right: 10px; font-style: normal; font-size: 11px; font-weight: 800; background: #FFD166; color: #5A3B00; padding: 2px 8px; border-radius: 999px; }
+.m-goal { margin: 14px 0 0; font-size: 15px; color: #fff; }
+.m-goal b { color: #FFD166; }
+@media (max-width: 720px) { .m-bugs, .m-route { grid-template-columns: repeat(2, 1fr); } .mission h2 { font-size: 21px; } }
