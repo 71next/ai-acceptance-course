@@ -383,19 +383,55 @@ img, svg { max-width: 100%; max-height: 100%; }
   </div>
 </section>
 
-<section class="slide bg-glow" data-title="開場提問">
+<section class="slide bg-glow" data-title="開場提問：個人">
   <div class="ghost" aria-hidden="true">?</div>
-  <div class="rv"><span class="pill">開場提問</span></div>
+  <div class="rv"><span class="pill">先從你自己開始</span></div>
+  <h2 class="rv d1" style="margin-top:44px;font-size:88px;font-weight:900;line-height:1.3;letter-spacing:-0.015em;color:var(--ink);max-width:1500px">你每天都在問 AI，<br>怎麼確定它給的答案是<span style="color:#2F4FDB">「對的」</span>？</h2>
+  <p class="rv d2" style="margin-top:36px;font-size:36px;font-weight:600;color:var(--ink-2);max-width:1400px">它回得又快、又流暢、又有自信——但你真的檢查過嗎？</p>
+</section>
+
+<section class="slide" data-title="個人常見的回答">
+  <div class="head rv"><span class="kicker" style="color:var(--red)">大多數人的回答</span><h2 class="title">我怎麼知道 AI 答對了？因為……</h2></div>
+  <div class="wrong-quotes">
+    <div class="q rv d1">看起來很合理</div>
+    <div class="q rv d2">講得很有把握</div>
+    <div class="q rv d3">跟我想的一樣</div>
+    <div class="q rv d4">問兩次都一樣</div>
+  </div>
+  <p class="principle rv d4" style="margin-top:56px;font-size:34px">這些都是<b>「感覺對」</b>，不是<b>「確定對」</b>。自己用，錯了重問就好；<b>換成企業呢？</b></p>
+</section>
+
+<section class="slide bg-glow" data-title="開場提問：企業">
+  <div class="ghost" aria-hidden="true">?</div>
+  <div class="rv"><span class="pill">換成企業</span></div>
   <h2 class="rv d1" style="margin-top:44px;font-size:88px;font-weight:900;line-height:1.3;letter-spacing:-0.015em;color:var(--ink);max-width:1500px">企業導入 AI 時，<br>我們怎麼知道<span style="color:#2F4FDB">「有沒有問題」</span>？</h2>
 </section>
 
 <section class="slide" data-title="常見的錯誤回答">
-  <div class="head rv"><span class="kicker" style="color:var(--red)">常見的錯誤回答</span><h2 class="title">驗收時，你最常聽到的是……</h2></div>
+  <div class="head rv"><span class="kicker" style="color:var(--red)">大多數企業的實際情況</span><h2 class="title">企業怎麼發現 AI 出問題？通常是……</h2></div>
   <div class="wrong-quotes">
-    <div class="q rv d1">試用幾次</div>
-    <div class="q rv d2">感覺不錯</div>
-    <div class="q rv d3">蠻好用的</div>
-    <div class="q rv d4">很方便</div>
+    <div class="q rv d1">客訴了才知道</div>
+    <div class="q rv d2">主管抽查發現</div>
+    <div class="q rv d3">報表對不上</div>
+    <div class="q rv d4">出事才回頭查</div>
+  </div>
+  <p class="principle rv d4" style="margin-top:56px;font-size:34px">這些都是<b>「事後才知道」</b>——等發現時，錯誤<b>已經發生在客戶身上</b>了。</p>
+</section>
+
+<section class="slide" data-title="真實案例：北捷 AI 客服">
+  <div style="display:grid;grid-template-columns:420px 1fr;gap:80px;align-items:center;height:100%">
+    <img class="rv d1" src="assets/img/case-taipei-metro.png" alt="網友截圖：台北捷運 AI 智慧客服被要求寫 C++ 插入排序程式，並開始回覆程式碼" style="width:420px;height:740px;object-fit:cover;object-position:50% 0;border-radius:28px;box-shadow:0 0 0 10px rgba(255,255,255,.6),0 24px 64px rgba(20,40,140,.22);max-width:none;max-height:none">
+    <div>
+      <div class="head rv" style="margin-bottom:36px"><span class="kicker" style="color:var(--red)">真實案例｜2024 年 11 月</span><h2 class="title" style="font-size:60px">北捷 AI 客服，<br>被網友要求「寫程式」</h2></div>
+      <div class="rv d2" style="display:grid;grid-template-columns:150px 1fr;row-gap:22px;column-gap:28px;font-size:30px;line-height:1.5;color:var(--ink-2)">
+        <b style="color:var(--blue)">2022.11</b><span>推出 AI 智慧客服，回答乘車問題，<b style="color:var(--ink)">每月超過 10 萬人次</b>使用</span>
+        <b style="color:var(--blue)">2024.03</b><span>升級串接 Azure OpenAI，旅客可以直接和 AI 對話</span>
+        <b style="color:var(--red)">2024.11</b><span>網友發現它<b style="color:var(--ink)">會代寫程式碼</b>，消息一傳開，大批網友湧入測試</span>
+        <b style="color:var(--red)">結果</b><span>北捷緊急要求廠商<b style="color:var(--ink)">斷開 Azure OpenAI 串接</b>，退回原本的應答功能</span>
+      </div>
+      <p class="principle rv d3" style="margin-top:44px;font-size:32px">AI 沒有答錯，而是做了<b>「不該做的事」</b>。上線前沒人測過「超出服務範圍的問題」，<b>最後由網友替你驗收。</b></p>
+      <p class="rv d3" style="margin-top:20px;font-size:20px;color:var(--ink-3,#8A93A6)">資料來源：iThome〈北捷AI客服遭網友測試發現可代寫程式碼，北捷緊急斷開Azure Open AI回應功能〉，2024-11-25；截圖取自網友社群貼文</p>
+    </div>
   </div>
 </section>
 
