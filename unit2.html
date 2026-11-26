@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/style.css?v=20261126a">
 <style>
   .tier { display: flex; align-items: center; gap: 10px; margin: 30px 0 12px; }
   .tier h2 { margin: 0; font-size: 22px; }
@@ -103,11 +103,11 @@
 </div>
 
 <script type="module">
-import { mountMission } from './assets/mission.js';
+import { mountMission } from './assets/mission.js?v=20261126a';
 mountMission('u2');
 import { renderHeader, ensureIdentity, showIdentity, loadResponse, autosaver, watchReveal, esc, toast, uid8, stepperHtml } from './assets/app.js';
 import { mountFeedback, AI_ON } from './assets/ai-feedback.js';
-import { TRACK, RULES, RULE_CODES, DEVICES, FLOW_NAME, EXAMPLE, HALF, HINTS, TEST_TYPES, TYPE_NAME, TYPE_HINTS, caseNo } from './assets/simple-data.js';
+import { TRACK, RULES, RULE_CODES, DEVICES, FLOW_NAME, EXAMPLE, HALF, HINTS, TEST_TYPES, TYPE_NAME, TYPE_HINTS, caseNo } from './assets/simple-data.js?v=20261126a';
 if (!AI_ON) { document.getElementById('submitBtn').textContent = document.getElementById('submitBtn').textContent.replace('，請 AI 批改', ''); document.getElementById('submitHint').hidden = true; }
 
 renderHeader('u2');

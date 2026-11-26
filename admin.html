@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/style.css?v=20261126a">
 <style>
   .admin-grid { display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 20px; align-items: start; }
   @media (max-width: 900px) { .admin-grid { grid-template-columns: 1fr; } }
@@ -70,7 +70,7 @@
 <script type="module">
 import { CLOUD, fb, currentUser, LS, esc, normCode, localSessions, saveLocalSessions, UNITS, toast } from './assets/app.js';
 import { renderFlow } from './assets/flow.js';
-import { TRACK, VERDICTS, TYPE_NAME, GO_LIVE, allCases, FLOW, FLOW_NAME } from './assets/simple-data.js';
+import { TRACK, VERDICTS, TYPE_NAME, GO_LIVE, allCases, FLOW, FLOW_NAME } from './assets/simple-data.js?v=20261126a';
 import { AI_ON, feedbackHtml, loadFeedbackFor } from './assets/ai-feedback.js';
 
 const app = document.getElementById('app');
