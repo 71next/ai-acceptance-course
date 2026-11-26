@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/style.css?v=20261126a">
+<link rel="stylesheet" href="assets/style.css?v=20261126b">
 <style>
   .rep-layout { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 18px; align-items: start; }
   @media (max-width: 980px) { .rep-layout { grid-template-columns: 1fr; } }
@@ -68,9 +68,9 @@
     <ol style="margin:0;padding-left:1.3em;line-height:1.85">
       <li>按「＋ 挑選證據」，再點右邊的紀錄，引用支持判定的 L 編號。</li>
       <li>寫下實際結果，判定<b>通過／不通過／待補證</b>。「AI 說錯話」可以直接判；「系統實際做了什麼」要有系統紀錄，沒有就判待補證。</li>
-      <li>不通過時，寫違反哪條規則並歸 P0／P1／P2。最後給出上線建議。</li>
+      <li>不通過時，寫違反哪條規則，並用紅黃綠燈判定嚴重度（紅燈＝P0）。最後給出上線建議。</li>
     </ol>
-    <details style="margin-top:12px"><summary style="cursor:pointer;font-weight:700;color:var(--blue)">P0／P1／P2 怎麼分</summary>
+    <details style="margin-top:12px"><summary style="cursor:pointer;font-weight:700;color:var(--blue)">紅黃綠燈（P0／P1／P2）怎麼判</summary>
       <div class="table-wrap" style="margin-top:10px"><table class="sev-table"><tbody id="sevBody"></tbody></table></div>
     </details>
   </section>
@@ -108,17 +108,17 @@
 </div>
 
 <script type="module">
-import { mountMission } from './assets/mission.js?v=20261126a';
+import { mountMission } from './assets/mission.js?v=20261126b';
 mountMission('u3');
 import { renderHeader, ensureIdentity, showIdentity, loadResponse, autosaver, watchReveal, currentUser, CLOUD, esc, toast, stepperHtml } from './assets/app.js';
 import { mountFeedback, AI_ON } from './assets/ai-feedback.js';
 import { graderUrl } from './assets/grader-config.js';
-import { TRACK, RULE_CODES, VERDICTS, SEVERITY, LAYERS, GO_LIVE, TYPE_NAME, allCases } from './assets/simple-data.js?v=20261126a';
+import { TRACK, RULE_CODES, VERDICTS, SEVERITY, LAYERS, GO_LIVE, TYPE_NAME, allCases } from './assets/simple-data.js?v=20261126b';
 if (!AI_ON) { document.getElementById('submitBtn').textContent = document.getElementById('submitBtn').textContent.replace('，請 AI 批改', ''); document.getElementById('submitHint').hidden = true; }
 
 renderHeader('u3');
 document.getElementById('stepper').innerHTML = stepperHtml('u3');
-document.getElementById('sevBody').innerHTML = Object.values(SEVERITY).map(([k, d]) => `<tr><td>${k}</td><td>${d.replace('：', '</td><td>')}</td></tr>`).join('');
+document.getElementById('sevBody').innerHTML = Object.values(SEVERITY).map(([k, d]) => `<tr><td style="white-space:nowrap"><b>${k}</b></td><td>${d.replace('：', '</td><td>')}</td></tr>`).join('');
 const $ = (s) => document.querySelector(s);
 
 const UNIT = 'u3';
@@ -208,7 +208,7 @@ function renderResults() {
           <div class="seg">${Object.entries(VERDICTS).map(([k, n]) => `<label class="v-${k}"><input type="radio" name="v_${c.id}" value="${k}" ${r.verdict === k ? 'checked' : ''}><span>${n}</span></label>`).join('')}</div></div>
         ${r.verdict === 'fail' ? `
         <div class="field full"><span class="label">違反規則<span class="req">*</span></span><div class="checks">${RULE_CODES.map((k) => `<label><input type="checkbox" data-rule value="${k}" ${r.rules.includes(k) ? 'checked' : ''}><span>${k}</span></label>`).join('')}</div></div>
-        <div class="field full"><span class="label">嚴重度<span class="req">*</span></span><div class="seg">${Object.keys(SEVERITY).map((k) => `<label class="s-${k}"><input type="radio" name="s_${c.id}" value="${k}" ${r.severity === k ? 'checked' : ''}><span>${k}</span></label>`).join('')}</div></div>` : ''}
+        <div class="field full"><span class="label">嚴重度<span class="req">*</span></span><div class="seg">${Object.keys(SEVERITY).map((k) => `<label class="s-${k}"><input type="radio" name="s_${c.id}" value="${k}" ${r.severity === k ? 'checked' : ''}><span>${SEVERITY[k][0]}</span></label>`).join('')}</div></div>` : ''}
         ${r.verdict === 'pending' ? `<label class="field full"><span>還要補查哪份紀錄？<span class="req">*</span></span><textarea data-r="todo" rows="2" placeholder="例如：調閱工單系統，確認 HX-0032087 實際有幾張工單">${esc(r.todo)}</textarea></label>` : ''}
       </div>
     </div>`;

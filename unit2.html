@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/style.css?v=20261126a">
+<link rel="stylesheet" href="assets/style.css?v=20261126b">
 <style>
   .tier { display: flex; align-items: center; gap: 10px; margin: 30px 0 12px; }
   .tier h2 { margin: 0; font-size: 22px; }
@@ -103,11 +103,11 @@
 </div>
 
 <script type="module">
-import { mountMission } from './assets/mission.js?v=20261126a';
+import { mountMission } from './assets/mission.js?v=20261126b';
 mountMission('u2');
 import { renderHeader, ensureIdentity, showIdentity, loadResponse, autosaver, watchReveal, esc, toast, uid8, stepperHtml } from './assets/app.js';
 import { mountFeedback, AI_ON } from './assets/ai-feedback.js';
-import { TRACK, RULES, RULE_CODES, DEVICES, FLOW_NAME, EXAMPLE, HALF, HINTS, TEST_TYPES, TYPE_NAME, TYPE_HINTS, caseNo } from './assets/simple-data.js?v=20261126a';
+import { TRACK, RULES, RULE_CODES, DEVICES, FLOW_NAME, EXAMPLE, HALF, HINTS, TEST_TYPES, TYPE_NAME, TYPE_HINTS, caseNo } from './assets/simple-data.js?v=20261126b';
 if (!AI_ON) { document.getElementById('submitBtn').textContent = document.getElementById('submitBtn').textContent.replace('，請 AI 批改', ''); document.getElementById('submitHint').hidden = true; }
 
 renderHeader('u2');
@@ -133,7 +133,7 @@ async function boot() {
   scen = Object.fromEntries((d1?.scen || []).filter((t) => t.say).map((t) => [t.id, t.say]));
   // ① v2：情境 × 卡在哪一步；紅燈列就是嫌疑步驟
   redSteps = d1?.v === 2
-    ? (d1.scen || []).filter((t) => t.light === 'red' && FLOW_NAME[t.step]).map((t) => ({ id: t.id, no: t.step, action: `${FLOW_NAME[t.step]}（${TYPE_NAME[t.id] || t.id}）`, issue: t.issue, type: t.id, say: t.say }))
+    ? (d1.scen || []).filter((t) => (t.prio === 'high' || (!t.prio && t.light === 'red')) && FLOW_NAME[t.step]).map((t) => ({ id: t.id, no: t.step, action: `${FLOW_NAME[t.step]}（${TYPE_NAME[t.id] || t.id}）`, issue: t.issue, type: t.id, say: t.say }))
     : (d1?.steps || []).map((s, i) => ({ ...s, no: `S${i + 1}` })).filter((s) => s.light === 'red' && s.action);
   saver = autosaver(id, UNIT, () => ({ ...state, redSteps: redSteps.map((s) => `${s.no} ${s.action}${s.issue ? `（可能出錯：${s.issue}）` : ''}`) }), document.getElementById('saveStatus'));
   if (saved?.status === 'submitted' && saved.data?.track === TRACK) { saver.setStatus('submitted'); document.getElementById('submittedBadge').hidden = false; }
@@ -190,11 +190,11 @@ function renderHalf() {
 function renderRed() {
   const box = document.getElementById('redBox');
   if (!redSteps.length) {
-    box.innerHTML = `<h3 style="margin-top:0">從 ① 帶來的嫌疑步驟</h3><div class="note gray">還沒有讀到你在 <a href="unit1.html">① 拆流程</a> 標的嫌疑步驟（紅燈）。可以先回去標，也可以直接從下面六種測試類型挑一種出題。</div>`;
+    box.innerHTML = `<h3 style="margin-top:0">從 ① 帶來的嫌疑步驟</h3><div class="note gray">還沒有讀到你在 <a href="unit1.html">① 拆流程</a> 標的嫌疑步驟（優先測）。可以先回去標，也可以直接從下面六種測試類型挑一種出題。</div>`;
     return;
   }
   const covered = (sid) => state.own.some((c) => c.step === sid);
-  box.innerHTML = `<h3 style="margin-top:0">從 ① 帶來的嫌疑步驟</h3><p class="muted tiny" style="margin:0">你在 ① 把這些標成紅燈。為每一個設計一題，把缺陷逼出來。</p>
+  box.innerHTML = `<h3 style="margin-top:0">從 ① 帶來的嫌疑步驟</h3><p class="muted tiny" style="margin:0">你在 ① 把這些標成「優先測」。為每一個設計一題，把缺陷逼出來。</p>
     <div class="red-list">${redSteps.map((s) => `<div class="red-item"><div class="t"><b>${s.no}</b>　${esc(s.action)}${s.issue ? `<div class="tiny muted">可能出錯：${esc(s.issue)}</div>` : ''}</div>
       ${covered(s.id) ? '<span class="covered">✓ 已有案例</span>' : `<button class="btn small" data-for="${s.id}">為這一步出題</button>`}</div>`).join('')}</div>`;
   box.onclick = (e) => {

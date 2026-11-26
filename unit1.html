@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/style.css?v=20261126a">
+<link rel="stylesheet" href="assets/style.css?v=20261126b">
 <style>
   .pick { display: grid; gap: 6px; }
   .pick select, .pick input { width: 100%; }
@@ -43,9 +43,8 @@
   .flowstrip .fs.warn { border-color: var(--amber-dot); background: var(--amber-soft); }
   .scen-list { display: grid; gap: 12px; }
   .scen { border: 1px solid var(--line); border-left: 6px solid var(--line-2); border-radius: 16px; padding: 14px 16px; background: #fff; }
-  .scen[data-light=red] { border-left-color: var(--red); }
-  .scen[data-light=yellow] { border-left-color: var(--amber-dot); }
-  .scen[data-light=green] { border-left-color: var(--green-dot); }
+  .scen[data-prio=high] { border-left-color: var(--red); }
+  .seg .p-high input:checked + span { background: var(--red); border-color: var(--red); color: #fff; }
   .scen-h { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
   .scen-h b { font-size: 17px; }
   .think { margin: -4px 0 10px; font-size: 14px; color: var(--ink-2); background: var(--blue-soft); border-radius: 10px; padding: 6px 12px; }
@@ -77,15 +76,14 @@
     <ol class="deliver">
       <li><b>看懂報修流程</b><span>流程已經幫你拆好，共 6 步＋1 條支線</span></li>
       <li><b>六種情境各走一遍</b><span>客戶會怎麼說？會卡在流程的哪一步？</span></li>
-      <li><b>標出嫌疑步驟</b><span>出事很嚴重的標紅燈，會帶到 ② 設計測試</span></li>
+      <li><b>標出嫌疑步驟</b><span>出事賠不起的標「優先測」，會帶到 ② 設計測試</span></li>
     </ol>
   </section>
 
   <details class="ref" open>
-    <summary>公司規範與風險燈號</summary>
-    <div class="inner grid c2">
+    <summary>公司規範</summary>
+    <div class="inner">
       <div class="table-wrap"><table><thead><tr><th>規則</th><th>公司規範</th></tr></thead><tbody id="rulesBody"></tbody></table></div>
-      <div class="table-wrap"><table><thead><tr><th>燈號</th><th>評估依據</th></tr></thead><tbody id="lightsBody"></tbody></table></div>
     </div>
   </details>
 
@@ -93,7 +91,7 @@
 
   <div class="card">
     <span class="pill blue">報修建單流程（已經幫你拆好）</span>
-    <h2 style="margin:10px 0"><span id="caseTitle"></span><span class="tip left" tabindex="0" aria-label="說明">i<span class="tip-box">一通報修電話會照這條流程走。你標成紅燈的步驟會變紅，那就是藏寶圖上的「嫌疑步驟」。</span></span></h2>
+    <h2 style="margin:10px 0"><span id="caseTitle"></span><span class="tip left" tabindex="0" aria-label="說明">i<span class="tip-box">一通報修電話會照這條流程走。你標成「優先測」的步驟會變紅，那就是藏寶圖上的「嫌疑步驟」。</span></span></h2>
     <blockquote class="quote" id="caseQuote"></blockquote>
     <div class="flowstrip" id="flowStrip"></div>
   </div>
@@ -116,17 +114,16 @@
 </div>
 
 <script type="module">
-import { mountMission } from './assets/mission.js?v=20261126a';
+import { mountMission } from './assets/mission.js?v=20261126b';
 mountMission('u1');
 import { renderHeader, ensureIdentity, showIdentity, loadResponse, autosaver, watchReveal, esc, toast, uid8, stepperHtml } from './assets/app.js';
 import { mountFeedback, AI_ON } from './assets/ai-feedback.js';
-import { TRACK, RULES, LIGHTS, CASE, FLOW, FLOW_NAME, OPTIONS, SCENARIOS, THINK } from './assets/simple-data.js?v=20261126a';
+import { TRACK, RULES, PRIO, CASE, FLOW, FLOW_NAME, OPTIONS, SCENARIOS, THINK } from './assets/simple-data.js?v=20261126b';
 if (!AI_ON) { document.getElementById('submitBtn').textContent = document.getElementById('submitBtn').textContent.replace('，請 AI 批改', ''); document.getElementById('submitHint').hidden = true; }
 
 renderHeader('u1');
 document.getElementById('stepper').innerHTML = stepperHtml('u1');
 document.getElementById('rulesBody').innerHTML = RULES.map(([k, v]) => `<tr><td class="rule-code">${k}</td><td>${v}</td></tr>`).join('');
-document.getElementById('lightsBody').innerHTML = Object.entries(LIGHTS).map(([k, [n, d]]) => `<tr><td class="code"><span class="dot ${k}"></span> ${n}</td><td>${d}</td></tr>`).join('');
 document.getElementById('caseTitle').textContent = CASE.title;
 document.getElementById('caseQuote').textContent = `客戶：「${CASE.quote}」`;
 
@@ -135,10 +132,11 @@ const NONE = 'none'; // 「這個情境不會出錯」
 let id, saver, state, KEY = null;
 let ai = { run() {} };
 
-const blankRow = (k, say = '') => ({ id: k, say, step: '', issue: '', light: '' });
+const blankRow = (k, say = '') => ({ id: k, say, step: '', issue: '', prio: '' });
 // v2：一張表（情境 × 卡在哪一步）。舊版（A 段＋B 段拆流程）只沿用客戶說法
 function loadState(d) {
   if (d?.track === TRACK && d.v === 2) {
+    d.scen.forEach((t) => { if (!t.prio && t.light) t.prio = t.light === 'red' ? 'high' : 'low'; });
     SCENARIOS.forEach(([k]) => { if (!d.scen.find((x) => x.id === k)) d.scen.push(blankRow(k)); });
     return d;
   }
@@ -182,12 +180,9 @@ function pickValue(el) {
 
 // ---------- 流程（藏寶圖）：被標紅燈的步驟會變紅 ----------
 function renderStrip() {
-  const worst = (k) => {
-    const ls = state.scen.filter((t) => t.step === k).map((t) => t.light);
-    return ls.includes('red') ? 'red' : ls.includes('yellow') ? 'yellow' : '';
-  };
+  const worst = (k) => (state.scen.some((t) => t.step === k && t.prio === 'high') ? 'red' : '');
   const main = FLOW.filter(([k]) => k !== 'F7');
-  const box = ([k, n, who]) => { const w = worst(k); const c = state.scen.filter((t) => t.step === k && t.light === 'red').length;
+  const box = ([k, n, who]) => { const w = worst(k); const c = state.scen.filter((t) => t.step === k && t.prio === 'high').length;
     return `<div class="fs ${k === 'F7' ? 'branch' : ''} ${w === 'red' ? 'sus' : w === 'yellow' ? 'warn' : ''}">${c ? `<span class="flag">嫌疑 ×${c}</span>` : ''}<b>${k}</b><span>${n}</span><small>${who}</small></div>`; };
   document.getElementById('flowStrip').innerHTML = main.map(box).join('<span class="arr">→</span>') + `<span class="arr">｜</span>${box(FLOW.find(([k]) => k === 'F7'))}`;
 }
@@ -196,9 +191,9 @@ function renderStrip() {
 function renderTable() {
   const el = document.getElementById('qtypes');
   el.innerHTML = `<span class="pill blue">六種情境，各走一遍流程</span>
-    <h2 style="margin:10px 0 14px">每種情境：客戶會怎麼說？最可能在哪一步出事？<span class="tip left" tabindex="0" aria-label="說明">i<span class="tip-box">一列一種情境，依序填四格：① 寫一句客戶可能怎麼說 ② 選它最可能在流程的哪一步出事 ③ 選會怎麼出錯 ④ 依上方「評估依據」標紅／黃／綠燈。卡住時按「💡 AI 小助手」看例子。</span></span></h2>
+    <h2 style="margin:10px 0 14px">每種情境：客戶會怎麼說？最可能在哪一步出事？<span class="tip left" tabindex="0" aria-label="說明">i<span class="tip-box">一列一種情境，依序填四格：① 寫一句客戶可能怎麼說 ② 選它最可能在流程的哪一步出事 ③ 選會怎麼出錯 ④ 判斷要不要優先測：出事賠不起的就優先測。正式的嚴重度（紅黃綠燈）等 ④ 有證據再判。卡住時按「💡 AI 小助手」看例子。</span></span></h2>
     <div class="scen-list">${SCENARIOS.map(([k, n, dir, ex]) => { const t = rowOf(k); return `
-      <div class="scen" data-sid="${k}" data-light="${t.light}">
+      <div class="scen" data-sid="${k}" data-prio="${t.prio}">
         <div class="scen-h"><b>${n}<span class="tip left" tabindex="0" aria-label="說明">i<span class="tip-box">${esc(dir)}</span></span></b><button type="button" class="hint-btn" data-ex>💡 AI 小助手</button></div>
         <p class="think">🤔 想一想：${esc(THINK[k] || '')}</p>
         <div class="hint" data-exbox hidden>例如：「${esc(ex)}」</div>
@@ -206,8 +201,8 @@ function renderTable() {
           <label class="field full"><span>① 客戶可能這樣說</span><textarea data-st="say" rows="2">${esc(t.say)}</textarea></label>
           <label class="field"><span>② 最可能在哪一步出事？</span><select data-st="step"><option value="">選擇步驟</option>${FLOW.map(([fk, fn]) => `<option value="${fk}" ${t.step === fk ? 'selected' : ''}>${fk}　${fn}</option>`).join('')}<option value="${NONE}" ${t.step === NONE ? 'selected' : ''}>這個情境不會出錯</option></select></label>
           <div class="field"><span class="label">③ 最可能怎麼出錯？</span>${pick('issue', t.issue, OPTIONS.issue, '選擇或自行輸入')}</div>
-          <div class="field full"><span class="label">④ 出錯的話，嚴重嗎？</span>
-            <div class="seg" role="radiogroup">${Object.entries(LIGHTS).map(([lk, [ln]]) => `<label class="l-${lk}"><input type="radio" name="l_${k}" data-st="light" value="${lk}" ${t.light === lk ? 'checked' : ''}><span><i class="dot ${lk}"></i>${ln}</span></label>`).join('')}</div>
+          <div class="field full"><span class="label">④ 要不要優先測？</span>
+            <div class="seg" role="radiogroup">${Object.entries(PRIO).map(([pk, pn]) => `<label class="p-${pk}"><input type="radio" name="p_${k}" data-st="prio" value="${pk}" ${t.prio === pk ? 'checked' : ''}><span>${pn}</span></label>`).join('')}</div>
           </div>
         </div>
       </div>`; }).join('')}</div>`;
@@ -217,7 +212,7 @@ qEl.addEventListener('input', (e) => {
   const card = e.target.closest('[data-sid]'); const f = e.target.dataset.st; if (!card || !f) return;
   const t = rowOf(card.dataset.sid);
   t[f] = e.target.matches('[data-pick],[data-other]') ? pickValue(e.target) : e.target.value;
-  if (f === 'light') card.dataset.light = t.light;
+  if (f === 'prio') card.dataset.prio = t.prio;
   if (f !== 'say') { renderStrip(); renderSus(); }
   saver.touch();
 });
@@ -230,11 +225,11 @@ qEl.addEventListener('click', (e) => {
 // ---------- 嫌疑清單（紅燈），帶到 ② ----------
 const SNAME = Object.fromEntries(SCENARIOS.map(([k, n]) => [k, n]));
 function renderSus() {
-  const red = state.scen.filter((t) => t.light === 'red' && t.step && t.step !== NONE);
-  document.getElementById('susBox').innerHTML = `<h3 style="margin-top:0">🔎 你的嫌疑步驟清單<span class="tip left" tabindex="0" aria-label="說明">i<span class="tip-box">這些紅燈會帶到 ② 設計驗證條件，為每一個設計測試，把缺陷逼出來。</span></span></h3>
+  const red = state.scen.filter((t) => t.prio === 'high' && t.step && t.step !== NONE);
+  document.getElementById('susBox').innerHTML = `<h3 style="margin-top:0">🔎 你的嫌疑步驟清單<span class="tip left" tabindex="0" aria-label="說明">i<span class="tip-box">這些「優先測」會帶到 ② 設計驗證條件，為每一個設計測試，把缺陷逼出來。</span></span></h3>
     ${red.length ? `
       <div class="sus-list">${red.map((t) => `<div class="sus-item"><b>${t.step} ${esc(FLOW_NAME[t.step])}</b><span>${esc(SNAME[t.id])}${t.issue ? `：${esc(t.issue)}` : ''}</span></div>`).join('')}</div>`
-    : '<p class="muted" style="margin:0">還沒有紅燈。把出事會很嚴重的情境標成紅燈，它就會出現在這裡。</p>'}`;
+    : '<p class="muted" style="margin:0">還沒有嫌疑步驟。把出事賠不起的情境標成「優先測」，它就會出現在這裡。</p>'}`;
 }
 
 // ---------- 送出 ----------
@@ -243,9 +238,9 @@ function missing() {
   const n = (f) => state.scen.filter((t) => !String(t[f] || '').trim()).length;
   if (n('say')) out.push(`還有 ${n('say')} 種情境沒寫客戶說法`);
   if (n('step')) out.push(`還有 ${n('step')} 種情境沒選最可能在哪一步出事`);
-  if (n('light')) out.push(`還有 ${n('light')} 種情境沒標紅／黃／綠燈`);
-  if (!state.scen.some((t) => t.light === 'red')) out.push('至少要有一個紅燈（嫌疑步驟會帶到 ② 設計測試）');
-  if (state.scen.some((t) => t.light === 'red' && !t.issue.trim())) out.push('紅燈的情境要選出最可能怎麼出錯');
+  if (n('prio')) out.push(`還有 ${n('prio')} 種情境沒判斷要不要優先測`);
+  if (!state.scen.some((t) => t.prio === 'high')) out.push('至少要有一個「優先測」（嫌疑步驟會帶到 ② 設計測試）');
+  if (state.scen.some((t) => t.prio === 'high' && !t.issue.trim())) out.push('優先測的情境要選出最可能怎麼出錯');
   return out;
 }
 async function doSubmit() {
