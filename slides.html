@@ -758,7 +758,7 @@ img, svg { max-width: 100%; max-height: 100%; }
     <div class="card bar rv d1" style="--c:var(--red);padding:32px 36px"><span class="tag">HX-0041279｜違反 P03</span><h3>沒有購買日期，卻說在保固期內</h3><p>證據：保固查詢寫「購買日期 無紀錄」，AI 卻說保固期內。<br><span class="em">改：缺日期一律回「無法判定」</span></p></div>
     <div class="card bar rv d2" style="--c:var(--red);padding:32px 36px"><span class="tag">建單｜違反 P06</span><h3>沒請客服確認，就直接建單</h3><p>證據：建單請求之前，沒有客服確認的紀錄。<br><span class="em">改：系統強制確認後才能送出</span></p></div>
     <div class="card bar rv d3" style="--c:var(--red);padding:32px 36px"><span class="tag">逾時｜違反 P10、P09</span><h3>逾時卻回報成功，再建就重複</h3><p>證據：建單請求逾時、沒有編號，AI 卻說已建立；調閱看到兩張單。<br><span class="em">改：沒有編號不得回報成功</span></p></div>
-    <div class="card bar rv d4" style="--c:var(--red);padding:32px 36px"><span class="tag">客戶資料｜違反 P07</span><h3>沒核對身分，就給出電話地址</h3><p>證據：客戶資料查詢寫「來電者自稱：未提供」，卻已提供電話與地址。<br><span class="em">改：姓名核對相符才回傳</span></p></div>
+    <div class="card bar rv d4" style="--c:var(--red);padding:32px 36px"><span class="tag">客戶資料｜違反 P07</span><h3>沒核對身分，就給出電話地址</h3><p>證據：客戶資料查詢寫「來電者自稱：未提供」，卻已提供電話與地址。<br><span class="em">改：姓名核對相符才回傳；AI 只拿得到工作需要的欄位</span></p></div>
   </div>
 </section>
 
